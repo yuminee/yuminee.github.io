@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="youmin park">
+
+
+    <meta name="subtitle" content="개발 일지">
+
+
+
+
+<title>RNN -  순환 신경망(Recurrent Neural Network) ① | yuminkuu</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yumin&#39;s Techblog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yumin&#39;s Techblog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">RNN -  순환 신경망(Recurrent Neural Network) ①</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">youmin park</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 21, 2020&nbsp;&nbsp;23:05:36</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/">머신러닝</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+             <br/>
+
+<h1 id="RNN-순환-신경망-Recurrent-Neural-Network-①"><a href="#RNN-순환-신경망-Recurrent-Neural-Network-①" class="headerlink" title="RNN -  순환 신경망(Recurrent Neural Network) ①"></a>RNN -  순환 신경망(Recurrent Neural Network) ①</h1><p><a href="#%EC%88%9C%EC%84%9C-sequence-%EA%B0%80-%EC%9E%88%EB%8A%94-%EB%8D%B0%EC%9D%B4%ED%84%B0">1. 순서(sequence)가 있는 데이터</a></p>
+<p><a href="#%EC%8B%9C%EA%B0%84-%EA%B0%9C%EB%85%90%EC%9D%84-%ED%8F%AC%ED%95%A8%ED%95%9C-RNN-%EA%B5%AC%EC%A1%B0">2. 시간 개념을 포함한 RNN 구조</a></p>
+<p><a href="#RNN-%EB%8F%99%EC%9E%91-%EC%9B%90%EB%A6%AC">3. RNN 동작 원리</a></p>
+<ul>
+<li><p>내부적으로 순환(Recurrent) 되는 구조를 이용하여,</p>
+</li>
+<li><p>순서(Sequence)가 있는 데이터를 처리하는 데 강점을 가진 신경망</p>
+ <br/>
+
+</li>
+</ul>
+<p><img src="https://user-images.githubusercontent.com/33755241/99877365-01d27c00-2c41-11eb-936b-352da70056b2.png" alt="rnn"></p>
+<h3 id="순서-sequence-가-있는-데이터"><a href="#순서-sequence-가-있는-데이터" class="headerlink" title="순서(sequence)가 있는 데이터"></a>순서(sequence)가 있는 데이터</h3><ul>
+<li>문장이나 음성 같은 연속적인 데이터. 이런 데이터는 문장에서 놓여진 위치(순서)에 따라 의미가 달라지는 것을 알 수 있음.</li>
+<li>즉,  현재 데이터 의미를 알기 위해서는 이전에 놓여 았는 과거 데이터도 알고 있어야 함.</li>
+<li>그래서 RNN은 이러한 과거의 데이터를 알기 위해서 <strong>1. 은닉층내에 순환(Recurrent)구조를 이용하여 과거의 데이터를 기억</strong> 해두고 있다가 <strong>2. 새롭게 읩력으로 주어지는 데이터와 은낙층에서 기억하고 있는 과거 데이터를 연결 시켜서 그 의미를 알아내는</strong> 기능을 가지고 있음.</li>
+</ul>
+   <br/>
+
+<h3 id="시간-개념을-포함한-RNN-구조"><a href="#시간-개념을-포함한-RNN-구조" class="headerlink" title="시간 개념을 포함한 RNN 구조"></a>시간 개념을 포함한 RNN 구조</h3><p><img src="https://user-images.githubusercontent.com/33755241/99877694-3f380900-2c43-11eb-8d4b-d455a7a254cb.png" alt="image"></p>
+<ul>
+<li>순환 구조를 ① 은닉층에서 기억하는 과거의 데이터(붉은색 화살표)와 ② 일정 시간이 지난후에 입력되는 데이터와 연결되는 구조.</li>
+<li>시간 경과에 따라서 데이터가 순차적으로 들어온다는 것과 같은 의미</li>
+</ul>
+ <br/>
+
+<h3 id="RNN-동작-원리"><a href="#RNN-동작-원리" class="headerlink" title="RNN 동작 원리"></a>RNN 동작 원리</h3><p><img src="https://user-images.githubusercontent.com/33755241/99878891-d5702d00-2c4b-11eb-88b4-9e19a3599c22.png" alt="image"></p>
+<ul>
+<li><p>바이어스 : 각 층마다 하나씩 </p>
+<ul>
+<li>은닉층 :  bh</li>
+<li>출력층  : bo</li>
+</ul>
+</li>
+<li><p>가중치</p>
+<ul>
+<li><p>은닉층 </p>
+<ul>
+<li>입력 데이터 A1의 가중치 = Wih</li>
+<li>내부적 순환 구조를 이용하여 기억되는 과거 데이터 H에 적용되는 가중치 = Whh</li>
+</ul>
+</li>
+<li><p>출력층</p>
+<ul>
+<li>입력 데이터 A2에 적용되는 가중치 = Who</li>
+</ul>
+<br/>
+
+
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="첫번째-입력-데이터-A1에서의-RNN-동작-원리"><a href="#첫번째-입력-데이터-A1에서의-RNN-동작-원리" class="headerlink" title="첫번째 입력 데이터 A1에서의 RNN 동작 원리"></a>첫번째 입력 데이터 A1에서의 RNN 동작 원리</h4><p>Liner Regression ②  <code>A1(입력데이터) · Wih = Z2</code></p>
+<p>Summation ③ <code>Z2 + (H·Whh) + bn = R2</code></p>
+<p>Tanh ④ <code>tanh(R2) = A2</code> -&gt; <code>next H = A2, current H = 0</code> </p>
+<h6 id="A2-는-순환되어-저장되는-값-첫번째니까-H값이-존재안함"><a href="#A2-는-순환되어-저장되는-값-첫번째니까-H값이-존재안함" class="headerlink" title="A2 는 순환되어 저장되는 값, 첫번째니까 H값이 존재안함."></a>A2 는 순환되어 저장되는 값, 첫번째니까 H값이 존재안함.</h6><p>Liner Regression ⑤ <code>A2·Who = Z3</code> </p>
+<p>Out put ⑥ softmax(Z3·bo) = A3</p>
+ <br/>
+
+
+
+<h4 id="두번째-입력-데이터-A1에서의-RNN-동작-원리"><a href="#두번째-입력-데이터-A1에서의-RNN-동작-원리" class="headerlink" title="두번째 입력 데이터 A1에서의 RNN 동작 원리"></a>두번째 입력 데이터 A1에서의 RNN 동작 원리</h4><p>Liner Regression ②  <code>A1(입력데이터) · Wih = Z2</code></p>
+<p>Summation ③ <code>Z2 + (H·Whh) + bn = R2</code></p>
+<p>Tanh ④ <code>tanh(R2) = A2</code> -&gt; <code>next H = A2, current H = A2prev</code></p>
+<h6 id="A2-는-순환되어-저장되는-값-두번째니까-H값이-존재"><a href="#A2-는-순환되어-저장되는-값-두번째니까-H값이-존재" class="headerlink" title="A2 는 순환되어 저장되는 값, 두번째니까 H값이 존재."></a>A2 는 순환되어 저장되는 값, 두번째니까 H값이 존재.</h6><p>Liner Regression ⑤ <code>A2·Who = Z3</code> </p>
+<p>Out put ⑥ softmax(Z3·bo) = A3</p>
+ <br/>
+
+
+<p>즉,</p>
+<blockquote>
+<p><strong>시간 개념을 포함한  Current state Ht</strong></p>
+<p><strong>Ht = A2 = tanh(A1·Wih + Ht-1 ·Whh + bh)</strong></p>
+</blockquote>
+<p>Ht : 현재 입력데이터 A1에 대한 state</p>
+<p>A1:현재입력데이터</p>
+<p>Ht-1 : 과거 입력 데이터 A1에 대한 state</p>
+<p>bh : 은닉층 바이어스</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>youmin park</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://yuminee.github.io/2020/11/21/machine%20learning/rnn1/">https://yuminee.github.io/2020/11/21/machine%20learning/rnn1/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span><strong>재미없는거 못함</strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%82%AC%EC%9D%B4%EC%96%B8%EC%8A%A4/"># 데이터 사이언스</a>
+                    
+                        <a href="/tags/%EC%9E%90%EC%97%B0%EC%96%B4-%EC%B2%98%EB%A6%AC/"># 자연어 처리</a>
+                    
+                        <a href="/tags/rnn/"># rnn</a>
+                    
+                        <a href="/tags/Recurrent-Neural/"># Recurrent Neural</a>
+                    
+                        <a href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/"># 머신러닝</a>
+                    
+                        <a href="/tags/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98/"># 알고리즘</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/11/22/statistics/statistics_201122/">데이터의 분산(산포정도)</a>
+            
+            
+            <a class="next" rel="next" href="/2020/11/21/statistics/statistics_201121/">데이터의 평균(중심위치)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© youmin park | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

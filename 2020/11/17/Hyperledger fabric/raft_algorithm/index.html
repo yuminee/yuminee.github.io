@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="youmin park">
+
+
+    <meta name="subtitle" content="개발 일지">
+
+
+
+
+<title>UFO Project 1 - understanding raft  | yuminkuu</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yumin&#39;s Techblog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yumin&#39;s Techblog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">UFO Project 1 - understanding raft </h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">youmin park</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 17, 2020&nbsp;&nbsp;13:59:44</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/hyperledger-fabric/">hyperledger fabric</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="하이퍼레저-패브릭-개발"><a href="#하이퍼레저-패브릭-개발" class="headerlink" title="하이퍼레저 패브릭 개발"></a>하이퍼레저 패브릭 개발</h1><p><a href="#Raft">1. Raft</a><br><a href="#Raft_Algorithm">2. Raft Algorithm</a><br><a href="#Leader_Election">3. Leader Election</a><br><a href="#Log_Replication">4. Log Replication</a><br><a href="#Election_timeout">5. Election timeout </a></p>
+<p> <strong>중요한 파일</strong></p>
+<ul>
+<li><p>byfn.sh : 간단한 하이퍼레저 패브릭 네트워크를 구축하고 이를 테스트 할 수 있는 BYFN 예제를 위한 쉘 스크립트 파일. byfn.sh를 실행해 하이퍼레저 패브릭 네트워크를 쉽게 구축 할 수 있다.</p>
+<h2 id="Raft"><a href="#Raft" class="headerlink" title="Raft"></a>Raft</h2><p><span style="display:block;text-align:center"><img src="https://user-images.githubusercontent.com/33755241/99322868-3e564e80-28b4-11eb-94e2-356226253980.png" alt="image"></span></p>
+</li>
+</ul>
+<ul>
+<li><p>Consensus : 분산 시스템에서 노드 간의 상태를 공유하는 알고리즘.</p>
+</li>
+<li><p>Consensus Problem(distributed consensus problem) : 여러 노드로 이루어진 분산 서버에서 합의를 이뤄내는문제</p>
+</li>
+<li><p>Paxos, Zookeeper의 zab가 있음. Raft는 이해하기 어려운 기존의 알고리즘과 달리 쉽고 구현이 용이하게 설계.</p>
+<h2 id="Raft-Algorithm"><a href="#Raft-Algorithm" class="headerlink" title="Raft Algorithm"></a>Raft Algorithm</h2></li>
+<li><p>뗏목처럼 운용 중인 여러 서버들 중 일부에 장애가 발생하더라도 제 기능을 유지하도록 하는 <strong>합의알고리즘</strong> (합의 프로토콜)</p>
+<p><span style="display:block;text-align:center"><img src="https://user-images.githubusercontent.com/33755241/99323002-8bd2bb80-28b4-11eb-8829-5281d2990ed1.png" alt="image"></span></p>
+</li>
+<li><p>Raft의 node는 <strong>Follower, Candidate, Leader</strong> 라는 3가지 상태를 가짐.</p>
+</li>
+<li><p>모든 노드는 처음에 Follower state 가지고 시작. Follower가 Leader의 응답을 받지 못하면 Candidate<br>상태로 전환될 수 있음.</p>
+<p><span style="display:block;text-align:center"><img src="https://user-images.githubusercontent.com/33755241/99322373-27632c80-28b3-11eb-8581-68e1fc25bf47.png" alt="image"></span></p>
+</li>
+<li><p>Candidate는 다른 노드들에게 투표를 요청하고 노드들은 투표 결과를 응답으로 전달.</p>
+</li>
+<li><p>가장 많은 표를 얻은 노드는 Leader가 될 수 있음. (이러한 프로세스를 Leader Election)</p>
+</li>
+</ul>
+<h6 id="Election-timeout"><a href="#Election-timeout" class="headerlink" title="Election timeout"></a>Election timeout</h6><ul>
+<li><ul>
+<li>Election timeout : Follower에서 Candidate로 전환되기 위해 기다리는 시간.<pre><code>              일반적으로 150ms 에서 300ms 사이의 값으로 랜덤하게 설정.</code></pre>
+</li>
+</ul>
+<h2 id="Leader-Election"><a href="#Leader-Election" class="headerlink" title="Leader Election"></a>Leader Election</h2></li>
+<li><p>모든 팔로워 노드들은 리더가 될 수 있음. 단 먼저 후보자 노드가 되어야 리더로 산출될 수 있는 자격이 주    어짐. 만약 팔로워 노드가 리더로 부터 아무소식도 듣지못하면 후보자 노드가 될 수 있음.<br><span style="display:block;text-align:center"><img src="https://user-images.githubusercontent.com/33755241/99323739-2a135100-28b6-11eb-80f5-a80c7945293b.png" alt="image"></span><br><span style="display:block;text-align:center"><img src="https://user-images.githubusercontent.com/33755241/99323766-38616d00-28b6-11eb-8ec5-2e50d1b8422d.png" alt="image"></span></p>
+</li>
+</ul>
+<ol>
+<li>Election timeout이 끝나면 Follwer는 Candidate가 되고 Election term을 시작.</li>
+<li>Candidate는 본인에게 투표를 하고 다른 노드들에게 투표 요청 메세지를 전달.</li>
+<li>만일 메세지를 받는 노드가 해당 Election term에서 아직 투표를 하지 않았다면, 먼저 메세지를 전달해준 Candidate에게 투표.</li>
+<li>투표를 마친 해당 노드는 Election timeout이 초기화</li>
+<li>가장 많은 표를 받은 노드가 Leader로 선정.</li>
+</ol>
+<h2 id="Log-Replication"><a href="#Log-Replication" class="headerlink" title="Log Replication"></a>Log Replication</h2><p> <span style="display:block;text-align:center"><img src="https://user-images.githubusercontent.com/33755241/99323838-59c25900-28b6-11eb-9937-198e5a0a508f.png" alt="image"></span></p>
+<ol>
+<li><p>Green node가 시스템에 “5”라는 값을 업데이트 하라는 요청을 보냄.</p>
+</li>
+<li><p>클라이언트의 요청은 가장 먼저 리더에게 수신.</p>
+</li>
+<li><p>업데이트 요청을 받은 리더는 우선 <strong>자신의 로그 인트리에 해당 값을 기록</strong><br>(변경된 사항은 즉시 커밋되지 않음)</p>
+</li>
+<li><p>변경된 사항을 전체 시스템에 커밋하기 위해 리더는 자신의 로그를 팔로워들의 노드에 복제.</p>
+</li>
+<li><p>리더는 과반수 이상의 팔로워 노드들이 각자의 로그 엔트리에 변경사항을 기록 할 때까지 기다림.</p>
+</li>
+<li><p>과반수 이상의 노드들로부터 각자의 로그 엔트리가 기록이 완료 되었다는 응답을 받으면, 리더는 자신의 로그를 커밋하고 값을 “5”로 업데이트. 팔로워들에게 변경 사항이 커밋되었음을 알림.</p>
+</li>
+<li><p>리더의 알림을 받은 팔로워들의 상태값은 모두 “5”로 변경</p>
+<p><span style="display:block;text-align:center"><img src="https://user-images.githubusercontent.com/33755241/99324159-fd136e00-28b6-11eb-8f89-08dc58c077b9.png" alt="image"></span></p>
+</li>
+</ol>
+<h2 id="Election-timeout-1"><a href="#Election-timeout-1" class="headerlink" title="Election timeout"></a>Election timeout</h2><ul>
+<li><ul>
+<li>Election timeout : Follower에서 Candidate로 전환되기 위해 기다리는 시간.<br>(일반적으로 150ms 에서 300ms 사이의 값으로 랜덤하게 설정.)</li>
+</ul>
+</li>
+</ul>
+<p><span style="display:block;text-align:center"><img src="https://user-images.githubusercontent.com/33755241/99324625-0bae5500-28b8-11eb-8818-42130f880fe7.png" alt="image"></span></p>
+<ol>
+<li>만일 두 개의 노드가 동시에 Election term을 시작하고 메세지가 동시에 Follwer에게 도달한다고 가정</li>
+<li>이러한 경우 노드A, 노드B는 2표씩 얻게 되고, 표가 동일하므로 해당 Election term에는 Leader가 선정</li>
+<li>Leader가 선정되지 않았으므로 Election timeout에 따라 새로운 Election term을 시작하게됨.</li>
+</ol>
+<p><span style="display:block;text-align:center"><img src="https://user-images.githubusercontent.com/33755241/99324741-41533e00-28b8-11eb-8603-46db4a630866.png" alt="image"></span></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>youmin park</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://yuminee.github.io/2020/11/17/Hyperledger%20fabric/raft_algorithm/">https://yuminee.github.io/2020/11/17/Hyperledger%20fabric/raft_algorithm/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span><strong>재미없는거 못함</strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%EB%B8%94%EB%A1%9D%EC%B2%B4%EC%9D%B8/"># 블록체인</a>
+                    
+                        <a href="/tags/hyperledger/"># hyperledger</a>
+                    
+                        <a href="/tags/%ED%95%98%EC%9D%B4%ED%8D%BC%EB%A0%88%EC%A0%80/"># 하이퍼레저</a>
+                    
+                        <a href="/tags/raft/"># raft</a>
+                    
+                        <a href="/tags/blockchain/"># blockchain</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/11/18/statistics/statistics_201117/">데이터 과학이란 무엇인가?</a>
+            
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© youmin park | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

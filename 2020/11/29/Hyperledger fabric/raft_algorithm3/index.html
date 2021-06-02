@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="youmin park">
+
+
+    <meta name="subtitle" content="개발 일지">
+
+
+
+
+<title>UFO Project 3 - Hyperledger Fabric channel implementation | yuminkuu</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yumin&#39;s Techblog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yumin&#39;s Techblog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">UFO Project 3 - Hyperledger Fabric channel implementation</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">youmin park</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 29, 2020&nbsp;&nbsp;15:45:26</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/hyperledger-fabric/">hyperledger fabric</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>generate 를 하고나면, </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;byfn.sh up -o etcdraft -s couchdb -l node</span><br></pre></td></tr></table></figure>
+
+<p>위의 명령어를 통해서 fabric network 를 up 합니다. </p>
+<p>db는 couch db를 이용하고,  chaincode는 node js 로 작성할거다.</p>
+<h3 id="BYFN의-프로세스"><a href="#BYFN의-프로세스" class="headerlink" title="BYFN의 프로세스"></a>BYFN의 프로세스</h3><ol>
+<li>5개의 오더링 서비스 노드, 4개의 피어 노드 총 9개의 노드 컨테이너., CLI 컨테이너, 각 조직의 ca 컨테이너( 총 2개), 4개의 couchdb 컨테이너 가 실행되며, 총 16개의 컨테이너가 먼저 실행된다.</li>
+<li> 네트워크 내부의 CLI 컨테이너에 접속해 생성된 채널 트랜잭션 파일인 channel.tx를 가지고 채널을 생성하고 채널 ufochannel을 생성하고 모든 피어노드를 가입시킨다.</li>
+<li>두 조직의 peer0을 앵커로 가입한다</li>
+</ol>
+<p>위의 과정을 구현하기 위해서 필요한 파일은</p>
+<ul>
+<li>docker-compose-ca.yaml</li>
+<li>docker-compose-cli.yaml</li>
+<li>docker-compose-couch.yaml</li>
+<li>docker-compose-etcdraft2.yaml</li>
+<li>docker-compose-base.yaml</li>
+<li>peer-base.yaml</li>
+</ul>
+<p>들을 만질 것 이다.</p>
+<h4 id="docker-compose-ca-yaml"><a href="#docker-compose-ca-yaml" class="headerlink" title="docker-compose-ca.yaml"></a>docker-compose-ca.yaml</h4><ul>
+<li>CA는 MSP에서 암호화 인증을 위해 필요한 인증기관이며, 공개키 인증서 및 이에 대응하는 개인키를 발급한다. 블록체인 네트워크를 구성하는 조직에게는 루트 인증서를, 블록체인 네트워크에 접속하는 사용자에게는 신원등록 인증서를 발급한다.</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="attr">version:</span> <span class="string">&#x27;2&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">byfn:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">ca0:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">hyperledger/fabric-ca:$IMAGE_TAG</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_CA_SERVER_CA_NAME=ca-sales</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_CA_SERVER_TLS_ENABLED=true</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.sales.ufo.com-cert.pem</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/$&#123;BYFN_CA1_PRIVATE_KEY&#125;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_CA_SERVER_PORT=7054</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;7054:7054&quot;</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">sh</span> <span class="string">-c</span> <span class="string">&#x27;fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.sales.ufo.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/$&#123;BYFN_CA1_PRIVATE_KEY&#125; -b admin:adminpw -d&#x27;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./crypto-config/peerOrganizations/sales.ufo.com/ca/:/etc/hyperledger/fabric-ca-server-config</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">ca_peerSales</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">ca1:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">hyperledger/fabric-ca:$IMAGE_TAG</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_CA_SERVER_CA_NAME=ca-customer</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_CA_SERVER_TLS_ENABLED=true</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.customer.ufo.com-cert.pem</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/$&#123;BYFN_CA2_PRIVATE_KEY&#125;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_CA_SERVER_PORT=8054</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;8054:8054&quot;</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">sh</span> <span class="string">-c</span> <span class="string">&#x27;fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.customer.ufo.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/$&#123;BYFN_CA2_PRIVATE_KEY&#125; -b admin:adminpw -d&#x27;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./crypto-config/peerOrganizations/customer.ufo.com/ca/:/etc/hyperledger/fabric-ca-server-config</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">ca_peerCustomer</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>network는 byfn이고 services 로 ca0, ca1이 있다.</li>
+<li>ca0 은 sales 조직을 서비스하고, ca1은 customer 조직을 서비스한다.</li>
+</ul>
+<h4 id="docker-compose-cli-yaml"><a href="#docker-compose-cli-yaml" class="headerlink" title="docker-compose-cli.yaml"></a>docker-compose-cli.yaml</h4><ul>
+<li>volumes</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">orderer.ufo.com:</span></span><br><span class="line">  <span class="attr">peer0.sales.ufo.com:</span></span><br><span class="line">  <span class="attr">peer1.sales.ufo.com:</span></span><br><span class="line">  <span class="attr">peer0.customer.ufo.com:</span></span><br><span class="line">  <span class="attr">peer1.customer.ufo.com:</span></span><br><span class="line">  <span class="attr">ca.sales.ufo.com:</span></span><br><span class="line">  <span class="attr">ca.customer.ufo.com:</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>먼저 docker-compose-cli파일의 volumes 이다.</p>
+<ul>
+<li>docker volume이란?<ul>
+<li>container의 데이터 휘발성 때문에 데이터를 container가 아닌 호스트에 저장할 때,  또는 container 끼리 데이터를 공유할때 Volume을 사용.</li>
+</ul>
+</li>
+<li>ca</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">ca.sales.ufo.com:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">hyperledger/fabric-ca</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_CA_SERVER_TLS_ENABLED=true</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_CA_SERVER_CA_NAME=ca.sales.ufo.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.sales.ufo.com-cert.pem</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/ca.sales.ufo.com_sk</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;7054:7054&quot;</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">sh</span> <span class="string">-c</span> <span class="string">&#x27;fabric-ca-server start -b admin:adminpw&#x27;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./crypto-config/peerOrganizations/sales.ufo.com/ca/:/etc/hyperledger/fabric-ca-server-config</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">ca.sales.ufo.com</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br></pre></td></tr></table></figure>
+
+<p>위는 ca.sales.ufo.com을 설정하는 부분이다.  ca.customer.ufo.com도 위에서 sales를 customer로 바꿔주면 된다.</p>
+<ul>
+<li><p>order</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">orderer.ufo.com:</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>   <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">orderer.ufo.com</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">orderer.ufo.com</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br></pre></td></tr></table></figure>
+
+<p>raft 의 핵심! 오더러 설정 부분이다. 나는 다섯개의 오더러를 설정했으므로, </p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">orderer2.ufo.com:</span></span><br><span class="line">   <span class="attr">extends:</span></span><br><span class="line">     <span class="attr">file:</span>   <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">     <span class="attr">service:</span> <span class="string">orderer2.ufo.com</span></span><br><span class="line">   <span class="attr">container_name:</span> <span class="string">orderer2.ufo.com</span></span><br><span class="line">   <span class="attr">networks:</span></span><br><span class="line">     <span class="bullet">-</span> <span class="string">byfn</span></span><br></pre></td></tr></table></figure>
+
+<p>이런식으로 orderer3, orderer4, orderer5 를 더 만들어 준다.</p>
+</li>
+<li><p>peer</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">peer0.sales.ufo.com:</span></span><br><span class="line">   <span class="attr">container_name:</span> <span class="string">peer0.sales.ufo.com</span></span><br><span class="line">   <span class="attr">extends:</span></span><br><span class="line">     <span class="attr">file:</span>  <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">     <span class="attr">service:</span> <span class="string">peer0.sales.ufo.com</span></span><br><span class="line">   <span class="attr">networks:</span></span><br><span class="line">     <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line">  </span><br><span class="line"> <span class="attr">peer1.sales.ufo.com:</span></span><br><span class="line">   <span class="attr">container_name:</span> <span class="string">peer1.sales.ufo.com</span></span><br><span class="line">   <span class="attr">extends:</span></span><br><span class="line">     <span class="attr">file:</span>  <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">     <span class="attr">service:</span> <span class="string">peer1.sales.ufo.com</span></span><br><span class="line">   <span class="attr">networks:</span></span><br><span class="line">     <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+
+<p>sales  조직에 대한 peer0, peer1을 설정하고 위 설정에서 sales를 customer로 바꾸면 customer 설정이다.</p>
+</li>
+<li><p>cli</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">cli:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">cli</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">hyperledger/fabric-tools:$IMAGE_TAG</span></span><br><span class="line">    <span class="attr">tty:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">stdin_open:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SYS_CHANNEL=$SYS_CHANNEL</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">GOPATH=/opt/gopath</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_LOGGING_SPEC=DEBUG</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FABRIC_LOGGING_SPEC=INFO</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_ID=cli</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_ADDRESS=peer0.sales.ufo.com:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_LOCALMSPID=SalesMSP</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_TLS_ENABLED=true</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/sales.ufo.com/peers/peer0.sales.ufo.com/tls/server.crt</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/sales.ufo.com/peers/peer0.sales.ufo.com/tls/server.key</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/sales.ufo.com/peers/peer0.sales.ufo.com/tls/ca.crt</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/sales.ufo.com/users/Admin@sales.ufo.com/msp</span></span><br><span class="line">    <span class="attr">working_dir:</span> <span class="string">/opt/gopath/src/github.com/hyperledger/fabric/peer</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">/bin/bash</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">/var/run/:/host/var/run/</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">./../chaincode/:/opt/gopath/src/github.com/chaincode</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">orderer.ufo.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">orderer2.ufo.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">orderer3.ufo.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">orderer4.ufo.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">orderer5.ufo.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">peer0.sales.ufo.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">peer1.sales.ufo.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">peer0.customer.ufo.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">peer1.customer.ufo.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ca.sales.ufo.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ca.customer.ufo.com</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br></pre></td></tr></table></figure>
+
+<p>위에는 cli 설정이다. cli 컨테이너는 위에서 설정해준 모든 컨테이너에 의존한다.</p>
+</li>
+</ul>
+<h4 id="docker-compose-couch-yaml"><a href="#docker-compose-couch-yaml" class="headerlink" title="docker-compose-couch.yaml"></a>docker-compose-couch.yaml</h4><p>couchdb 설정 yaml 파일이다. 여기서 구성한 네트워크에서는 총 4개의 couchdb 컨테이너가 있는데,</p>
+<p>각각의 컨테이너는</p>
+<ul>
+<li><p>couchdb0 : peer0.sales.ufo.com</p>
+</li>
+<li><p>couchdb1 : peer1.sales.ufo.com</p>
+</li>
+<li><p>couchdb2 : peer0.customer.ufo.com</p>
+</li>
+<li><p>couchdb3 : peer1.customer.ufo.com</p>
+<p>에 대응한다.</p>
+</li>
+</ul>
+<p>예시로 여기서는 couchdb0의 설정만 올리겠다.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">couchdb0:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">couchdb0</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">hyperledger/fabric-couchdb</span></span><br><span class="line">    <span class="comment"># Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password</span></span><br><span class="line">    <span class="comment"># for CouchDB.  This will prevent CouchDB from operating in an &quot;Admin Party&quot; mode.</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">COUCHDB_USER=</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">COUCHDB_PASSWORD=</span></span><br><span class="line">    <span class="comment"># Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,</span></span><br><span class="line">    <span class="comment"># for example map it to utilize Fauxton User Interface in dev environments.</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;5984:5984&quot;</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">peer0.sales.ufo.com:</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_LEDGER_STATE_STATEDATABASE=CouchDB</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984</span></span><br><span class="line">      <span class="comment"># The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD</span></span><br><span class="line">      <span class="comment"># provide the credentials for ledger to connect to CouchDB.  The username and password must</span></span><br><span class="line">      <span class="comment"># match the username and password set for the associated CouchDB.</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">couchdb0</span></span><br></pre></td></tr></table></figure>
+
+<p>​        </p>
+<h4 id="docker-compose-etcdraft2-yaml"><a href="#docker-compose-etcdraft2-yaml" class="headerlink" title="docker-compose-etcdraft2.yaml"></a>docker-compose-etcdraft2.yaml</h4><p>여기서는 raft를 위해 orderer를 제외하고 나머지 orderer2, orderer3, orderer4, orderer5를 설정한다.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">orderer2.ufo.com:</span></span><br><span class="line">  <span class="attr">orderer3.ufo.com:</span></span><br><span class="line">  <span class="attr">orderer4.ufo.com:</span></span><br><span class="line">  <span class="attr">orderer5.ufo.com:</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>이 파일 또한 예시로 orderer2.ufo.com 만 첨부 하겠다.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">orderer2.ufo.com:</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span> <span class="string">base/peer-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">orderer-base</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">orderer2.ufo.com</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">./crypto-config/ordererOrganizations/ufo.com/orderers/orderer2.ufo.com/msp:/var/hyperledger/orderer/msp</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">./crypto-config/ordererOrganizations/ufo.com/orderers/orderer2.ufo.com/tls/:/var/hyperledger/orderer/tls</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">orderer2.ufo.com:/var/hyperledger/production/orderer</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">8050</span><span class="string">:7050</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="docker-compose-base-yaml"><a href="#docker-compose-base-yaml" class="headerlink" title="docker-compose-base.yaml"></a>docker-compose-base.yaml</h4><p>이름 그대로, docker-compose의 base가 되는 yaml 설정 파일이다.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">orderer.ufo.com:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">orderer.ufo.com</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span> <span class="string">peer-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">orderer-base</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">../crypto-config/ordererOrganizations/ufo.com/orderers/orderer.ufo.com/msp:/var/hyperledger/orderer/msp</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">../crypto-config/ordererOrganizations/ufo.com/orderers/orderer.ufo.com/tls/:/var/hyperledger/orderer/tls</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">orderer.ufo.com:/var/hyperledger/production/orderer</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">7050</span><span class="string">:7050</span></span><br></pre></td></tr></table></figure>
+
+<p>orderer.ufo.com 을 예시로 들었다. 전체 코드는 git에서 확인 할 수 있다.</p>
+<h4 id="peer-base-yaml"><a href="#peer-base-yaml" class="headerlink" title="peer-base.yaml"></a>peer-base.yaml</h4><p>이 파일에서는 peer-base, orderer-base의 환경변수 설정등을 한다.</p>
+<p>자세한 파일 내용은 git에서 확인 할 수 있다.</p>
+<hr>
+<ul>
+<li>전체 코드 GIT : <a target="_blank" rel="noopener" href="https://github.com/yuminee/UFO_FabricNet_raft">https://github.com/yuminee/UFO_FabricNet_raft</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>youmin park</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://yuminee.github.io/2020/11/29/Hyperledger%20fabric/raft_algorithm3/">https://yuminee.github.io/2020/11/29/Hyperledger%20fabric/raft_algorithm3/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span><strong>재미없는거 못함</strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%EB%B8%94%EB%A1%9D%EC%B2%B4%EC%9D%B8/"># 블록체인</a>
+                    
+                        <a href="/tags/raft/"># raft</a>
+                    
+                        <a href="/tags/blockchain/"># blockchain</a>
+                    
+                        <a href="/tags/hyperledger-fabric/"># hyperledger fabric</a>
+                    
+                        <a href="/tags/%ED%95%98%EC%9D%B4%ED%8D%BC%EB%A0%88%EC%A0%80-%ED%8C%A8%EB%B8%8C%EB%A6%AD/"># 하이퍼레저 패브릭</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/11/30/Hyperledger%20fabric/Chaincode_Nodejs/">Start Developing Hyperledger Fabric Chaincode in Node.js</a>
+            
+            
+            <a class="next" rel="next" href="/2020/11/28/kaggle/tweet_disaster_EDA/">kaggle-Real or Not? NLP with Disaster Tweets ②-Basic EDA</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© youmin park | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
