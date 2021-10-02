@@ -14,7 +14,7 @@
 
 
 
-<title>도커 볼륨으로 데이터 보존하기 | yuminkuu</title>
+<title>Kubernetes presentation | yuminkuu</title>
 
 
 
@@ -41,6 +41,45 @@
 
     
     
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
         
     
 
@@ -109,73 +148,11 @@
             <div class="container">
     
     
-        <div class="post-toc">
-    <div class="tocbot-list">
-    </div>
-    <div class="tocbot-list-menu">
-        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
-        <a onclick="go_top()">Back to top</a>
-        <a onclick="go_bottom()">Go to bottom</a>
-    </div>
-</div>
-
-<script>
-    document.ready(
-        function () {
-            tocbot.init({
-                tocSelector: '.tocbot-list',
-                contentSelector: '.post-content',
-                headingSelector: 'h1, h2, h3, h4, h5',
-                collapseDepth: 1,
-                orderedList: false,
-                scrollSmooth: true,
-            })
-        }
-    )
-
-    function expand_toc() {
-        var b = document.querySelector(".tocbot-toc-expand");
-        tocbot.init({
-            tocSelector: '.tocbot-list',
-            contentSelector: '.post-content',
-            headingSelector: 'h1, h2, h3, h4, h5',
-            collapseDepth: 6,
-            orderedList: false,
-            scrollSmooth: true,
-        });
-        b.setAttribute("onclick", "collapse_toc()");
-        b.innerHTML = "Collapse all"
-    }
-
-    function collapse_toc() {
-        var b = document.querySelector(".tocbot-toc-expand");
-        tocbot.init({
-            tocSelector: '.tocbot-list',
-            contentSelector: '.post-content',
-            headingSelector: 'h1, h2, h3, h4, h5',
-            collapseDepth: 1,
-            orderedList: false,
-            scrollSmooth: true,
-        });
-        b.setAttribute("onclick", "expand_toc()");
-        b.innerHTML = "Expand all"
-    }
-
-    function go_top() {
-        window.scrollTo(0, 0);
-    }
-
-    function go_bottom() {
-        window.scrollTo(0, document.body.scrollHeight);
-    }
-
-</script>
-    
 
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">도커 볼륨으로 데이터 보존하기</h1>
+            <h1 class="post-title">Kubernetes presentation</h1>
             
                 <div class="post-meta">
                     
@@ -184,14 +161,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">February 12, 2021&nbsp;&nbsp;15:55:16</a>
+                        Date: <a href="#">October 1, 2021&nbsp;&nbsp;15:00:01</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/Docker/">Docker</a>
+                                <a href="/categories/Kubernetes/">Kubernetes</a>
                             
                         </span>
                     
@@ -200,13 +177,8 @@
         </header>
 
         <div class="post-content">
-            <h1 id="도커-볼륨으로-데이터-보존하기"><a href="#도커-볼륨으로-데이터-보존하기" class="headerlink" title="도커 볼륨으로 데이터 보존하기"></a>도커 볼륨으로 데이터 보존하기</h1><p>도커 자체에서 제공하는 볼륨 기능을 활용해 데이터를 보존할 수 있다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># docker volume create --name myvolume</span><br><span class="line"># docker volume ls</span><br><span class="line">DRIVER    VOLUME NAME     </span><br><span class="line">local     myvolume</span><br></pre></td></tr></table></figure>
-
-<p>위의 명령어로 도커 볼륨을 생성하고, 아래의 명령어로 myvolume이라는 볼륨을 사용하는 컨테이너를 생성한다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># docker run -i -t --name myvolume_1 -v myvolume:&#x2F;root&#x2F; ubuntu</span><br><span class="line">root@f333e2b6b071:&#x2F;# echo hello, volume! &gt;&gt; &#x2F;root&#x2F;volume</span><br></pre></td></tr></table></figure>
-
-<p>위의 예시는 볼륨을 컨테이너의 /root/ 디렉터리에 마운트하므로 /root 디렉터리에 파일을 쓰면 해당 파일이 볼륨에 저장된다.  /root 디렉터리에 volume이라는 파일을 생성했다. 다른 컨테이너도 myvolume 볼륨을 쓰면 볼륨을 활용한 디렉터리에 volume 파일이 존재할 것 이다. </p>
+            <p>쿠버네티스 발표를 위한 발표자료이다.</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/yuminee/yumine.github.io-src/files/7271800/k8s.pdf">k8s.pdf</a></p>
 
         </div>
         
@@ -221,7 +193,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="https://yuminee.github.io/2021/02/12/Docker/docker8/">https://yuminee.github.io/2021/02/12/Docker/docker8/</a></span>
+                        <span><a href="https://yuminee.github.io/2021/10/01/K8s/k8s_%20presentation/">https://yuminee.github.io/2021/10/01/K8s/k8s_%20presentation/</a></span>
                     </p>
                 
                 
@@ -264,9 +236,9 @@
                 <span class="tag">
                     
                     
-                        <a href="/tags/docker/"># docker</a>
+                        <a href="/tags/Kubernetes/"># Kubernetes</a>
                     
-                        <a href="/tags/%EB%8F%84%EC%BB%A4/"># 도커</a>
+                        <a href="/tags/K8s/"># K8s</a>
                     
                         
                 </span>
@@ -280,10 +252,8 @@
         
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2021/10/01/K8s/k8s_%20presentation/">Kubernetes presentation</a>
             
-            
-            <a class="next" rel="next" href="/2021/02/11/Docker/docker7/">도커 호스트 볼륨 다른 컨테이너에 덮어쓰기</a>
+            <a class="next" rel="next" href="/2021/02/12/Docker/docker8/">도커 볼륨으로 데이터 보존하기</a>
             
         </section>
 
