@@ -14,7 +14,7 @@
 
 
 
-<title>도커 호스트랑 볼륨 공유하기 | yuminkuu</title>
+<title>nginx crush (1) | yuminkuu</title>
 
 
 
@@ -175,7 +175,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">도커 호스트랑 볼륨 공유하기</h1>
+            <h1 class="post-title">nginx crush (1)</h1>
             
                 <div class="post-meta">
                     
@@ -184,14 +184,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">February 10, 2021&nbsp;&nbsp;15:55:16</a>
+                        Date: <a href="#">March 1, 2022&nbsp;&nbsp;22:55:05</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/Docker/">Docker</a>
+                                <a href="/categories/Nginx/">Nginx</a>
                             
                         </span>
                     
@@ -200,34 +200,67 @@
         </header>
 
         <div class="post-content">
-            <h1 id="도커-호스트랑-볼륨-공유하기"><a href="#도커-호스트랑-볼륨-공유하기" class="headerlink" title="도커 호스트랑 볼륨 공유하기"></a>도커 호스트랑 볼륨 공유하기</h1><p>전 포스터에서는 컨테이너로 워드프레스와 디비를 연결해서 만들어 보았다. 컨테이너로 데이터베이스 작업을 하였을때 가장 큰 단점은 mariadb 컨테이너를 삭제하면 컨테이너의 계층에 저장되어 있던 데이터베이스의 정보도 삭제 된다는 것이다.</p>
-<p>도커의 컨테이너는 생성과 삭제가 매우 쉬우므로 실수로 컨테이너를 삭제하면 데이터를 복구할 수 없게 된다. <strong>이를 방지하기 위해 컨테이너의 데이터를 영속적 데이터로 활용할 수 있는 방법이 몇가지 있는데, 그중 가장 쉬운것이 볼륨을 활용하는 것이다.</strong></p>
-<p>볼륨을 활용하는 방법은,</p>
+            <h2 id="1-Nginx-Docker-Setting"><a href="#1-Nginx-Docker-Setting" class="headerlink" title="1. Nginx Docker Setting"></a>1. Nginx Docker Setting</h2><p>Nginx를 공부하기 위해 nginx docker image를 사용하였다.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container run --name webserver -d -p 80:80 nginx</span><br></pre></td></tr></table></figure>
+
+<p>위의 명령어로 nginx 컨테이너를 실행하였고,</p>
+<img width="640" alt="스크린샷 2022-03-01 오후 11 04 17" src="https://user-images.githubusercontent.com/33755241/156183570-87f61b52-d66f-4af9-ab39-7be66786fe01.png">
+
+<p>localhost:80 으로 nginx가 잘 작동하고 있는것을 확인 하였다.</p>
+<p>더 자세하게 Nginx docker안으로 들어가서 어떻게 동작하고 있는지를 확인하기 위해서 컨테이너안으로 접속했다.</p>
+<p>분홍색 형광팬은 명령어, 초록색은 docker container id 이다.</p>
+<p><img src="https://user-images.githubusercontent.com/33755241/156184710-f6c39e52-cbd7-4959-90a9-fd39105070e7.png" alt="image"></p>
+<p>Nginx Version 1.21.6이 설치 된 것을 마지막 nginx -v 명령어로 확인 할 수 있다.</p>
+<blockquote>
+<p>혹시나 같은 에러를 만나시는 분들을 위해서</p>
+</blockquote>
+<img width="765" alt="스크린샷 2022-03-01 오후 11 14 48" src="https://user-images.githubusercontent.com/33755241/156185669-06546008-915c-445e-aeb6-be7981b1f1cc.png">
+
+<p>ps -ef | grep nginx 명령어를 통해서 nginx를 포함하는 프로세스를 찾으려고 했는데 ps 명령어를 찾을 수 없다 하여 <a target="_blank" rel="noopener" href="https://zetawiki.com/wiki/Bash:_ps:_command_not_found">여기</a>  를 통하여 해당 에러를 해결한 후 진행했다. </p>
+<img width="765" alt="스크린샷 2022-03-01 오후 11 21 01" src="https://user-images.githubusercontent.com/33755241/156186132-5d96be2c-f4e6-458f-8792-b54b5ac61a3e.png">
+
+<p>여기서 주목해야 할 것은 엔진엑스가 정상적으로 실행 중이라면 항상 마스터 프로세스가 한 개, 워커 프로세스가 한 개 이상 있다는 점이다. 엔진엑스가 제대로 동작하려면 권한 상승이 필요하므로 마스터 프로세스가 root 권한으로 실행 중이라는 점을 알고 가자!</p>
+<h2 id="2-주요-설정-파일-디렉터리-명령어"><a href="#2-주요-설정-파일-디렉터리-명령어" class="headerlink" title="2. 주요 설정 파일, 디렉터리, 명령어"></a>2. 주요 설정 파일, 디렉터리, 명령어</h2><h3 id="엔진엑스-주요-설정-파일과-디렉터리"><a href="#엔진엑스-주요-설정-파일과-디렉터리" class="headerlink" title="엔진엑스 주요 설정 파일과 디렉터리"></a>엔진엑스 주요 설정 파일과 디렉터리</h3><p>밑에 설명 외 더 자세한 정보는 <a target="_blank" rel="noopener" href="https://www.nginx.com/resources/wiki/start/topics/examples/full/">nginx 홈페이지에서 full example</a> 을 확인 할 수 있다.</p>
 <ul>
-<li>호스트와 볼륨 공유하기</li>
-<li>볼륨 컨테이너 활용</li>
-<li>도커과 관리하는 볼륨 생성</li>
+<li><p>/etc/nginx</p>
+<p>엔진엑스 서버가 사용하는 기본 설정이 저장된 루트 디렉터리. 엔진엑스는 이곳에 저장된 설정 파일의 내용에 따라 동작.</p>
+<img width="504" alt="스크린샷 2022-03-01 오후 11 25 07" src="https://user-images.githubusercontent.com/33755241/156186805-cd5bca49-b060-44e3-8b00-27a451cc198e.png">
+</li>
+<li><p>/etc/nginx/nginx.conf</p>
+<p>엔젠엑스의 기본 성정 파일로, 모든 설정에 대한 진입점. 워커 프로세스 개수, 튜닝, 동적 모듈 적재와 같은 글로벌 설정 항목을 포함하며, 다른 엔진엑스 세부 설정 파일에 대한 참조를 지정. 뿐만 아니라 이어서 설명할 디렉터리에 위치한 모든 설정 파일을 포함하는 최상위 http 블록을 갖고 있음.</p>
+<img src="https://user-images.githubusercontent.com/33755241/156189300-02dd803c-48d6-4649-8337-03ac39fadeca.png" width="50%">
+</li>
+<li><p>/etc/nginx/conf.d/</p>
+<p>기본 http 서버 설정 파일을 포함(default.conf). default.conf 파일 내의 server 블록은 엔진엑스를 사용하면서 몇번 작성해보았던 익숙한 내용들이다.</p>
+<img width="50%" alt="스크린샷 2022-03-01 오후 11 53 32" src="https://user-images.githubusercontent.com/33755241/156191562-b7b4d2a5-bf7f-4649-a087-c94042eeb629.png">
+
+
+
+</li>
 </ul>
-<p>이 포스팅에서는 첫번째 방법인 <code>호스트와 볼륨 공유하기</code> 를 해볼 것이다. 이 방식으로 데이터 베이스 컨테이너를 삭제해도 데이터는 삭제되지 않도록 설정 해보자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># sudo docker run -d \</span><br><span class="line">--name wordpressdb_volume \</span><br><span class="line">-e MYSQL_ROOT_PASSWORD&#x3D;password \</span><br><span class="line">-e MYSQL_DATABASE&#x3D;wordpress \</span><br><span class="line">-v &#x2F;Users&#x2F;wordpress_db:&#x2F;var&#x2F;lib&#x2F;mysql \</span><br><span class="line">mariadb</span><br></pre></td></tr></table></figure>
-
-<p>위의 명령어로 마리아 디비 컨테이너를 생성할려고 하였다.  원래라면 -v 옵션으로 해당 위치에 파일이 생성되어야 하는데,</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker: Error response from daemon: error while creating mount source path &#39;&#x2F;Users&#x2F;wordpress_db&#39;: mkdir &#x2F;Users&#x2F;wordpress_db: operation not permitted.</span><br></pre></td></tr></table></figure>
-
-<p>하는 에러가 자꾸 떴다. </p>
-<p>그래서 찾다가 그냥 docker desktop으로,</p>
-<p>Preferences -&gt; Resources -&gt; File Sharing 부분에서 path를 추가시켜주고</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># sudo docker run -d \</span><br><span class="line">--name wordpressdb_volume \</span><br><span class="line">-e MYSQL_ROOT_PASSWORD&#x3D;password \</span><br><span class="line">-e MYSQL_DATABASE&#x3D;wordpress \</span><br><span class="line">-v &#x2F;Users&#x2F;yuminkuu&#x2F;Desktop&#x2F;wordpress_db:&#x2F;var&#x2F;lib&#x2F;mysql \</span><br><span class="line">mariadb</span><br></pre></td></tr></table></figure>
-
-<p>생성한 path로 볼륨을 설정하여 만들어주니 에러없이 잘 작동하였다.</p>
-<p>위와 같은 방식으로 wordpress 컨테이너는 아래와 같이 생성하였다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># docker run -d \</span><br><span class="line">&gt; -e WORDPRESS_DB_PASSWORD&#x3D;password \</span><br><span class="line">&gt; --name wordpress_volume \</span><br><span class="line">&gt; --link wordpressdb_volume:mariadb \</span><br><span class="line">&gt; -p 80 \</span><br><span class="line">&gt; wordpress</span><br></pre></td></tr></table></figure>
-
-<p>이렇게 호스트와 볼륨을 공유하는 방식으로 생성된 컨테이너는 컨테이너를 지워도 해당 폴더의 데이터들이 그대로 남아있게 된다. </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-&gt; wordpress_db ls</span><br><span class="line">aria_log.00000001  ib_buffer_pool     ibdata1            multi-master.info  performance_schema</span><br><span class="line">aria_log_control   ib_logfile0        ibtmp1             mysql              wordpress</span><br></pre></td></tr></table></figure>
-
-<p>ls 명령어로 확인하였을때 컨테이너의 파일이 복사되어 있는것을 확인 할 수 있다.</p>
-<p>하지만 컨테이너를 지우고 다시 생성하면서 같은 폴더를 볼륨으로 생성하면, 파일이 덮어지는것 같으니 조심하자!</p>
+<ul>
+<li><p>/var/log/nginx</p>
+<p>엔진엑스의 로그가 저장되는 디렉터리이다. access.log 파일과 error.log파일이 있다. 엔진엑스 설정을 통해 debug 모듈을 활설화 했다면 디버그 정보도 오류 로그 파일에 기록된다.</p>
+</li>
+</ul>
+<h3 id="엔진엑스-명령어"><a href="#엔진엑스-명령어" class="headerlink" title="엔진엑스 명령어"></a>엔진엑스 명령어</h3><ul>
+<li><p>nginx -T</p>
+<p>위의 설정 파일을 시험하고 결과를 화면에 보여줌. </p>
+</li>
+<li><p>nginx -s reload</p>
+<p>설정에 문제가 없다면 엔진엑스가 변경된 설정을 읽어드리도록 reload</p>
+<p>해당 명령어를 통해서는 패킷 손실 없이 설정을 리로드 할 수 있다.(무중단 설정 리로드)</p>
+</li>
+<li><p>nginx -s signal</p>
+<p>s 매개변수는 지정된 신호(stop, quit, reload, reopen)를 엔진엑스 마스터 프로세스에 전송. </p>
+<ul>
+<li>stop은 엔진엑스 프로세스가 즉시 동작을 멈춤.</li>
+<li>quit은 현재 진행 중인 요청을 모두 처리한 뒤 엔진엑스 프로세스를 종료</li>
+<li>reload는 엔진엑스가 설정을 다시 읽어드리게 함.</li>
+<li>reopen은 지정된 로그 파일을 다시 열도록 명령.</li>
+</ul>
+</li>
+</ul>
 
         </div>
         
@@ -242,7 +275,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="https://yuminee.github.io/2021/02/10/Docker/docker6/">https://yuminee.github.io/2021/02/10/Docker/docker6/</a></span>
+                        <span><a href="https://yuminee.github.io/2022/03/01/nginx/nginx-crush01/">https://yuminee.github.io/2022/03/01/nginx/nginx-crush01/</a></span>
                     </p>
                 
                 
@@ -285,9 +318,11 @@
                 <span class="tag">
                     
                     
-                        <a href="/tags/docker/"># docker</a>
+                        <a href="/tags/nignx/"># nignx</a>
                     
-                        <a href="/tags/%EB%8F%84%EC%BB%A4/"># 도커</a>
+                        <a href="/tags/Nginx/"># Nginx</a>
+                    
+                        <a href="/tags/%EC%97%94%EC%A7%84%EC%97%91%EC%8A%A4/"># 엔진엑스</a>
                     
                         
                 </span>
@@ -301,10 +336,8 @@
         
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2021/02/11/Docker/docker7/">도커 호스트 볼륨 다른 컨테이너에 덮어쓰기</a>
             
-            
-            <a class="next" rel="next" href="/2021/02/09/Docker/docker5/">Apple Sillicon/M1 Mysql error, Wordpress-mariadb 연결</a>
+            <a class="next" rel="next" href="/2021/10/01/K8s/k8s_%20presentation/">Kubernetes presentation</a>
             
         </section>
 
