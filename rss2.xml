@@ -189,34 +189,6 @@
     </item>
     
     <item>
-      <title>Apple Sillicon/M1 Mysql error, Wordpress-mariadb 연결</title>
-      <link>https://yuminee.github.io/2021/02/09/Docker/docker5/</link>
-      <guid>https://yuminee.github.io/2021/02/09/Docker/docker5/</guid>
-      <pubDate>Tue, 09 Feb 2021 06:55:16 GMT</pubDate>
-      
-        
-        
-      <description>&lt;h1 id=&quot;Apple-Sillicon-M1-Mysql-error-Wordpress-mariadb-연결&quot;&gt;&lt;a href=&quot;#Apple-Sillicon-M1-Mysql-error-Wordpress-mariadb-연결&quot; class=&quot;headerlink&quot;</description>
-        
-      
-      
-      
-      <content:encoded><![CDATA[<h1 id="Apple-Sillicon-M1-Mysql-error-Wordpress-mariadb-연결"><a href="#Apple-Sillicon-M1-Mysql-error-Wordpress-mariadb-연결" class="headerlink" title="Apple Sillicon/M1 Mysql error, Wordpress-mariadb 연결"></a>Apple Sillicon/M1 Mysql error, Wordpress-mariadb 연결</h1><p>도커를 학습하면서 mysql 컨테이너를 다운받아 워드 프레스에 연결하려는데, 다음과 같은 에러가 났다.</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># docker run -d \</span><br><span class="line">--name wordpressdb \</span><br><span class="line">-e MYSQL_ROOT_PASSWORD&#x3D;password \</span><br><span class="line">-e MYSQL_DATABASE&#x3D;wordpress \</span><br><span class="line">mysql:5.7</span><br></pre></td></tr></table></figure><p>라고 명령어를 쳤고,</p><p>받은 에러는</p><p><strong>Unable to find image ‘mysql:latest’ locally<br>latest: Pulling from library/mysql<br>docker: no matching manifest for linux/arm64/v8 in the manifest list entries.<br>See ‘docker run –help’.</strong></p><p>즉, linux/arm64/v8 이 manifest 에 없다 뭐 그런 이야기인거 같은데 애플 실리콘 m1칩을 쓰면서 여러가지 산전수전을 많이 겪어서 stackoverflow에서 여러가지를 찾다가 찾는글이다.</p><p><a href="https://stackoverflow.com/questions/65456814/docker-apple-silicon-m1-preview-mysql-no-matching-manifest-for-linux-arm64-v8">https://stackoverflow.com/questions/65456814/docker-apple-silicon-m1-preview-mysql-no-matching-manifest-for-linux-arm64-v8</a></p><p>어찌되었든 결론적으로 mysql 대신에 마리아db를 쓰라는건데,</p><p><a href="https://docs.docker.com/docker-for-mac/apple-m1/">https://docs.docker.com/docker-for-mac/apple-m1/</a></p><p>M1칩에 관한 docker docs에 보면 위와 같은 이슈가 있으니, mysql 대신에 mariadb이미지를 쓰라고 되어있다. </p><blockquote><p>Not all images are available for ARM64. You can add <code>--platform linux/amd64</code> to run an Intel image under emulation.</p><p>In particular, the <a href="https://hub.docker.com/_/mysql?tab=tags&page=1&ordering=last_updated">mysql</a> image is not available for ARM64. You can work around this issue by using a <a href="https://hub.docker.com/_/mariadb?tab=tags&page=1&ordering=last_updated">mariadb</a> image.</p></blockquote><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># docker run -d \</span><br><span class="line">name wordpressdb \</span><br><span class="line">-e MYSQL_ROOT_PASSWORD&#x3D;password \</span><br><span class="line">-e MYSQL_DATABASE&#x3D;wordpress \</span><br><span class="line">mariadb</span><br></pre></td></tr></table></figure><p>위의 명령어로 mariadb를 다운받고 실행시켜 준다.</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># docker run -d \</span><br><span class="line">-e WORDPRESS_DB_PASSWORD&#x3D;password \</span><br><span class="line">--name wordpress \</span><br><span class="line">--link wordpressdb:mysql \</span><br><span class="line">-p 80 \</span><br><span class="line">wordpress</span><br></pre></td></tr></table></figure><p>위의 명령어로 wordpress를 다운받고 실행시켜 준다.</p><p>그 다음, docker ps 명령어로 확인해보면,</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># docker ps</span><br><span class="line">CONTAINER ID   IMAGE       COMMAND                  CREATED          STATUS          PORTS                   NAMES</span><br><span class="line">65eb2de5ed25   wordpress   &quot;docker-entrypoint.s…&quot;   12 seconds ago   Up 10 seconds   0.0.0.0:49157-&gt;80&#x2F;tcp   wordpress</span><br><span class="line">0660deed1975   mariadb     &quot;docker-entrypoint.s…&quot;   29 seconds ago   Up 28 seconds   3306&#x2F;tcp                wordpressdb</span><br></pre></td></tr></table></figure><p>위의 결과를 보면 PORTS에서 0.0.0.0:49157 -&gt; 80으로 호스트의 port 49157로 접근을 하면, 80으로 포트포워딩을 해준다고 나와있다. </p><p>확인해 보기 위해서 위의 주소로 들어가면</p><p>![스크린샷 2021-02-10 오전 2.46.10](/Users/yuminkuu/Desktop/스크린샷 2021-02-10 오전 2.46.10.png)</p><p>이렇게 워드 프레스 초기 설정화면이 뜨는것을 확인 할 수 있다.</p>]]></content:encoded>
-      
-      
-      <category domain="https://yuminee.github.io/categories/Docker/">Docker</category>
-      
-      
-      <category domain="https://yuminee.github.io/tags/docker/">docker</category>
-      
-      <category domain="https://yuminee.github.io/tags/%EB%8F%84%EC%BB%A4/">도커</category>
-      
-      
-      <comments>https://yuminee.github.io/2021/02/09/Docker/docker5/#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
       <title>외부에서 도커 컨테이너 접근하기</title>
       <link>https://yuminee.github.io/2021/02/09/Docker/docker4/</link>
       <guid>https://yuminee.github.io/2021/02/09/Docker/docker4/</guid>
@@ -241,6 +213,34 @@
       
       
       <comments>https://yuminee.github.io/2021/02/09/Docker/docker4/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>Apple Sillicon/M1 Mysql error, Wordpress-mariadb 연결</title>
+      <link>https://yuminee.github.io/2021/02/09/Docker/docker5/</link>
+      <guid>https://yuminee.github.io/2021/02/09/Docker/docker5/</guid>
+      <pubDate>Tue, 09 Feb 2021 06:55:16 GMT</pubDate>
+      
+        
+        
+      <description>&lt;h1 id=&quot;Apple-Sillicon-M1-Mysql-error-Wordpress-mariadb-연결&quot;&gt;&lt;a href=&quot;#Apple-Sillicon-M1-Mysql-error-Wordpress-mariadb-연결&quot; class=&quot;headerlink&quot;</description>
+        
+      
+      
+      
+      <content:encoded><![CDATA[<h1 id="Apple-Sillicon-M1-Mysql-error-Wordpress-mariadb-연결"><a href="#Apple-Sillicon-M1-Mysql-error-Wordpress-mariadb-연결" class="headerlink" title="Apple Sillicon/M1 Mysql error, Wordpress-mariadb 연결"></a>Apple Sillicon/M1 Mysql error, Wordpress-mariadb 연결</h1><p>도커를 학습하면서 mysql 컨테이너를 다운받아 워드 프레스에 연결하려는데, 다음과 같은 에러가 났다.</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># docker run -d \</span><br><span class="line">--name wordpressdb \</span><br><span class="line">-e MYSQL_ROOT_PASSWORD&#x3D;password \</span><br><span class="line">-e MYSQL_DATABASE&#x3D;wordpress \</span><br><span class="line">mysql:5.7</span><br></pre></td></tr></table></figure><p>라고 명령어를 쳤고,</p><p>받은 에러는</p><p><strong>Unable to find image ‘mysql:latest’ locally<br>latest: Pulling from library/mysql<br>docker: no matching manifest for linux/arm64/v8 in the manifest list entries.<br>See ‘docker run –help’.</strong></p><p>즉, linux/arm64/v8 이 manifest 에 없다 뭐 그런 이야기인거 같은데 애플 실리콘 m1칩을 쓰면서 여러가지 산전수전을 많이 겪어서 stackoverflow에서 여러가지를 찾다가 찾는글이다.</p><p><a href="https://stackoverflow.com/questions/65456814/docker-apple-silicon-m1-preview-mysql-no-matching-manifest-for-linux-arm64-v8">https://stackoverflow.com/questions/65456814/docker-apple-silicon-m1-preview-mysql-no-matching-manifest-for-linux-arm64-v8</a></p><p>어찌되었든 결론적으로 mysql 대신에 마리아db를 쓰라는건데,</p><p><a href="https://docs.docker.com/docker-for-mac/apple-m1/">https://docs.docker.com/docker-for-mac/apple-m1/</a></p><p>M1칩에 관한 docker docs에 보면 위와 같은 이슈가 있으니, mysql 대신에 mariadb이미지를 쓰라고 되어있다. </p><blockquote><p>Not all images are available for ARM64. You can add <code>--platform linux/amd64</code> to run an Intel image under emulation.</p><p>In particular, the <a href="https://hub.docker.com/_/mysql?tab=tags&page=1&ordering=last_updated">mysql</a> image is not available for ARM64. You can work around this issue by using a <a href="https://hub.docker.com/_/mariadb?tab=tags&page=1&ordering=last_updated">mariadb</a> image.</p></blockquote><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># docker run -d \</span><br><span class="line">name wordpressdb \</span><br><span class="line">-e MYSQL_ROOT_PASSWORD&#x3D;password \</span><br><span class="line">-e MYSQL_DATABASE&#x3D;wordpress \</span><br><span class="line">mariadb</span><br></pre></td></tr></table></figure><p>위의 명령어로 mariadb를 다운받고 실행시켜 준다.</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># docker run -d \</span><br><span class="line">-e WORDPRESS_DB_PASSWORD&#x3D;password \</span><br><span class="line">--name wordpress \</span><br><span class="line">--link wordpressdb:mysql \</span><br><span class="line">-p 80 \</span><br><span class="line">wordpress</span><br></pre></td></tr></table></figure><p>위의 명령어로 wordpress를 다운받고 실행시켜 준다.</p><p>그 다음, docker ps 명령어로 확인해보면,</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># docker ps</span><br><span class="line">CONTAINER ID   IMAGE       COMMAND                  CREATED          STATUS          PORTS                   NAMES</span><br><span class="line">65eb2de5ed25   wordpress   &quot;docker-entrypoint.s…&quot;   12 seconds ago   Up 10 seconds   0.0.0.0:49157-&gt;80&#x2F;tcp   wordpress</span><br><span class="line">0660deed1975   mariadb     &quot;docker-entrypoint.s…&quot;   29 seconds ago   Up 28 seconds   3306&#x2F;tcp                wordpressdb</span><br></pre></td></tr></table></figure><p>위의 결과를 보면 PORTS에서 0.0.0.0:49157 -&gt; 80으로 호스트의 port 49157로 접근을 하면, 80으로 포트포워딩을 해준다고 나와있다. </p><p>확인해 보기 위해서 위의 주소로 들어가면</p><p>![스크린샷 2021-02-10 오전 2.46.10](/Users/yuminkuu/Desktop/스크린샷 2021-02-10 오전 2.46.10.png)</p><p>이렇게 워드 프레스 초기 설정화면이 뜨는것을 확인 할 수 있다.</p>]]></content:encoded>
+      
+      
+      <category domain="https://yuminee.github.io/categories/Docker/">Docker</category>
+      
+      
+      <category domain="https://yuminee.github.io/tags/docker/">docker</category>
+      
+      <category domain="https://yuminee.github.io/tags/%EB%8F%84%EC%BB%A4/">도커</category>
+      
+      
+      <comments>https://yuminee.github.io/2021/02/09/Docker/docker5/#disqus_thread</comments>
       
     </item>
     
