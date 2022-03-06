@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="youmin park">
+
+
+    <meta name="subtitle" content="개발 일지">
+
+
+
+
+<title>UFO Project 2 - Hyperledger Fabric generate implementation | yuminkuu</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/rss2.xml" title="yuminkuu" type="application/rss+xml">
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yumin&#39;s Techblog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yumin&#39;s Techblog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">UFO Project 2 - Hyperledger Fabric generate implementation</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">youmin park</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 27, 2020&nbsp;&nbsp;19:36:57</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/hyperledger-fabric/">hyperledger fabric</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>지난 포스트에서는 raft algorithom에 대해 간단히 공부를 했으니 이제 본격적으로 구현을 시작해 봅니다.</p>
+<h3 id="개발-환경"><a href="#개발-환경" class="headerlink" title="개발 환경"></a>개발 환경</h3><ul>
+<li><p>ubuntu </p>
+</li>
+<li><p>Docker &amp; Docker Compose<br>Fabric Network 구동을 위한 컨테이너</p>
+</li>
+<li><p>chain code : node js</p>
+<p><img src="https://user-images.githubusercontent.com/33755241/100456009-05637880-3103-11eb-9910-1dcbdbc7a974.png" alt="image"></p>
+<p>지금 개발할려는 raft 기반의 Hyperledger Fabric Network는 위의 그림과 같다.</p>
+<br>
+
+<br>
+
+<h3 id="Generate"><a href="#Generate" class="headerlink" title="Generate"></a>Generate</h3><p>hyperledfer fabric network를 구축할때 가장 먼저 하는것이 generate 이다.</p>
+<p>generate을 하기 위해 나는</p>
+<ul>
+<li>ccp-generate.sh</li>
+<li>ccp-template.josn</li>
+<li>ccp-template.yaml</li>
+<li>configtx.yaml : 네트워크의 channel과 genesis block을 만들고 anchor peer를 설정한다. 파일 이름에서 유츄할 수 있듯이 네트워크 전체의 설정 내용을 담고 있다.</li>
+<li>cryto-config.yaml : cryptogen이 이 파일을 사용한다. 이 파일을 통해서 organization과 그 구성원들에게 각각 certificate를 발급한다. 그래서 각각의 organization들이 독자적인 CA를 가지고 있는 것처럼 보이게 할 수 있다.</li>
+<li>connection - customer.json</li>
+<li>connection-sales.yaml</li>
+<li>connection - sales.json</li>
+<li>connection-sales.yaml</li>
+</ul>
+<p>파일들을 만들어 줄 것이다. </p>
+<p>맨 처음에 네트워크를 구성할때에는 connection.json파일 하나로 모든 정보를 담았었는데, 하이퍼레저  raft의 파일구조를 참고하여, 팀원들과 이야기를 해본 결과 저렇게 조직별로 나누기로 하였다.</p>
+</li>
+</ul>
+<h4 id="byfn-sh-generate-를-실행하면"><a href="#byfn-sh-generate-를-실행하면" class="headerlink" title="./byfn.sh generate 를 실행하면"></a>./byfn.sh generate 를 실행하면</h4><ul>
+<li><p>generateCerts</p>
+</li>
+<li><p>replacePrivateKey</p>
+</li>
+<li><p>generateChannelArtifacts</p>
+<p>이렇게 세 가지의 함수를 실행한다.</p>
+<br>
+
+<br>
+
+<h4 id="1-genetateCerts"><a href="#1-genetateCerts" class="headerlink" title="1. genetateCerts"></a>1. genetateCerts</h4> <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">function generateCerts() &#123;</span><br><span class="line">  which cryptogen</span><br><span class="line">  if [ &quot;$?&quot; -ne 0 ]; then</span><br><span class="line">    echo &quot;cryptogen tool not found. exiting&quot;</span><br><span class="line">    exit 1</span><br><span class="line">  fi</span><br><span class="line">  echo</span><br><span class="line">  echo &quot;##########################################################&quot;</span><br><span class="line">  echo &quot;##### Generate certificates using cryptogen tool #########&quot;</span><br><span class="line">  echo &quot;##########################################################&quot;</span><br><span class="line"></span><br><span class="line">  if [ -d &quot;crypto-config&quot; ]; then</span><br><span class="line">    rm -Rf crypto-config</span><br><span class="line">  fi</span><br><span class="line">  set -x</span><br><span class="line">  cryptogen generate --config=./crypto-config.yaml</span><br><span class="line">  res=$?</span><br><span class="line">  set +x</span><br><span class="line">  if [ $res -ne 0 ]; then</span><br><span class="line">    echo &quot;Failed to generate certificates...&quot;</span><br><span class="line">    exit 1</span><br><span class="line">  fi</span><br><span class="line">  echo</span><br><span class="line">  echo &quot;Generate CCP files for Sales and Customer&quot;</span><br><span class="line">  ./ccp-generate.sh</span><br><span class="line"></span><br><span class="line">  mv crypto-config/peerOrganizations/sales.ufo.com/ca/*_sk crypto-config/peerOrganizations/sales.ufo.com/ca/ca.sales.ufo.com_sk</span><br><span class="line">  mv crypto-config/peerOrganizations/customer.ufo.com/ca/*_sk crypto-config/peerOrganizations/customer.ufo.com/ca/ca.customer.ufo.com_sk</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+ <br>
+ <br>
+
+<h5 id="crypto-config-yaml"><a href="#crypto-config-yaml" class="headerlink" title="- crypto-config.yaml"></a>- crypto-config.yaml</h5><ul>
+<li><p>OrderOrgs</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">OrderOrgs:</span></span><br><span class="line">	<span class="bullet">-</span> <span class="attr">Name:</span> <span class="string">Orderer</span></span><br><span class="line">	  <span class="attr">Domain :</span> <span class="string">ufo.com</span></span><br><span class="line">	  <span class="attr">EnableNodeOUs :</span> <span class="literal">true</span></span><br><span class="line">	  </span><br><span class="line">	  </span><br><span class="line">	  <span class="attr">Specs:</span></span><br><span class="line">	  	<span class="bullet">-</span> <span class="attr">Hostname :</span> <span class="string">orderer</span></span><br><span class="line">	  	<span class="bullet">-</span> <span class="attr">Hostname :</span> <span class="string">orderer2</span></span><br><span class="line">	  	<span class="bullet">-</span> <span class="attr">Hostname :</span> <span class="string">orderer3</span></span><br><span class="line">	  	<span class="bullet">-</span> <span class="attr">Hostname :</span> <span class="string">orderer4</span></span><br><span class="line">	  	<span class="bullet">-</span> <span class="attr">Hostname :</span> <span class="string">orderer5</span>  <span class="comment">#raft를 구현 할 것이므로 5개.</span></span><br></pre></td></tr></table></figure>
+<br>
+<br>
+</li>
+<li><p>PeerOrgs</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">PeerOrgs:</span></span><br><span class="line">	<span class="bullet">-</span> <span class="attr">Name :</span> <span class="string">Sales</span></span><br><span class="line">	  <span class="attr">Domain :</span> <span class="string">sales.ufo.com</span></span><br><span class="line">	  <span class="attr">EnableNodeOUs :</span> <span class="literal">true</span></span><br><span class="line">	 </span><br><span class="line">	  <span class="attr">Template :</span></span><br><span class="line">	 	 <span class="attr">Count :</span> <span class="number">2</span> <span class="comment">#조직의 peer node의 수</span></span><br><span class="line">	 </span><br><span class="line">	  <span class="attr">Users :</span> </span><br><span class="line">	 	 <span class="attr">Count :</span> <span class="number">1</span> <span class="comment">#admin의 수</span></span><br><span class="line">	 	</span><br><span class="line">	 <span class="bullet">-</span> <span class="attr">Name :</span> <span class="string">Customer</span></span><br><span class="line">	   <span class="attr">Domain :</span> <span class="string">customer.ufo.com</span></span><br><span class="line">	   <span class="attr">EnableNodeOUs :</span> <span class="literal">true</span></span><br><span class="line">	   </span><br><span class="line">	   <span class="attr">Template :</span></span><br><span class="line">	 	 <span class="attr">Count :</span> <span class="number">2</span> <span class="comment">#조직의 peer node의 수</span></span><br><span class="line">	 </span><br><span class="line">	  <span class="attr">Users :</span> </span><br><span class="line">	 	 <span class="attr">Count :</span> <span class="number">1</span> <span class="comment">#admin의 수	</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Sales 와 Customer 2개의 조직에 각각 2개의 peer node , 1개의 admin이 있는 구조이다.</p>
+<br>
+
+<br>
+
+</li>
+</ul>
+<h5 id="ccp-generate-sh"><a href="#ccp-generate-sh" class="headerlink" title="- ccp-generate.sh"></a>- ccp-generate.sh</h5>   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">function one_line_pem &#123;</span><br><span class="line">    echo &quot;`awk &#x27;NF &#123;sub(/\\n/, &quot;&quot;); printf &quot;%s\\\\\\\n&quot;,$0;&#125;&#x27; $1`&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function json_ccp &#123;</span><br><span class="line">    local PP=$(one_line_pem $6)</span><br><span class="line">    local CP=$(one_line_pem $7)</span><br><span class="line">    sed -e &quot;s/\$&#123;SORG&#125;/$1/&quot; \</span><br><span class="line">        -e &quot;s/\$&#123;LORG&#125;/$2/&quot; \</span><br><span class="line">        -e &quot;s/\$&#123;P0PORT&#125;/$3/&quot; \</span><br><span class="line">        -e &quot;s/\$&#123;P1PORT&#125;/$4/&quot; \</span><br><span class="line">        -e &quot;s/\$&#123;CAPORT&#125;/$5/&quot; \</span><br><span class="line">        -e &quot;s#\$&#123;PEERPEM&#125;#$PP#&quot; \</span><br><span class="line">        -e &quot;s#\$&#123;CAPEM&#125;#$CP#&quot; \</span><br><span class="line">        ccp-template.json </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function yaml_ccp &#123;</span><br><span class="line">    local PP=$(one_line_pem $6)</span><br><span class="line">    local CP=$(one_line_pem $7)</span><br><span class="line">    sed -e &quot;s/\$&#123;SORG&#125;/$1/&quot; \</span><br><span class="line">        -e &quot;s/\$&#123;LORG&#125;/$2/&quot; \</span><br><span class="line">        -e &quot;s/\$&#123;P0PORT&#125;/$3/&quot; \</span><br><span class="line">        -e &quot;s/\$&#123;P1PORT&#125;/$4/&quot; \</span><br><span class="line">        -e &quot;s/\$&#123;CAPORT&#125;/$5/&quot; \</span><br><span class="line">        -e &quot;s#\$&#123;PEERPEM&#125;#$PP#&quot; \</span><br><span class="line">        -e &quot;s#\$&#123;CAPEM&#125;#$CP#&quot; \</span><br><span class="line">        ccp-template.yaml | sed -e $&#x27;s/\\\\n/\\\n        /g&#x27;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SORG=sales</span><br><span class="line">LORG=Sales </span><br><span class="line">P0PORT=7051</span><br><span class="line">P1PORT=8051</span><br><span class="line">CAPORT=7054</span><br><span class="line">PEERPEM=crypto-config/peerOrganizations/sales.ufo.com/tlsca/tlsca.sales.ufo.com-cert.pem</span><br><span class="line">CAPEM=crypto-config/peerOrganizations/sales.ufo.com/ca/ca.sales.ufo.com-cert.pem</span><br><span class="line"></span><br><span class="line">echo &quot;$(json_ccp $SORG $LORG $P0PORT $P1PORT $CAPORT $PEERPEM $CAPEM)&quot; &gt; connection-sales.json</span><br><span class="line">echo &quot;$(yaml_ccp $SORG $LORG $P0PORT $P1PORT $CAPORT $PEERPEM $CAPEM)&quot; &gt; connection-sales.yaml</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SORG=customer</span><br><span class="line">LORG=Customer</span><br><span class="line">P0PORT=9051</span><br><span class="line">P1PORT=10051</span><br><span class="line">CAPORT=8054</span><br><span class="line">PEERPEM=crypto-config/peerOrganizations/customer.ufo.com/tlsca/tlsca.customer.ufo.com-cert.pem</span><br><span class="line">CAPEM=crypto-config/peerOrganizations/customer.ufo.com/ca/ca.customer.ufo.com-cert.pem</span><br><span class="line"></span><br><span class="line">echo &quot;$(json_ccp $SORG $LORG $P0PORT $P1PORT $CAPORT $PEERPEM $CAPEM)&quot; &gt; connection-customer.json</span><br><span class="line">echo &quot;$(yaml_ccp $SORG $LORG $P0PORT $P1PORT $CAPORT $PEERPEM $CAPEM)&quot; &gt; connection-customer.yaml</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>SORG, LORG ,P0PORT, P1PORT, CAPORT, PEERPEM, CAPEM설정해주고 그 변수들을 ccp-template.json, ccp-template.yaml 형식으로 connection-sales.json, connection-sales.yaml, connection-customer.json, connection-customer.yaml에 보내준다.</p>
+<br>
+
+<br>
+
+</li>
+</ul>
+<h5 id="ccp-template-json"><a href="#ccp-template-json" class="headerlink" title="- ccp-template.json"></a>- ccp-template.json</h5><pre><code> <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;ufo-network-$&#123;LORG&#125;Org&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;1.0.0&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;client&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;organization&quot;</span>: <span class="string">&quot;$&#123;LORG&#125;&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;connection&quot;</span>: &#123;</span><br><span class="line">            <span class="attr">&quot;timeout&quot;</span>: &#123;</span><br><span class="line">                <span class="attr">&quot;peer&quot;</span>: &#123;</span><br><span class="line">                    <span class="attr">&quot;endorser&quot;</span>: <span class="string">&quot;300&quot;</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">&quot;organizations&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;$&#123;ORG&#125;&quot;</span>: &#123;</span><br><span class="line">            <span class="attr">&quot;mspid&quot;</span>: <span class="string">&quot;$&#123;LORG&#125;MSP&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;peers&quot;</span>: [</span><br><span class="line">                <span class="string">&quot;peer0.$&#123;SORG&#125;.ufo.com&quot;</span>,</span><br><span class="line">                <span class="string">&quot;peer1.$&#123;SORG&#125;.ufo.com&quot;</span></span><br><span class="line">            ],</span><br><span class="line">            <span class="attr">&quot;certificateAuthorities&quot;</span>: [</span><br><span class="line">                <span class="string">&quot;ca.$&#123;SORG&#125;.ufo.com&quot;</span></span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">&quot;peers&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;peer0.$&#123;SORG&#125;.ufo.com&quot;</span>: &#123;</span><br><span class="line">            <span class="attr">&quot;url&quot;</span>: <span class="string">&quot;grpcs://localhost:$&#123;P0PORT&#125;&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;tlsCACerts&quot;</span>: &#123;</span><br><span class="line">                <span class="attr">&quot;pem&quot;</span>: <span class="string">&quot;$&#123;PEERPEM&#125;&quot;</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">&quot;grpcOptions&quot;</span>: &#123;</span><br><span class="line">                <span class="attr">&quot;ssl-target-name-override&quot;</span>: <span class="string">&quot;peer0.$&#123;SORG&#125;.ufo.com&quot;</span>,</span><br><span class="line">                <span class="attr">&quot;hostnameOverride&quot;</span>: <span class="string">&quot;peer0.$&#123;SORG&#125;.ufo.com&quot;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">&quot;peer1.$&#123;SORG&#125;.ufo.com&quot;</span>: &#123;</span><br><span class="line">            <span class="attr">&quot;url&quot;</span>: <span class="string">&quot;grpcs://localhost:$&#123;P1PORT&#125;&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;tlsCACerts&quot;</span>: &#123;</span><br><span class="line">                <span class="attr">&quot;pem&quot;</span>: <span class="string">&quot;$&#123;PEERPEM&#125;&quot;</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">&quot;grpcOptions&quot;</span>: &#123;</span><br><span class="line">                <span class="attr">&quot;ssl-target-name-override&quot;</span>: <span class="string">&quot;peer1.$&#123;SORG&#125;.ufo.com&quot;</span>,</span><br><span class="line">                <span class="attr">&quot;hostnameOverride&quot;</span>: <span class="string">&quot;peer1.$&#123;SORG&#125;.ufo.com&quot;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">&quot;certificateAuthorities&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;ca.$&#123;SORG&#125;.ufo.com&quot;</span>: &#123;</span><br><span class="line">            <span class="attr">&quot;url&quot;</span>: <span class="string">&quot;https://localhost:$&#123;CAPORT&#125;&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;caName&quot;</span>: <span class="string">&quot;ca-$&#123;SORG&#125;&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;tlsCACerts&quot;</span>: &#123;</span><br><span class="line">                <span class="attr">&quot;pem&quot;</span>: <span class="string">&quot;$&#123;CAPEM&#125;&quot;</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">&quot;httpOptions&quot;</span>: &#123;</span><br><span class="line">                <span class="attr">&quot;verify&quot;</span>: <span class="literal">false</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></code></pre>
+<h5 id="ccp-template-yaml"><a href="#ccp-template-yaml" class="headerlink" title="- ccp-template.yaml"></a>- ccp-template.yaml</h5><pre><code> <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">first-network-$&#123;LORG&#125;Org</span></span><br><span class="line"><span class="attr">version:</span> <span class="number">1.0</span><span class="number">.0</span></span><br><span class="line"><span class="attr">client:</span></span><br><span class="line">  <span class="attr">organization:</span> <span class="string">$&#123;LORG&#125;Org</span></span><br><span class="line">  <span class="attr">connection:</span></span><br><span class="line">    <span class="attr">timeout:</span></span><br><span class="line">      <span class="attr">peer:</span></span><br><span class="line">        <span class="attr">endorser:</span> <span class="string">&#x27;300&#x27;</span></span><br><span class="line"><span class="attr">organizations:</span></span><br><span class="line">  <span class="string">Org$&#123;SORG&#125;:</span></span><br><span class="line">    <span class="attr">mspid:</span> <span class="string">$&#123;LORG&#125;MSP</span></span><br><span class="line">    <span class="attr">peers:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">peer0.$&#123;SORG&#125;.ufo.com</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">peer1.$&#123;SORG&#125;.ufo.com</span></span><br><span class="line">    <span class="attr">certificateAuthorities:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ca.$&#123;SORG&#125;.ufo.com</span></span><br><span class="line"><span class="attr">peers:</span></span><br><span class="line">  <span class="string">peer0.$&#123;SORG&#125;.ufo.com:</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">grpcs://localhost:$&#123;P0PORT&#125;</span></span><br><span class="line">    <span class="attr">tlsCACerts:</span></span><br><span class="line">      <span class="attr">pem:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">$&#123;PEERPEM&#125;</span></span><br><span class="line">    <span class="attr">grpcOptions:</span></span><br><span class="line">      <span class="attr">ssl-target-name-override:</span> <span class="string">peer0.$&#123;SORG&#125;.ufo.com</span></span><br><span class="line">      <span class="attr">hostnameOverride:</span> <span class="string">peer0.$&#123;SORG&#125;.ufo.com</span></span><br><span class="line">  <span class="string">peer1.$&#123;SORG&#125;.ufo.com:</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">grpcs://localhost:$&#123;P1PORT&#125;</span></span><br><span class="line">    <span class="attr">tlsCACerts:</span></span><br><span class="line">      <span class="attr">pem:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">$&#123;PEERPEM&#125;</span></span><br><span class="line">    <span class="attr">grpcOptions:</span></span><br><span class="line">      <span class="attr">ssl-target-name-override:</span> <span class="string">peer1.$&#123;SORG&#125;.ufo.com</span></span><br><span class="line">      <span class="attr">hostnameOverride:</span> <span class="string">peer1.$&#123;SORG&#125;.ufo.com</span></span><br><span class="line"><span class="attr">certificateAuthorities:</span></span><br><span class="line">  <span class="string">ca.$&#123;SORG&#125;.ufo.com:</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">https://localhost:$&#123;CAPORT&#125;</span></span><br><span class="line">    <span class="attr">caName:</span> <span class="string">ca-$&#123;SORG&#125;</span></span><br><span class="line">    <span class="attr">tlsCACerts:</span></span><br><span class="line">      <span class="attr">pem:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">$&#123;CAPEM&#125;</span></span><br><span class="line">    <span class="attr">httpOptions:</span></span><br><span class="line">      <span class="attr">verify:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure></code></pre>
+  <br>
+  <br>
+
+<p>  <img src="https://user-images.githubusercontent.com/33755241/100534864-09a0aa80-3257-11eb-8e33-f51205efffef.png" alt="image"><br>  그러고 나면, 이렇게 4개의 파일이 생성이 된다.<br>  <img src="https://user-images.githubusercontent.com/33755241/100534990-4c16b700-3258-11eb-939b-3d9c3c9231eb.png" alt="image"><br>  그리고 crypto-config 파일까지 생성</p>
+  <br>
+  <br>
+
+
+
+</li>
+</ul>
+<h4 id="2-replacePrivateKey"><a href="#2-replacePrivateKey" class="headerlink" title="2. replacePrivateKey"></a>2. replacePrivateKey</h4><pre><code> <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">function replacePrivateKey() &#123;</span><br><span class="line"><span class="meta">  #</span><span class="bash"> sed on MacOSX does not support -i flag with a null extension. We will use</span></span><br><span class="line"><span class="meta">  #</span><span class="bash"> <span class="string">&#x27;t&#x27;</span> <span class="keyword">for</span> our back-up<span class="string">&#x27;s extension and delete it at the end of the function</span></span></span><br><span class="line">  ARCH=$(uname -s | grep Darwin)</span><br><span class="line">  if [ &quot;$ARCH&quot; == &quot;Darwin&quot; ]; then</span><br><span class="line">    OPTS=&quot;-it&quot;</span><br><span class="line">  else</span><br><span class="line">    OPTS=&quot;-i&quot;</span><br><span class="line">  fi</span><br><span class="line"></span><br><span class="line"><span class="meta">  #</span><span class="bash"> Copy the template to the file that will be modified to add the private key</span></span><br><span class="line">  cp docker-compose-e2e-template.yaml docker-compose-e2e.yaml</span><br><span class="line"></span><br><span class="line"><span class="meta">  #</span><span class="bash"> The next steps will replace the template<span class="string">&#x27;s contents with the</span></span></span><br><span class="line"><span class="meta">  #</span><span class="bash"> actual values of the private key file names <span class="keyword">for</span> the two CAs.</span></span><br><span class="line">  CURRENT_DIR=$PWD</span><br><span class="line">  cd crypto-config/peerOrganizations/sales.ufo.com/ca/</span><br><span class="line">  PRIV_KEY=$(ls *_sk)</span><br><span class="line">  cd &quot;$CURRENT_DIR&quot;</span><br><span class="line">  sed $OPTS &quot;s/CA1_PRIVATE_KEY/$&#123;PRIV_KEY&#125;/g&quot; docker-compose-e2e.yaml</span><br><span class="line">  cd crypto-config/peerOrganizations/customer.ufo.com/ca/</span><br><span class="line">  PRIV_KEY=$(ls *_sk)</span><br><span class="line">  cd &quot;$CURRENT_DIR&quot;</span><br><span class="line">  sed $OPTS &quot;s/CA2_PRIVATE_KEY/$&#123;PRIV_KEY&#125;/g&quot; docker-compose-e2e.yaml</span><br><span class="line"><span class="meta">  #</span><span class="bash"> If MacOSX, remove the temporary backup of the docker-compose file</span></span><br><span class="line">  if [ &quot;$ARCH&quot; == &quot;Darwin&quot; ]; then</span><br><span class="line">    rm docker-compose-e2e.yaml</span><br><span class="line">  fi</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></code></pre>
+<p>  ​      만들어진 ca의 key값을 docker-compose-e2e.yaml 파일에 복사함.</p>
+  <br>
+
+  <br>
+
+<h4 id="3-generateChannelArtifacts"><a href="#3-generateChannelArtifacts" class="headerlink" title="3. generateChannelArtifacts"></a>3. generateChannelArtifacts</h4>   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">function generateChannelArtifacts() &#123;</span><br><span class="line">  which configtxgen</span><br><span class="line">  if [ &quot;$?&quot; -ne 0 ]; then</span><br><span class="line">    echo &quot;configtxgen tool not found. exiting&quot;</span><br><span class="line">    exit 1</span><br><span class="line">  fi</span><br><span class="line"></span><br><span class="line">  echo &quot;##########################################################&quot;</span><br><span class="line">  echo &quot;#########  Generating Orderer Genesis block ##############&quot;</span><br><span class="line">  echo &quot;##########################################################&quot;</span><br><span class="line"><span class="meta">  #</span><span class="bash"> Note: For some unknown reason (at least <span class="keyword">for</span> now) the block file can<span class="string">&#x27;t be</span></span></span><br><span class="line"><span class="meta">  #</span><span class="bash"> named orderer.genesis.block or the orderer will fail to launch!</span></span><br><span class="line">  echo &quot;CONSENSUS_TYPE=&quot;$CONSENSUS_TYPE</span><br><span class="line">  set -x</span><br><span class="line">  if [ &quot;$CONSENSUS_TYPE&quot; == &quot;solo&quot; ]; then</span><br><span class="line">    configtxgen -profile TwoOrgsOrdererGenesis -channelID $SYS_CHANNEL -outputBlock ./channel-artifacts/genesis.block</span><br><span class="line">  elif [ &quot;$CONSENSUS_TYPE&quot; == &quot;kafka&quot; ]; then</span><br><span class="line">    configtxgen -profile SampleDevModeKafka -channelID $SYS_CHANNEL -outputBlock ./channel-artifacts/genesis.block</span><br><span class="line">  elif [ &quot;$CONSENSUS_TYPE&quot; == &quot;etcdraft&quot; ]; then</span><br><span class="line">    configtxgen -profile SampleMultiNodeEtcdRaft -channelID $SYS_CHANNEL -outputBlock ./channel-artifacts/genesis.block</span><br><span class="line">  else</span><br><span class="line">    set +x</span><br><span class="line">    echo &quot;unrecognized CONSESUS_TYPE=&#x27;$CONSENSUS_TYPE&#x27;. exiting&quot;</span><br><span class="line">    exit 1</span><br><span class="line">  fi</span><br><span class="line">  res=$?</span><br><span class="line">  set +x</span><br><span class="line">  if [ $res -ne 0 ]; then</span><br><span class="line">    echo &quot;Failed to generate orderer genesis block...&quot;</span><br><span class="line">    exit 1</span><br><span class="line">  fi</span><br><span class="line">  echo</span><br><span class="line">  echo &quot;#################################################################&quot;</span><br><span class="line">  echo &quot;### Generating channel configuration transaction &#x27;channel.tx&#x27; ###&quot;</span><br><span class="line">  echo &quot;#################################################################&quot;</span><br><span class="line">  set -x</span><br><span class="line">  configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID $CHANNEL_NAME</span><br><span class="line">  res=$?</span><br><span class="line">  set +x</span><br><span class="line">  if [ $res -ne 0 ]; then</span><br><span class="line">    echo &quot;Failed to generate channel configuration transaction...&quot;</span><br><span class="line">    exit 1</span><br><span class="line">  fi</span><br><span class="line"></span><br><span class="line">  echo</span><br><span class="line">  echo &quot;#################################################################&quot;</span><br><span class="line">  echo &quot;#######    Generating anchor peer update for SalesMSP   ##########&quot;</span><br><span class="line">  echo &quot;#################################################################&quot;</span><br><span class="line">  set -x</span><br><span class="line">  configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/SalesMSPanchors.tx -channelID $CHANNEL_NAME -asOrg SalesMSP</span><br><span class="line">  res=$?</span><br><span class="line">  set +x</span><br><span class="line">  if [ $res -ne 0 ]; then</span><br><span class="line">    echo &quot;Failed to generate anchor peer update for SalesMSP...&quot;</span><br><span class="line">    exit 1</span><br><span class="line">  fi</span><br><span class="line"></span><br><span class="line">  echo</span><br><span class="line">  echo &quot;#################################################################&quot;</span><br><span class="line">  echo &quot;#######    Generating anchor peer update for CustomerMSP   ##########&quot;</span><br><span class="line">  echo &quot;#################################################################&quot;</span><br><span class="line">  set -x</span><br><span class="line">  configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate \</span><br><span class="line">    ./channel-artifacts/CustomerMSPanchors.tx -channelID $CHANNEL_NAME -asOrg CustomerMSP</span><br><span class="line">  res=$?</span><br><span class="line">  set +x</span><br><span class="line">  if [ $res -ne 0 ]; then</span><br><span class="line">    echo &quot;Failed to generate anchor peer update for CustomerMSP...&quot;</span><br><span class="line">    exit 1</span><br><span class="line">  fi</span><br><span class="line">  echo</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>   Channel configuration들을 만드는 부분.</p>
+<p>   configtxgen을 이용하여 Genesis Block을 만들고, genesis block 설정관련은 configtx.yaml파일의 Profiles에 적어두었다.</p>
+   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID $CHANNEL_NAME</span><br></pre></td></tr></table></figure>
+
+<p>   위의 명령어로 channel configuration 파일을 만들고,</p>
+   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate \</span><br><span class="line">    ./channel-artifacts/CustomerMSPanchors.tx -channelID $CHANNEL_NAME -asOrg CustomerMSP</span><br></pre></td></tr></table></figure>
+
+<p>   위의 명령어로 각 조직의 앵커피어들의 정보를 transaction으로 만든다.</p>
+<p>   여기서 만들어진 네 파일들은 모두 channel을 만드는 설정 파일이다. (.block, .tx)</p>
+<p>   각각은 모두 block이거나 transaction들로 channel이 만들어지고 그 channel의 peer들의 ledger에 모두 기록된다.</p>
+
+        </div>
+        
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>youmin park</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://yuminee.github.io/2020/11/27/Hyperledger%20fabric/raft_algorithm2/">https://yuminee.github.io/2020/11/27/Hyperledger%20fabric/raft_algorithm2/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span><strong>재미없는거 못함</strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <div id="disqus_thread"></div>
+<script>
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://yumin-techblog.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%EB%B8%94%EB%A1%9D%EC%B2%B4%EC%9D%B8/"># 블록체인</a>
+                    
+                        <a href="/tags/raft/"># raft</a>
+                    
+                        <a href="/tags/blockchain/"># blockchain</a>
+                    
+                        <a href="/tags/hyperledger-fabric/"># hyperledger fabric</a>
+                    
+                        <a href="/tags/%ED%95%98%EC%9D%B4%ED%8D%BC%EB%A0%88%EC%A0%80-%ED%8C%A8%EB%B8%8C%EB%A6%AD/"># 하이퍼레저 패브릭</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/11/28/kaggle/tweet_disaster_EDA/">kaggle-Real or Not? NLP with Disaster Tweets ②-Basic EDA</a>
+            
+            
+            <a class="next" rel="next" href="/2020/11/26/machine%20learning/lightGBM1/">Light GBM① - 이해하기</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© youmin park | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

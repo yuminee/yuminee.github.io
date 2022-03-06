@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="youmin park">
+
+
+    <meta name="subtitle" content="개발 일지">
+
+
+
+
+<title>데이터와 빅데이터 | yuminkuu</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/rss2.xml" title="yuminkuu" type="application/rss+xml">
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yumin&#39;s Techblog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yumin&#39;s Techblog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">데이터와 빅데이터</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">youmin park</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 23, 2020&nbsp;&nbsp;16:57:36</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/statistics/">statistics</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="데이터-사이언스를-위한-통계학-입문-6일차"><a href="#데이터-사이언스를-위한-통계학-입문-6일차" class="headerlink" title="데이터 사이언스를 위한 통계학 입문_6일차"></a>데이터 사이언스를 위한 통계학 입문_6일차</h1><h3 id="1-데이터란-무엇인가"><a href="#1-데이터란-무엇인가" class="headerlink" title="1. 데이터란 무엇인가?"></a>1. 데이터란 무엇인가?</h3><ul>
+<li><code>구조화</code>된 데이터</li>
+<li>다차원 배열(매트릭스)</li>
+<li>각 열의 형식이 다른 표 or 스프레드시트</li>
+<li>탭이나 텍스트 파일 형식으로 저장(*.txt, *.csv)</li>
+</ul>
+<br>
+
+<h3 id="2-데이터화-Datafication"><a href="#2-데이터화-Datafication" class="headerlink" title="2. 데이터화(Datafication)"></a>2. 데이터화(Datafication)</h3><ul>
+<li>기계가 읽어들일수 있는 모든것을 (숫자, 이미지, 텍스트) 데이터로 변환하는것.</li>
+<li>개인의 활동을 실시간으로 추적해 이를 예측분석이 가능한 수량화된 온라인 데이터로 변환하는 것을 의미(Jose van Dijck, 2014)</li>
+</ul>
+<br>
+
+<h3 id="3-빅데이터란-무엇인가"><a href="#3-빅데이터란-무엇인가" class="headerlink" title="3. 빅데이터란 무엇인가"></a>3. 빅데이터란 무엇인가</h3><ul>
+<li>Volume(양) -  많은 양의 데이터</li>
+<li>Velocity(속도) - 빠르게 생성</li>
+<li>Variety(다양성) - 다양한 형태의 데이터</li>
+</ul>
+<br>
+
+<h3 id="4-빅데이터-활용-사례"><a href="#4-빅데이터-활용-사례" class="headerlink" title="4. 빅데이터 활용 사례"></a>4. 빅데이터 활용 사례</h3><ol>
+<li>아마존의 추천 상품 표시<ol>
+<li>모든 고객들의 <code>구매 내역</code>을 데이터 베이스에 기록</li>
+<li>기록을 분석해 소비자의 <code>소비 취향과 관심사를 파악</code></li>
+<li>고객별로 추천 상품을 표시<br>
+<br></li>
+</ol>
+</li>
+<li>MLB의 머니볼이론 및 데이터 야구<ol>
+<li>머니볼 이론? 경기 데이터를 분석해 <code>데이터를 기반으로 선수들을 배정</code>, 승률을 높인다는 게임 이론</li>
+<li>최하위에 있던 팀을 4년 연속 포스트 시즌에 진출시키고 메이저 리그 <code>최초로 20년승이라는 신기록을 세움</code></li>
+</ol>
+</li>
+</ol>
+</br>
+
+<h3 id="5-요약"><a href="#5-요약" class="headerlink" title="5. 요약"></a>5. 요약</h3><ul>
+<li>데이터</li>
+<li>데이터화</li>
+<li>빅데이터</li>
+<li>빅데이터의 활용</li>
+</ul>
+
+        </div>
+        
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>youmin park</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://yuminee.github.io/2020/11/23/statistics/statistics-201123/">https://yuminee.github.io/2020/11/23/statistics/statistics-201123/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span><strong>재미없는거 못함</strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <div id="disqus_thread"></div>
+<script>
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://yumin-techblog.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%82%AC%EC%9D%B4%EC%96%B8%EC%8A%A4/"># 데이터 사이언스</a>
+                    
+                        <a href="/tags/%ED%86%B5%EA%B3%84/"># 통계</a>
+                    
+                        <a href="/tags/statistics/"># statistics</a>
+                    
+                        <a href="/tags/%EB%B9%85%EB%8D%B0%EC%9D%B4%ED%84%B0/"># 빅데이터</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/11/23/kaggle/tweet_disater/">kaggle-Real or Not? NLP with Disaster Tweets ①</a>
+            
+            
+            <a class="next" rel="next" href="/2020/11/22/statistics/statistics_201122/">데이터의 분산(산포정도)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© youmin park | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
