@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="google-site-verification" content="lY1rV4_T-oasUj0Jdw2Ven1L7u1-sJlSaxVlnrH2qRs" />
+
+    <meta name="author" content="youmin park">
+
+
+    <meta name="subtitle" content="개발 일지">
+
+
+
+
+<title>A tale of performance — ECS, Boto3 &amp; IAM | yuminkuu</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/rss2.xml" title="yuminkuu" type="application/rss+xml">
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yumin&#39;s Techblog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yumin&#39;s Techblog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">A tale of performance — ECS, Boto3 &amp; IAM</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">youmin park</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 6, 2022&nbsp;&nbsp;15:00:01</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/AWS/">AWS</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><a target="_blank" rel="noopener" href="https://engineering.instawork.com/a-tale-of-performance-ecs-boto3-iam-dd22a2624398">https://engineering.instawork.com/a-tale-of-performance-ecs-boto3-iam-dd22a2624398</a></p>
+<p>위의 글을 보고 정리한 내용입니다.</p>
+<h2 id="문제"><a href="#문제" class="headerlink" title="문제"></a>문제</h2><ul>
+<li>몇몇 API들의 퍼포먼스가 좋지 않는것을 발견했는데, 해당 API들이 S3를 콜할때 5000ms이상 걸린다는 사실을 알게됨.</li>
+</ul>
+<h2 id="원인"><a href="#원인" class="headerlink" title="원인"></a>원인</h2><ul>
+<li>IAM을 통해서 S3에 접근하는 권한을 얻는데 시간이 너무 오래 걸림.</li>
+</ul>
+<h2 id="문제-해결을-위해-알아야-할-개념"><a href="#문제-해결을-위해-알아야-할-개념" class="headerlink" title="문제 해결을 위해 알아야 할 개념"></a>문제 해결을 위해 알아야 할 개념</h2><h3 id="AWS-IAM"><a href="#AWS-IAM" class="headerlink" title="AWS IAM?"></a>AWS IAM?</h3><p>위의 문제를 잘 이해하기 위해서는 AWS의 IAM이 어떻게 동작하는지를 알아야 한다. AWS에서는 특정 리소스에 접근할 경우, 해당 수준의 권한이 필요하다. IAM을 통해 액세스를 할 수 있는데, 아래 두가지 방법이 일반적이다.</p>
+<ol>
+<li>IAM user 생성. 코드안에 access key와 access key secret 을 넣어서 사용. 주로 로컬에서 돌릴때 해당 방법을 쓴다.</li>
+<li>IAM role 생성. 돌아가는 서버에 해당 롤을 주는것. 이 방법을 더 추천하는데 그 이유는 보안적으로 관리하기가 쉽기 때문이다(access key와 access key secret를 제공 안해도 되기 때문)</li>
+</ol>
+<h3 id="EC2-Server에-role을-붙일-경우-생기는-일"><a href="#EC2-Server에-role을-붙일-경우-생기는-일" class="headerlink" title="EC2 Server에 role을 붙일 경우 생기는 일."></a>EC2 Server에 role을 붙일 경우 생기는 일.</h3><p>boto3를 이용하여 s3을 사용할때 생기는일</p>
+<ol>
+<li>Boto3 call에 대한 권한이 있는지 알아보기 위해 access key와 access key secret을 확인. 하지만 키를 제공하지 않았으므로 실패</li>
+<li>~/.aws/credentials file 확인. 하지만 해당 파일을 제공하지 않았으므로 실패</li>
+<li>instance metadata service (IMDS)을 사용하여 ec2 metadata endpoint를 콜하므로써 s3의임시 권한을 얻음.</li>
+</ol>
+<h3 id="그러면-왜-느리냐"><a href="#그러면-왜-느리냐" class="headerlink" title="그러면 왜 느리냐?"></a>그러면 왜 느리냐?</h3><p>권한만 있으면 되는건데 왜 그냥 한번으로 해결되지 않는걸까?</p>
+<img width="468" alt="스크린샷 2022-03-07 오전 1 02 44" src="https://user-images.githubusercontent.com/33755241/156931202-60185eb8-90f5-4fb3-8b63-17f428a0acdf.png">
+
+
+
+
+<h2 id="해결"><a href="#해결" class="headerlink" title="해결"></a>해결</h2><h3 id="그래서-뭘-해야함"><a href="#그래서-뭘-해야함" class="headerlink" title="그래서 뭘 해야함?"></a>그래서 뭘 해야함?</h3><ul>
+<li>hop count를 2로 늘린다.</li>
+<li>ecs task role을 이용한다.</li>
+</ul>
+<p>AWS에서 권한을 얻는 우선순위는 아래와 같다.</p>
+<ol>
+<li>command line options</li>
+<li>Environment vairables</li>
+<li>CLI credentials file</li>
+<li>CLI configuration file</li>
+<li>Container Credentials(ECS task role)</li>
+<li>Instance profile credentials</li>
+</ol>
+<h2 id="결론"><a href="#결론" class="headerlink" title="결론"></a>결론</h2><p>AWS에서 서비스에 접근하는 권한이 너무 느리다면(특히 컨테이너 환경에서) 다음 3가지를 고려해서 사용해 보기.</p>
+<ol>
+<li>hot limit을 2이상으로 늘리기</li>
+<li>Boto3의 session사용(요청마다 권한을 얻을 필요 없이 session을 유지하여 사용하는 옵션)</li>
+<li>ECS task role 사용하기</li>
+</ol>
+
+        </div>
+        
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>youmin park</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://yuminee.github.io/2022/03/06/AWS/tale_of_perpormance_ecs_boto3_iam/">https://yuminee.github.io/2022/03/06/AWS/tale_of_perpormance_ecs_boto3_iam/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span><strong>재미없는거 못함</strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <div id="disqus_thread"></div>
+<script>
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://yumin-techblog.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/AWS/"># AWS</a>
+                    
+                        <a href="/tags/ECS/"># ECS</a>
+                    
+                        <a href="/tags/boto3/"># boto3</a>
+                    
+                        <a href="/tags/IAM/"># IAM</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2022/03/01/nginx/nginx-crush01/">nginx crush (1)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© youmin park | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

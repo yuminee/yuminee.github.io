@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="google-site-verification" content="lY1rV4_T-oasUj0Jdw2Ven1L7u1-sJlSaxVlnrH2qRs" />
+
+    <meta name="author" content="youmin park">
+
+
+    <meta name="subtitle" content="개발 일지">
+
+
+
+
+<title>UFO Project 6 - Hyperledger Fabric SDK + application (2) | yuminkuu</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/rss2.xml" title="yuminkuu" type="application/rss+xml">
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yumin&#39;s Techblog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yumin&#39;s Techblog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">UFO Project 6 - Hyperledger Fabric SDK + application (2)</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">youmin park</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">December 3, 2020&nbsp;&nbsp;15:45:26</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/hyperledger-fabric/">hyperledger fabric</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="UFO-PROJECT-6-Hyperledger-Fabric-SDK-application-2"><a href="#UFO-PROJECT-6-Hyperledger-Fabric-SDK-application-2" class="headerlink" title="UFO PROJECT 6 - Hyperledger Fabric SDK + application (2)"></a>UFO PROJECT 6 - Hyperledger Fabric SDK + application (2)</h1><p>체인코드 각각의 함수들을 불러 올 수 있게 app.js를 먼저 작성한다.</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> bodyParser = <span class="built_in">require</span>(<span class="string">&#x27;body-parser&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> cors = <span class="built_in">require</span>(<span class="string">&#x27;cors&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> morgan = <span class="built_in">require</span>(<span class="string">&#x27;morgan&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> network = <span class="built_in">require</span>(<span class="string">&#x27;./fabric/network.js&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; response &#125; = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = express()</span><br><span class="line">app.use(morgan(<span class="string">&#x27;combined&#x27;</span>))</span><br><span class="line">app.use(bodyParser.json())</span><br><span class="line">app.use(cors())</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> PORT = <span class="number">8080</span>;</span><br><span class="line"><span class="keyword">const</span> HOST = <span class="string">&#x27;localhost&#x27;</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>기본적으로 express로 port는 8080으로 열어서 테스트를 할 것 이다.</p>
+<ul>
+<li>app.js 의 initWallet</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">app.post(<span class="string">&#x27;/initWallet&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  </span><br><span class="line">    network.initWallet(req.body.id)</span><br><span class="line">    .then(<span class="function">(<span class="params">response</span>) =&gt;</span> &#123;</span><br><span class="line">      res.send(response)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)  </span><br></pre></td></tr></table></figure>
+
+<p>이렇게 initWallet를 app.js에서 불러오면, </p>
+<ul>
+<li><p>network.js 의 initWallet 함수를 불러온다. 모바일 서버에서 id 값을 받으면 그 id 값에 대해 initWallet를 하는 것이므로 인자는 id 하나이다.</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">exports</span>.initWallet = <span class="keyword">async</span> <span class="function"><span class="keyword">function</span>(<span class="params">id</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> response = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Create a new file system based wallet for managing identities.</span></span><br><span class="line">        <span class="keyword">const</span> walletPath = path.join(process.cwd(), <span class="string">&#x27;/wallet&#x27;</span>);</span><br><span class="line">        <span class="keyword">const</span> wallet = <span class="keyword">new</span> FileSystemWallet(walletPath);</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">`Wallet path: <span class="subst">$&#123;walletPath&#125;</span>`</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Check to see if we&#x27;ve already enrolled the user.</span></span><br><span class="line">        <span class="keyword">const</span> userExists = <span class="keyword">await</span> wallet.exists(userName);</span><br><span class="line">        <span class="keyword">if</span> (!userExists) &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">&#x27;An identity for the user &#x27;</span> + userName + <span class="string">&#x27; does not exist in the wallet&#x27;</span>);</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">&#x27;Run the registerUser.js application before retrying&#x27;</span>);</span><br><span class="line">            response.error = <span class="string">&#x27;An identity for the user &#x27;</span> + userName + <span class="string">&#x27; does not exist in the wallet. Register &#x27;</span> + userName + <span class="string">&#x27; first&#x27;</span>;</span><br><span class="line">            <span class="keyword">return</span> response;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Create a new gateway for connecting to our peer node.</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;we here in initWallet&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">const</span> gateway = <span class="keyword">new</span> Gateway();</span><br><span class="line">        <span class="keyword">await</span> gateway.connect(connectionFile, &#123; wallet, <span class="attr">identity</span>: userName, <span class="attr">discovery</span>: gatewayDiscovery &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Get the network (channel) our contract is deployed to.</span></span><br><span class="line">        <span class="keyword">const</span> network = <span class="keyword">await</span> gateway.getNetwork(<span class="string">&#x27;ufochannel&#x27;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Get the contract from the network.</span></span><br><span class="line">        <span class="keyword">const</span> contract = network.getContract(<span class="string">&#x27;ufo&#x27;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Submit the specified transaction.</span></span><br><span class="line">        <span class="comment">// initWallet transaction - requires 1 argument, ex: (&#x27;initWallet&#x27;, &#x27;11111111&#x27;)</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">await</span> contract.submitTransaction(<span class="string">&#x27;initWallet&#x27;</span>, id);</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;Transaction has been submitted&#x27;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Disconnect from the gateway.</span></span><br><span class="line">        <span class="keyword">await</span> gateway.disconnect();</span><br><span class="line"></span><br><span class="line">        response.msg = <span class="string">&#x27;initWallet Transaction has been submitted&#x27;</span>;</span><br><span class="line">        <span class="keyword">return</span> response;        </span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">        <span class="built_in">console</span>.error(<span class="string">`Failed to submit transaction: <span class="subst">$&#123;error&#125;</span>`</span>);</span><br><span class="line">        response.error = error.message;</span><br><span class="line">        <span class="keyword">return</span> response; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>다른 chaincode의 함수들도 비슷한 방식으로 불러올 수 있다.</p>
+<br>
+
+<br>
+
+<ul>
+<li>app.js 의 getHistoryWallet이다.</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">app.post(<span class="string">&#x27;/getHistoryWallet&#x27;</span>, <span class="function">(<span class="params">req,res</span>) =&gt;</span> &#123;</span><br><span class="line">  network.getHistoryWallet(req.body.id)</span><br><span class="line">  .then(<span class="function">(<span class="params">response</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> walltHistory = <span class="built_in">JSON</span>.parse(response);        </span><br><span class="line">    res.send(Buffer.from(walltHistory).toString())</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<ul>
+<li><p>network.js의 getHistoryWallet 이다.</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">exports</span>.getHistoryWallet = <span class="keyword">async</span> <span class="function"><span class="keyword">function</span>(<span class="params">id</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> response = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Create a new file system based wallet for managing identities.</span></span><br><span class="line">        <span class="keyword">const</span> walletPath = path.join(process.cwd(), <span class="string">&#x27;/wallet&#x27;</span>);</span><br><span class="line">        <span class="keyword">const</span> wallet = <span class="keyword">new</span> FileSystemWallet(walletPath);</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">`Wallet path: <span class="subst">$&#123;walletPath&#125;</span>`</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Check to see if we&#x27;ve already enrolled the user.</span></span><br><span class="line">        <span class="keyword">const</span> userExists = <span class="keyword">await</span> wallet.exists(userName);</span><br><span class="line">        <span class="keyword">if</span> (!userExists) &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">&#x27;An identity for the user &#x27;</span> + userName + <span class="string">&#x27; does not exist in the wallet&#x27;</span>);</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">&#x27;Run the registerUser.js application before retrying&#x27;</span>);</span><br><span class="line">            response.error = <span class="string">&#x27;An identity for the user &#x27;</span> + userName + <span class="string">&#x27; does not exist in the wallet. Register &#x27;</span> + userName + <span class="string">&#x27; first&#x27;</span>;</span><br><span class="line">            <span class="keyword">return</span> response;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Create a new gateway for connecting to our peer node.</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;we here in getHistoryWallet&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">const</span> gateway = <span class="keyword">new</span> Gateway();</span><br><span class="line">        <span class="keyword">await</span> gateway.connect(connectionFile, &#123; wallet, <span class="attr">identity</span>: userName, <span class="attr">discovery</span>: gatewayDiscovery &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Get the network (channel) our contract is deployed to.</span></span><br><span class="line">        <span class="keyword">const</span> network = <span class="keyword">await</span> gateway.getNetwork(<span class="string">&#x27;ufochannel&#x27;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Get the contract from the network.</span></span><br><span class="line">        <span class="keyword">const</span> contract = network.getContract(<span class="string">&#x27;ufo&#x27;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Submit the specified transaction.</span></span><br><span class="line">        <span class="comment">// initWallet transaction - requires 1 argument, ex: (&#x27;initWallet&#x27;, &#x27;11111111&#x27;)</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">const</span> result = <span class="keyword">await</span> contract.evaluateTransaction(<span class="string">&#x27;getHistory&#x27;</span>, id);</span><br><span class="line">       </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Disconnect from the gateway.</span></span><br><span class="line">        <span class="keyword">await</span> gateway.disconnect();</span><br><span class="line">     </span><br><span class="line">        <span class="built_in">console</span>.log( Buffer.from(result).toString());</span><br><span class="line">      </span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">        <span class="built_in">console</span>.error(<span class="string">`Failed to submit transaction: <span class="subst">$&#123;error&#125;</span>`</span>);</span><br><span class="line">        response.error = error.message;</span><br><span class="line">        <span class="keyword">return</span> response; </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>이 함수는 다른 initWallet, deleteWallet 등등과의 차이점이 있는데 result를 return 한다는 것이다. 체인코드에서 데이터를  buffer로 받아오는데 단순히 데이터를 parse 하니 읽을 수 없는 형태로 데이터가 반환되었다.</p>
+<p>그래서 찾은것이</p>
+</li>
+</ul>
+<p>  <strong>Buffer.from(result).toString()</strong> 이다.  </p>
+<p>  전체 코드는 <a target="_blank" rel="noopener" href="https://github.com/yuminee/UFO_FabricNet_raft/tree/main/wep-app/server">GIT</a>에서 확인 할 수 있다.</p>
+<hr>
+<p>모바일에서 보기 편하게 md 파일을 작성 했다.</p>
+<h2 id="HFB-Server"><a href="#HFB-Server" class="headerlink" title="HFB Server"></a>HFB Server</h2><h3 id="ChainCode-invoke"><a href="#ChainCode-invoke" class="headerlink" title="ChainCode invoke"></a>ChainCode invoke</h3><h4 id="Json-key-value-형식"><a href="#Json-key-value-형식" class="headerlink" title="Json key:value 형식"></a>Json key:value 형식</h4><ul>
+<li><p>initWallet</p>
+<ul>
+<li>POST /initWallet </li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>String</td>
+<td>받은 id 값으로 Token을 0으로 초기화 하여 지갑 생성</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<ul>
+<li><p>getBalance</p>
+<ul>
+<li><p>POST /getBalance</p>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>String</td>
+<td>받은 id 값의 Token return</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>deleteWallet</p>
+<ul>
+<li><p>POST /deleteWallet</p>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>String</td>
+<td>받은 id값의 wallet 지움</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>chargeMoney</p>
+<ul>
+<li><p>POST /chargeMoney</p>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>String</td>
+<td>충전할 Wallet의 id</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>String</td>
+<td>충전할 금액</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>transferMoney</p>
+<ul>
+<li><p>POST /transferMoney</p>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>sender</td>
+<td>String</td>
+<td>보내는 wallet Id</td>
+</tr>
+<tr>
+<td>receiver</td>
+<td>String</td>
+<td>받은 wallet Id</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>String</td>
+<td>sender 가 보내는 Token의 amount</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>youmin park</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://yuminee.github.io/2020/12/03/Hyperledger%20fabric/ufoserversdk2/">https://yuminee.github.io/2020/12/03/Hyperledger%20fabric/ufoserversdk2/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span><strong>재미없는거 못함</strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <div id="disqus_thread"></div>
+<script>
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://yumin-techblog.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%EB%B8%94%EB%A1%9D%EC%B2%B4%EC%9D%B8/"># 블록체인</a>
+                    
+                        <a href="/tags/raft/"># raft</a>
+                    
+                        <a href="/tags/blockchain/"># blockchain</a>
+                    
+                        <a href="/tags/hyperledger-fabric/"># hyperledger fabric</a>
+                    
+                        <a href="/tags/%ED%95%98%EC%9D%B4%ED%8D%BC%EB%A0%88%EC%A0%80-%ED%8C%A8%EB%B8%8C%EB%A6%AD/"># 하이퍼레저 패브릭</a>
+                    
+                        <a href="/tags/fabric-client/"># fabric-client</a>
+                    
+                        <a href="/tags/fabric-sdk/"># fabric sdk</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/12/30/Blockchain/typescript1/">Build Blockchain with TypeScript 1</a>
+            
+            
+            <a class="next" rel="next" href="/2020/12/02/Hyperledger%20fabric/ufoserversdk1/">UFO Project 5 - Hyperledger Fabric SDK + application (1)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© youmin park | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="google-site-verification" content="lY1rV4_T-oasUj0Jdw2Ven1L7u1-sJlSaxVlnrH2qRs" />
+
+    <meta name="author" content="youmin park">
+
+
+    <meta name="subtitle" content="개발 일지">
+
+
+
+
+<title>kaggle-Real or Not? NLP with Disaster Tweets ②-Basic EDA | yuminkuu</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/rss2.xml" title="yuminkuu" type="application/rss+xml">
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yumin&#39;s Techblog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yumin&#39;s Techblog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">kaggle-Real or Not? NLP with Disaster Tweets ②-Basic EDA</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">youmin park</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 28, 2020&nbsp;&nbsp;17:42:36</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/kaggle/">kaggle</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Real-or-Not-NLP-with-Disaster-Tweets②-Basic-EDA"><a href="#Real-or-Not-NLP-with-Disaster-Tweets②-Basic-EDA" class="headerlink" title="Real or Not? NLP with Disaster Tweets②-Basic EDA"></a>Real or Not? NLP with Disaster Tweets②-Basic EDA</h1><h3 id="Importing-required-Libraries"><a href="#Importing-required-Libraries" class="headerlink" title="Importing required Libraries."></a>Importing required Libraries.</h3><p>가장 먼저 필요한 라이브러리들을 import 합니다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import seaborn as sns</span><br><span class="line">import numpy as np</span><br><span class="line">from nltk.corpus import stopwords</span><br><span class="line">from nltk.util import ngrams</span><br><span class="line">from sklearn.feature_extraction.text import CountVectorizer</span><br><span class="line">from collections import defaultdict</span><br><span class="line">from collections import Counter</span><br><span class="line">plt.style.use(&#39;ggplot&#39;)</span><br><span class="line">stop&#x3D;set(stopwords.words(&#39;english&#39;))</span><br><span class="line">import re</span><br><span class="line">from nltk.tokenize import word_tokenize</span><br><span class="line">import gensim</span><br><span class="line">import string</span><br><span class="line">from keras.preprocessing.text import Tokenizer</span><br><span class="line">from keras.preprocessing.sequence import pad_sequences</span><br><span class="line">from tqdm import tqdm</span><br><span class="line">from keras.models import Sequential</span><br><span class="line">from keras.layers import Embedding, LSTM, Dense, SpatialDropout1D</span><br><span class="line">from keras.initializers import Constant</span><br><span class="line">from sklearn.model_selection import train_test_split</span><br><span class="line">from keras.optimizers import Adam</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import nltk</span><br><span class="line">nltk.download(&quot;stopwords&quot;)</span><br></pre></td></tr></table></figure>
+
+<pre><code>[nltk_data] Downloading package stopwords to /root/nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+
+
+
+
+
+True</code></pre>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import os</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tweet &#x3D; pd.read_csv(&#39;&#x2F;content&#x2F;drive&#x2F;MyDrive&#x2F;kaggle&#x2F;tweetDisater&#x2F;data&#x2F;train.csv&#39;)</span><br><span class="line">test &#x3D; pd.read_csv(&#39;&#x2F;content&#x2F;drive&#x2F;MyDrive&#x2F;kaggle&#x2F;tweetDisater&#x2F;data&#x2F;test.csv&#39;)</span><br><span class="line">tweet.head(3)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+
+<pre><code>.dataframe tbody tr th &#123;
+    vertical-align: top;
+&#125;
+
+.dataframe thead th &#123;
+    text-align: right;
+&#125;</code></pre>
+<p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>keyword</th>
+      <th>location</th>
+      <th>text</th>
+      <th>target</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Our Deeds are the Reason of this #earthquake M...</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>4</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Forest fire near La Ronge Sask. Canada</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>5</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>All residents asked to 'shelter in place' are ...</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+
+</div>
+
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x &#x3D; tweet.target.value_counts()</span><br><span class="line">sns.barplot(x.index, x)</span><br><span class="line">plt.gca().set_ylabel(&#39;samples&#39;)</span><br></pre></td></tr></table></figure>
+
+<pre><code>/usr/local/lib/python3.6/dist-packages/seaborn/_decorators.py:43: FutureWarning: Pass the following variables as keyword args: x, y. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
+  FutureWarning
+
+
+
+
+
+Text(0, 0.5, &#39;samples&#39;)</code></pre>
+<p>​<br><img src="https://user-images.githubusercontent.com/33755241/100497720-ac4a2200-31a0-11eb-8225-5b3b9809b4bc.png" alt="input_7_2"><br>​    </p>
+<p>결과를 보니까 class 0(No Disaster)이 class 1(disaster tweets)보다 더 많네요.</p>
+<h3 id="Exploratory-Data-Analysis-of-tweets"><a href="#Exploratory-Data-Analysis-of-tweets" class="headerlink" title="Exploratory Data Analysis of tweets"></a>Exploratory Data Analysis of tweets</h3><h4 id="Number-of-characters-in-tweets"><a href="#Number-of-characters-in-tweets" class="headerlink" title="Number of characters in tweets"></a>Number of characters in <strong>tweets</strong></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">fig, (ax1, ax2) &#x3D; plt.subplots(1,2,figsize&#x3D;(10,5)) #figsize &#x3D; 그림의 가로 세로 인치 단위</span><br><span class="line">tweet_len &#x3D; tweet[tweet[&#39;target&#39;] &#x3D;&#x3D; 1][&#39;text&#39;].str.len()</span><br><span class="line">ax1.hist(tweet_len, color&#x3D;&#39;red&#39;)</span><br><span class="line">ax1.set_title(&#39;disater tweets&#39;)</span><br><span class="line">tweet_len &#x3D; tweet[tweet[&#39;target&#39;]&#x3D;&#x3D;0][&#39;text&#39;].str.len()</span><br><span class="line">ax2.hist(tweet_len, color&#x3D;&#39;green&#39;)</span><br><span class="line">ax2.set_title(&#39;Not disaster tweets&#39;)</span><br><span class="line">fig.suptitle(&#39;Character in tweets&#39;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+
+<p>​<br><img src="https://user-images.githubusercontent.com/33755241/100497723-ace2b880-31a0-11eb-9aff-86067e0e9f17.png" alt="input_11_0"><br>​    </p>
+<h4 id="Number-of-words-in-a-tweet"><a href="#Number-of-words-in-a-tweet" class="headerlink" title="Number of words in a tweet"></a>Number of words in a tweet</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">fig, (ax1, ax2) &#x3D; plt.subplots(1,2, figsize&#x3D;(10,5)) #두개 그래프 설정을 한번에 subplots</span><br><span class="line">tweet_len &#x3D; tweet[tweet[&#39;target&#39;]&#x3D;&#x3D;1][&#39;text&#39;].str.split().map(lambda x : len(x))</span><br><span class="line">ax1.hist(tweet_len, color&#x3D;&#39;red&#39;)</span><br><span class="line">ax1.set_title(&#39;disater tweets&#39;)</span><br><span class="line">tweet_len &#x3D; tweet[tweet[&#39;target&#39;]&#x3D;&#x3D;0][&#39;text&#39;].str.split().map(lambda x: len(x))</span><br><span class="line">ax2.hist(tweet_len,color&#x3D;&#39;green&#39;)</span><br><span class="line">ax1.set_title(&#39;Not disater tweets&#39;)</span><br><span class="line">fig.suptitle(&#39;Words in a tweet&#39;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+
+<p>​<br><img src="https://user-images.githubusercontent.com/33755241/100497724-ae13e580-31a0-11eb-8129-33c732664371.png" alt="input_13_0"><br>​    </p>
+<h4 id="Average-word-length-in-a-tweet"><a href="#Average-word-length-in-a-tweet" class="headerlink" title="Average word length in a tweet"></a>Average word length in a tweet</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">fig, (ax1, ax2) &#x3D; plt.subplots(1,2,figsize&#x3D;(10,5))</span><br><span class="line">word&#x3D;tweet[tweet[&#39;target&#39;]&#x3D;&#x3D;1][&#39;text&#39;].str.split().apply(lambda x : [len(i) for i in x])</span><br><span class="line">sns.distplot(word.map(lambda x : np.mean(x)), ax &#x3D; ax1, color&#x3D;&#39;red&#39;) # 막대 그래프 + mean값으로 선</span><br><span class="line">ax1.set_title(&#39;disaster&#39;)</span><br><span class="line">word &#x3D; tweet[tweet[&#39;target&#39;]&#x3D;&#x3D;0][&#39;text&#39;].str.split().apply(lambda x : [len(i) for i in x])</span><br><span class="line">sns.distplot(word.map(lambda x : np.mean(x)), ax &#x3D; ax2, color &#x3D; &#39;green&#39;)</span><br><span class="line">ax2.set_title(&#39;Not disaster&#39;)</span><br><span class="line">fig.suptitle(&#39;Average word lentgh in a tweet&#39;)</span><br></pre></td></tr></table></figure>
+
+<pre><code>/usr/local/lib/python3.6/dist-packages/seaborn/distributions.py:2551: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+/usr/local/lib/python3.6/dist-packages/seaborn/distributions.py:2551: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+
+
+
+
+
+Text(0.5, 0.98, &#39;Average word lentgh in a tweet&#39;)</code></pre>
+<p>​<br><img src="https://user-images.githubusercontent.com/33755241/100497726-af451280-31a0-11eb-99e5-e79d129ebaed.png" alt="input_15_2"><br>​    </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def create_corpus(target):</span><br><span class="line">    corpus&#x3D;[]</span><br><span class="line">    </span><br><span class="line">    for x in tweet[tweet[&#39;target&#39;]&#x3D;&#x3D;target][&#39;text&#39;].str.split():</span><br><span class="line">        for i in x:</span><br><span class="line">            corpus.append(i)</span><br><span class="line">    return corpus #자연언어 연구를 위해 특정한 목적을 가지고 언어의 표본을 추출한 집합</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="Common-stopwords-in-tweets"><a href="#Common-stopwords-in-tweets" class="headerlink" title="Common stopwords in tweets"></a>Common stopwords in tweets</h4><ul>
+<li>stopword(불용어)<br>: 갖고 있는 데이터에서 유의미한 단어 토큰만을 선별하기 위해서는 큰 의미가 없는 단어 토큰을 제거하는 작업이 필요함. 여기서 큰 의미가 없다라는 것은 자주 등장하지만 분석을 하는 것에 있어서는 큰 도움이 되지 않는 단어들을 말함.</li>
+</ul>
+<p>class 0 부터 분석 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">corpus &#x3D; create_corpus(0)</span><br><span class="line"></span><br><span class="line">dic &#x3D; defaultdict(int) # 디폴트 값이 int인 딕셔너리.</span><br><span class="line">for word in corpus:</span><br><span class="line">  if word in stop:</span><br><span class="line">    dic[word]+&#x3D;1</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">top &#x3D; sorted(dic.items(), key&#x3D;lambda x :x [1], reverse &#x3D; True) [:10]</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x,y &#x3D; zip(*top)</span><br><span class="line">plt.bar(x,y)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;BarContainer object of 10 artists&gt;</code></pre>
+<p>​<br><img src="https://user-images.githubusercontent.com/33755241/100497727-afdda900-31a0-11eb-8fe0-a7ff5d5d8020.png" alt="input_20_1"><br>​    </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">corpus &#x3D; create_corpus(1)</span><br><span class="line"></span><br><span class="line">dic &#x3D; defaultdict(int) # 디폴트 값이 int인 딕셔너리.</span><br><span class="line">for word in corpus:</span><br><span class="line">  if word in stop:</span><br><span class="line">    dic[word]+&#x3D;1</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">top &#x3D; sorted(dic.items(), key&#x3D;lambda x :x [1], reverse &#x3D; True) [:10]</span><br><span class="line"></span><br><span class="line">x,y &#x3D; zip(*top)</span><br><span class="line">plt.bar(x,y)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;BarContainer object of 10 artists&gt;</code></pre>
+<h3 id="Analyzing-punctuations"><a href="#Analyzing-punctuations" class="headerlink" title="Analyzing punctuations"></a>Analyzing punctuations</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize&#x3D;(10,5))</span><br><span class="line">corpus &#x3D; create_corpus(1)</span><br><span class="line"></span><br><span class="line">dic &#x3D; defaultdict(int)</span><br><span class="line">import string</span><br><span class="line">special &#x3D; string.punctuation</span><br><span class="line">for i in (corpus) : </span><br><span class="line">  if i in special : </span><br><span class="line">    dic[i]+&#x3D;1</span><br><span class="line"></span><br><span class="line">x,y &#x3D; zip(*dic.items())</span><br><span class="line">plt.bar(x,y)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;BarContainer object of 18 artists&gt;</code></pre>
+<p>​<br><img src="https://user-images.githubusercontent.com/33755241/100497728-b1a76c80-31a0-11eb-9dfa-9a975187b505.png" alt="input_24_1"><br>​    </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize&#x3D;(10,5))</span><br><span class="line">corpus &#x3D; create_corpus(0)</span><br><span class="line"></span><br><span class="line">dic &#x3D; defaultdict(int)</span><br><span class="line">import string</span><br><span class="line">special &#x3D; string.punctuation</span><br><span class="line">for i in (corpus) : </span><br><span class="line">  if i in special : </span><br><span class="line">    dic[i]+&#x3D;1</span><br><span class="line"></span><br><span class="line">x,y &#x3D; zip(*dic.items())</span><br><span class="line">plt.bar(x,y, color &#x3D; &#39;green&#39;)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;BarContainer object of 20 artists&gt;</code></pre>
+<p>​<br><img src="https://user-images.githubusercontent.com/33755241/100497731-b3713000-31a0-11eb-97a5-c6dcf1d3d29a.png" alt="input_25_1"><br>​    </p>
+<h3 id="Common-words"><a href="#Common-words" class="headerlink" title="Common words?"></a>Common words?</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">counter &#x3D; Counter(corpus)</span><br><span class="line">most &#x3D; counter.most_common()</span><br><span class="line">x &#x3D; []</span><br><span class="line">y &#x3D; []</span><br><span class="line">for word, count in most [:40]:</span><br><span class="line">  if (word not in stop) :</span><br><span class="line">    x.append(word)</span><br><span class="line">    y.append(count)</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sns.barplot(x&#x3D;y, y&#x3D;x)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7f8bb4990cc0&gt;</code></pre>
+<p>​<br><img src="https://user-images.githubusercontent.com/33755241/100497733-b66c2080-31a0-11eb-8a6f-da32b9f47f60.png" alt="input_28_1"><br>​    </p>
+<h3 id="Ngram-analysis"><a href="#Ngram-analysis" class="headerlink" title="Ngram analysis"></a>Ngram analysis</h3><p>bigram (n=2)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def get_top_tweet_bigrams(corpus, n &#x3D; None):</span><br><span class="line">  vec &#x3D; CountVectorizer(ngram_range &#x3D; (2,2)).fit(corpus)</span><br><span class="line">  bag_of_words &#x3D; vec.transform(corpus)</span><br><span class="line">  sum_words &#x3D; bag_of_words.sum(axis&#x3D;0)</span><br><span class="line">  words_freq &#x3D; [(word, sum_words[0, idx]) for word, idx in vec.vocabulary_.items()]</span><br><span class="line">  words_freq &#x3D; sorted(words_freq, key &#x3D; lambda x: x[1], reverse &#x3D; True)</span><br><span class="line">  return words_freq[:n]</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize&#x3D;(10,5))</span><br><span class="line">top_tweet_bigrams &#x3D; get_top_tweet_bigrams(tweet[&#39;text&#39;])[:10]</span><br><span class="line">x,y &#x3D; map(list, zip(*top_tweet_bigrams))</span><br><span class="line">sns.barplot(x&#x3D;y, y&#x3D;x)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7f8bb3f4e9b0&gt;</code></pre>
+<p>​<br><img src="https://user-images.githubusercontent.com/33755241/100497734-b79d4d80-31a0-11eb-8ee3-30645ee98563.png" alt="input_32_1"><br>​    </p>
+<h3 id="Data-Cleaning"><a href="#Data-Cleaning" class="headerlink" title="Data Cleaning"></a>Data Cleaning</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df &#x3D; pd.concat([tweet, test])</span><br><span class="line">df.shape</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>(10876, 5)</code></pre>
+<h4 id="Removing-urls"><a href="#Removing-urls" class="headerlink" title="Removing urls"></a>Removing urls</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">example&#x3D;&quot;New competition launched :https:&#x2F;&#x2F;www.kaggle.com&#x2F;c&#x2F;nlp-getting-started&quot;</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">def remove_URL(text):</span><br><span class="line">    url &#x3D; re.compile(r&#39;https?:&#x2F;&#x2F;\S+|www\.\S+&#39;)</span><br><span class="line">    return url.sub(r&#39;&#39;,text)</span><br><span class="line"></span><br><span class="line">remove_URL(example)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&#39;New competition launched :&#39;</code></pre>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[&#39;text&#39;] &#x3D; df[&#39;text&#39;].apply(lambda x : remove_URL(x))</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">example &#x3D; &quot;&quot;&quot;&lt;div&gt;</span><br><span class="line">&lt;h1&gt;Real or Fake&lt;&#x2F;h1&gt;</span><br><span class="line">&lt;p&gt;Kaggle &lt;&#x2F;p&gt;</span><br><span class="line">&lt;a href&#x3D;&quot;https:&#x2F;&#x2F;www.kaggle.com&#x2F;c&#x2F;nlp-getting-started&quot;&gt;getting started&lt;&#x2F;a&gt;</span><br><span class="line">&lt;&#x2F;div&gt;&quot;&quot;&quot;</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def remove_html(text):</span><br><span class="line">    html&#x3D;re.compile(r&#39;&lt;.*?&gt;&#39;)</span><br><span class="line">    return html.sub(r&#39;&#39;,text)</span><br><span class="line">print(remove_html(example))</span><br></pre></td></tr></table></figure>
+
+
+<pre><code>Real or Fake
+Kaggle 
+getting started</code></pre>
+<p>​    </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[&#39;text&#39;]&#x3D;df[&#39;text&#39;].apply(lambda x : remove_html(x))</span><br></pre></td></tr></table></figure>
+
+<h4 id="Removing-Emojis"><a href="#Removing-Emojis" class="headerlink" title="Removing Emojis"></a>Removing Emojis</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># Reference : https:&#x2F;&#x2F;gist.github.com&#x2F;slowkow&#x2F;7a7f61f495e3dbb7e3d767f97bd7304b</span><br><span class="line"></span><br><span class="line">def remove_emoji(text):</span><br><span class="line">    emoji_pattern &#x3D; re.compile(&quot;[&quot;</span><br><span class="line">                           u&quot;\U0001F600-\U0001F64F&quot;  # emoticons</span><br><span class="line">                           u&quot;\U0001F300-\U0001F5FF&quot;  # symbols &amp; pictographs</span><br><span class="line">                           u&quot;\U0001F680-\U0001F6FF&quot;  # transport &amp; map symbols</span><br><span class="line">                           u&quot;\U0001F1E0-\U0001F1FF&quot;  # flags (iOS)</span><br><span class="line">                           u&quot;\U00002702-\U000027B0&quot;</span><br><span class="line">                           u&quot;\U000024C2-\U0001F251&quot;</span><br><span class="line">                           &quot;]+&quot;, flags&#x3D;re.UNICODE)</span><br><span class="line">    return emoji_pattern.sub(r&#39;&#39;, text)</span><br><span class="line"></span><br><span class="line">remove_emoji(&quot;Omg another Earthquake 😔😔&quot;)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&#39;Omg another Earthquake &#39;</code></pre>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[&#39;text&#39;]&#x3D;df[&#39;text&#39;].apply(lambda x: remove_emoji(x))</span><br></pre></td></tr></table></figure>
+
+<h4 id="Removing-punctuations"><a href="#Removing-punctuations" class="headerlink" title="Removing punctuations"></a>Removing punctuations</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">def remove_punct(text):</span><br><span class="line">    table&#x3D;str.maketrans(&#39;&#39;,&#39;&#39;,string.punctuation)</span><br><span class="line">    return text.translate(table)</span><br><span class="line"></span><br><span class="line">example&#x3D;&quot;I am a #king&quot;</span><br><span class="line">print(remove_punct(example))</span><br></pre></td></tr></table></figure>
+
+<pre><code>I am a king</code></pre>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[&#39;text&#39;]&#x3D;df[&#39;text&#39;].apply(lambda x : remove_punct(x))</span><br></pre></td></tr></table></figure>
+
+<h4 id="Spelling-Correction"><a href="#Spelling-Correction" class="headerlink" title="Spelling Correction"></a>Spelling Correction</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!pip install pyspellchecker</span><br></pre></td></tr></table></figure>
+
+<pre><code>Collecting pyspellchecker
+[?25l  Downloading https://files.pythonhosted.org/packages/f1/96/827c132397d0eb5731c1eda05dbfb019ede064ca8c7d0f329160ce0a4acd/pyspellchecker-0.5.5-py2.py3-none-any.whl (1.9MB)
+[K     |████████████████████████████████| 1.9MB 7.1MB/s 
+[?25hInstalling collected packages: pyspellchecker
+Successfully installed pyspellchecker-0.5.5</code></pre>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">from spellchecker import SpellChecker</span><br><span class="line"></span><br><span class="line">spell &#x3D; SpellChecker()</span><br><span class="line">def correct_spellings(text):</span><br><span class="line">    corrected_text &#x3D; []</span><br><span class="line">    misspelled_words &#x3D; spell.unknown(text.split())</span><br><span class="line">    for word in text.split():</span><br><span class="line">        if word in misspelled_words:</span><br><span class="line">            corrected_text.append(spell.correction(word))</span><br><span class="line">        else:</span><br><span class="line">            corrected_text.append(word)</span><br><span class="line">    return &quot; &quot;.join(corrected_text)</span><br><span class="line">        </span><br><span class="line">text &#x3D; &quot;corect me plese&quot;</span><br><span class="line">correct_spellings(text)</span><br></pre></td></tr></table></figure>
+
+
+
+
+<pre><code>&#39;correct me please&#39;</code></pre>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[&#39;text&#39;]&#x3D;df[&#39;text&#39;].apply(lambda x : correct_spellings(x))</span><br></pre></td></tr></table></figure>
+
+
+        </div>
+        
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>youmin park</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://yuminee.github.io/2020/11/28/kaggle/tweet_disaster_EDA/">https://yuminee.github.io/2020/11/28/kaggle/tweet_disaster_EDA/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span><strong>재미없는거 못함</strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <div id="disqus_thread"></div>
+<script>
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://yumin-techblog.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%82%AC%EC%9D%B4%EC%96%B8%EC%8A%A4/"># 데이터 사이언스</a>
+                    
+                        <a href="/tags/%EC%9E%90%EC%97%B0%EC%96%B4-%EC%B2%98%EB%A6%AC/"># 자연어 처리</a>
+                    
+                        <a href="/tags/kaggle/"># kaggle</a>
+                    
+                        <a href="/tags/NLP/"># NLP</a>
+                    
+                        <a href="/tags/disater-tweets/"># disater_tweets</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/11/29/Hyperledger%20fabric/raft_algorithm3/">UFO Project 3 - Hyperledger Fabric channel implementation</a>
+            
+            
+            <a class="next" rel="next" href="/2020/11/27/Hyperledger%20fabric/raft_algorithm2/">UFO Project 2 - Hyperledger Fabric generate implementation</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© youmin park | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

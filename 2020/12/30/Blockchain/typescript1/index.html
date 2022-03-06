@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="google-site-verification" content="lY1rV4_T-oasUj0Jdw2Ven1L7u1-sJlSaxVlnrH2qRs" />
+
+    <meta name="author" content="youmin park">
+
+
+    <meta name="subtitle" content="개발 일지">
+
+
+
+
+<title>Build Blockchain with TypeScript 1 | yuminkuu</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/rss2.xml" title="yuminkuu" type="application/rss+xml">
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yumin&#39;s Techblog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yumin&#39;s Techblog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Build Blockchain with TypeScript 1</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">youmin park</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">December 30, 2020&nbsp;&nbsp;15:00:01</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Blockchain/">Blockchain</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>타입스크립트로 블록체인을 간단하게 만들어보기 위해서 타입스크립트의 기초 문법을 공부했다.</p>
+<p>아래 명령어로 typescript와 tsc-watch를 설치해준다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yarn global add typescript</span><br><span class="line">yarn add tsc-watch --dev &#x2F;&#x2F;nodem.</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">|-- dist&#x2F;</span><br><span class="line">|	-- index.js &#x2F;&#x2F;(컴파일 후 생김)</span><br><span class="line">|	-- index.js.map &#x2F;&#x2F;(컴파일 후 생김)</span><br><span class="line">|-- src&#x2F;</span><br><span class="line">|	-- index.ts</span><br><span class="line">|-- package.json</span><br><span class="line">|-- tsconfig.json</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-yarn-init"><a href="#1-yarn-init" class="headerlink" title="1. yarn init"></a>1. yarn init</h3><p>자바스크립트의 프로젝트와 마찬가지로 yarn init(npm init)등을 이용해서 package.json을 만들어준다.  </p>
+<h3 id="2-tsconfig-json"><a href="#2-tsconfig-json" class="headerlink" title="2. tsconfig.json"></a>2. tsconfig.json</h3><p>작업 디렉토리에서 타입스크립트 설정을 위해 tsconfig.json이라는 파일을 만들어주고,</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;compilerOptions&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;module&quot;</span>: <span class="string">&quot;commonjs&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;target&quot;</span>: <span class="string">&quot;ES2015&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;sourceMap&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="attr">&quot;outDir&quot;</span>: <span class="string">&quot;dist&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">&quot;include&quot;</span>: [</span><br><span class="line">        <span class="string">&quot;src/**/*&quot;</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">&quot;exclude&quot;</span>: [</span><br><span class="line">        <span class="string">&quot;node_modules&quot;</span></span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>먼저 <code>compilerOptions</code> 부분은 컴파일로 옵션이다.  </p>
+<p><strong>module</strong> : 묘듈 코드 생성 지정.</p>
+<p><strong>target</strong> : ECMAScript 대상 버전 지정. 기본값은 <code>ES3</code></p>
+<p><strong>sourceMap</strong> : 해당하는 .map파일을 생성할지 여부. true니까 .map파일을 생성한다.</p>
+<p><strong>outDir</strong> : 출력 구조를 디렉토리로 리다이렉트 함. 해당 프로젝트에서는 dist안에 출력된 .map 과 js 파일이 생성됨.</p>
+<p><strong>include</strong> : src 파일아래에서 작업을 할 것 이고, 그 밑으로 전부 컴파일.</p>
+<p><strong>exclude</strong> : 해당 프로젝트에서는 node_modules를 사용하지 않을 것 이므로, 제외함.</p>
+<h3 id="3-package-json-수정"><a href="#3-package-json-수정" class="headerlink" title="3. package.json 수정"></a>3. package.json 수정</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;typeChain&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;1.0.0&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;main&quot;</span>: <span class="string">&quot;index.js&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;repository&quot;</span>: <span class="string">&quot;https://github.com/yuminee/typeChain.git&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;author&quot;</span>: <span class="string">&quot;yuminee &lt;ayuminee2@gmail.com&gt;&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;license&quot;</span>: <span class="string">&quot;MIT&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;start&quot;</span>: <span class="string">&quot;tsc-watch --onSuccess \&quot;node dist/index.js\&quot; &quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;devDependencies&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;tsc-watch&quot;</span>: <span class="string">&quot;^4.2.9&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;dependencies&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;typescript&quot;</span>: <span class="string">&quot;^4.1.3&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>위의 script 부분을 주목하자.   앞으로는 <code>yarn start</code>를 실행하면 수정되는 상황이 바로바로</p>
+<p>컴파일 되어 결과를 확인 할 수 있다. </p>
+<p>만약 tsc 관련해서 오류가 난다면, <code>yarn add typescript</code>로 설치를 하고 실행하면 될 것 이다.</p>
+<h3 id="4-index-ts"><a href="#4-index-ts" class="headerlink" title="4. index.ts"></a>4. index.ts</h3><p>기초 문법을 학습하기 위해 index.ts를 생성했다. js를 할 줄 안다는 가정하에 typescript를 간단하게만 설명할 예정이다.</p>
+<ul>
+<li><p>alert(“aaa”)</p>
+<p>이런식으로 프린트문을 작성한다.</p>
+</li>
+<li><p>class를 만들 수 있다.</p>
+<ul>
+<li><p>Human 이라는 클래스를 만든다면,</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Human</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">   <span class="keyword">public</span> name :<span class="built_in">string</span>;</span><br><span class="line">   <span class="keyword">public</span> age : <span class="built_in">number</span>;</span><br><span class="line">   <span class="keyword">public</span> gender : <span class="built_in">string</span>;</span><br><span class="line">    </span><br><span class="line">   <span class="function"><span class="title">constructor</span>(<span class="params">name: <span class="built_in">string</span>, age:<span class="built_in">number</span>, gender:<span class="built_in">string</span></span>)</span>&#123;</span><br><span class="line">      <span class="built_in">this</span>.name = name;</span><br><span class="line">      <span class="built_in">this</span>.age = age;</span><br><span class="line">      <span class="built_in">this</span>.gender = gender;</span><br><span class="line">   &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>class안의 접근 지정자를 설정해 줄 수 있다. public으로 선언하면 클래스 밖에서도 접근이 가능하지만 만약에 private으로 선언하면 class안에서만 접근이 가능 할 것 이다.</p>
+<p>또한 타입스크립트라는 이름에 맞게, 타입도 설정해 줄 수 있다.</p>
+<p>constructor 부분은 생성자다.</p>
+</li>
+<li><p>class를 기반으로 객체 생성</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> youmin = <span class="keyword">new</span> Human(<span class="string">&quot;youmin&quot;</span>, <span class="number">26</span>,<span class="string">&quot;famale&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>이런식으로 Human 클래스의 객체를 생성한다. 만약 저기서 파라메타들의 타입이 틀리거나 파라메타의 갯수가 다르다면 에러가 난다.</p>
+</li>
+<li><p>함수로 만들어서 사용해보기!</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> sayHi = (person :Human):<span class="function"><span class="params">string</span> =&gt;</span> &#123;</span><br><span class="line">   <span class="keyword">return</span> <span class="string">`Hello <span class="subst">$&#123;person.name&#125;</span>, you are <span class="subst">$&#123;person.age&#125;</span> a <span class="subst">$&#123;person.gender&#125;</span>`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>sayHi라는 함수를 만들었다. Human 클래스의 타입인 person을 인자로 받고, string을 리턴하는 모습이다. </p>
+</li>
+<li><p>(다른 상황) 인자를 받거나 안받거나!</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> sayHi = (name, age, gender?):<span class="function"><span class="params">string</span> =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> <span class="string">`Hello <span class="subst">$&#123;person.name&#125;</span>, you are <span class="subst">$&#123;person.age&#125;</span> a <span class="subst">$&#123;person.gender&#125;</span>`</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>위의 함수에서는 gender뒤에 ?가 붙은것을 볼 수 있다. 정말 좋은 기능중에 하나라고 생각이 드는데 ?를 뒤에 붙이면 인자로 받지 않아도 된다.</p>
+</li>
+</ul>
+</li>
+<li><p>export{}</p>
+<p>마지막에 export{}  를 해서 내보내야한다.</p>
+</li>
+</ul>
+<h3 id="5-전체-코드"><a href="#5-전체-코드" class="headerlink" title="5. 전체 코드"></a>5. 전체 코드</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Human</span> </span>&#123;</span><br><span class="line">   <span class="keyword">public</span> name :<span class="built_in">string</span>;</span><br><span class="line">   <span class="keyword">public</span> age : <span class="built_in">number</span>;</span><br><span class="line">   <span class="keyword">public</span> gender : <span class="built_in">string</span>;</span><br><span class="line">   <span class="function"><span class="title">constructor</span>(<span class="params">name: <span class="built_in">string</span>, age:<span class="built_in">number</span>, gender:<span class="built_in">string</span></span>)</span>&#123;</span><br><span class="line">      <span class="built_in">this</span>.name = name;</span><br><span class="line">      <span class="built_in">this</span>.age = age;</span><br><span class="line">      <span class="built_in">this</span>.gender = gender;</span><br><span class="line">   &#125; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> youmin = <span class="keyword">new</span> Human(<span class="string">&quot;youmin&quot;</span>, <span class="number">26</span>,<span class="string">&quot;famale&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> sayHi = (person :Human):<span class="function"><span class="params">string</span> =&gt;</span> &#123;</span><br><span class="line">   <span class="keyword">return</span> <span class="string">`Hello <span class="subst">$&#123;person.name&#125;</span>, you are <span class="subst">$&#123;person.age&#125;</span> a <span class="subst">$&#123;person.gender&#125;</span>`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(sayHi(youmin));</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> &#123;&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>다음 포스트에서는 타입스크립트를 이용하여 블록체인을 만들어보겠다.</p>
+
+        </div>
+        
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>youmin park</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://yuminee.github.io/2020/12/30/Blockchain/typescript1/">https://yuminee.github.io/2020/12/30/Blockchain/typescript1/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span><strong>재미없는거 못함</strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <div id="disqus_thread"></div>
+<script>
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://yumin-techblog.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/typescript/"># typescript</a>
+                    
+                        <a href="/tags/Blockchain/"># Blockchain</a>
+                    
+                        <a href="/tags/%EB%B8%94%EB%A1%9D%EC%B2%B4%EC%9D%B8/"># 블록체인</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/12/31/Blockchain/typescript2/">Build Blockchain with TypeScript 2</a>
+            
+            
+            <a class="next" rel="next" href="/2020/12/03/Hyperledger%20fabric/ufoserversdk2/">UFO Project 6 - Hyperledger Fabric SDK + application (2)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© youmin park | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

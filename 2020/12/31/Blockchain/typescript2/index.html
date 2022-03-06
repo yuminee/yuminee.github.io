@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="google-site-verification" content="lY1rV4_T-oasUj0Jdw2Ven1L7u1-sJlSaxVlnrH2qRs" />
+
+    <meta name="author" content="youmin park">
+
+
+    <meta name="subtitle" content="개발 일지">
+
+
+
+
+<title>Build Blockchain with TypeScript 2 | yuminkuu</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/rss2.xml" title="yuminkuu" type="application/rss+xml">
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yumin&#39;s Techblog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yumin&#39;s Techblog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Build Blockchain with TypeScript 2</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">youmin park</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">December 31, 2020&nbsp;&nbsp;15:00:01</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Blockchain/">Blockchain</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Build-Blockchain-with-TypeScript-2"><a href="#Build-Blockchain-with-TypeScript-2" class="headerlink" title="Build Blockchain with TypeScript 2"></a>Build Blockchain with TypeScript 2</h1><p>이제 본격적으로 blockchain을 만들어 보자!</p>
+<h3 id="1-Blockchain-구조"><a href="#1-Blockchain-구조" class="headerlink" title="1. Blockchain 구조"></a>1. Blockchain 구조</h3><p>Blockchain의 구조는 기본적으로,</p>
+<ul>
+<li>index</li>
+<li>previous hash</li>
+<li>hash</li>
+<li>timestamp</li>
+<li>data</li>
+</ul>
+<p>이렇게 5가지를 놓을 수 있다.</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Block</span> </span>&#123;</span><br><span class="line">   <span class="keyword">public</span> index : <span class="built_in">number</span>;</span><br><span class="line">   <span class="keyword">public</span> hash : <span class="built_in">string</span>;</span><br><span class="line">   <span class="keyword">public</span> previoushash :<span class="built_in">string</span>;</span><br><span class="line">   <span class="keyword">public</span> data :<span class="built_in">string</span>;</span><br><span class="line">   <span class="keyword">public</span> timestamp : <span class="built_in">number</span>;</span><br><span class="line">   <span class="title">constructor</span>(<span class="params"></span></span><br><span class="line"><span class="params">      index:<span class="built_in">number</span>,</span></span><br><span class="line"><span class="params">      hash:<span class="built_in">string</span>,</span></span><br><span class="line"><span class="params">      previoushash:<span class="built_in">string</span>,</span></span><br><span class="line"><span class="params">      data:<span class="built_in">string</span>,</span></span><br><span class="line"><span class="params">      timestamp:<span class="built_in">number</span> </span></span><br><span class="line"><span class="params">      </span>)&#123;</span><br><span class="line">         <span class="built_in">this</span>.index =index;</span><br><span class="line">         <span class="built_in">this</span>.hash=hash;</span><br><span class="line">         <span class="built_in">this</span>.previoushash=previoushash;</span><br><span class="line">         <span class="built_in">this</span>.data = data;</span><br><span class="line">         <span class="built_in">this</span>.timestamp=timestamp     </span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>그것을 바탕으로 Block class와 생성자를 만들어주었다.</p>
+<h3 id="2-gensisBlock-생성"><a href="#2-gensisBlock-생성" class="headerlink" title="2. gensisBlock 생성"></a>2. gensisBlock 생성</h3><p>블록체인에서 가장 첫번째 블럭인 <code>genesisBlock</code> 이라고 한다. 여기서는 하드코딩으로 제네시스블럭을 만들어줄려고 한다. </p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> gensisBlock:Block = <span class="keyword">new</span> Block(<span class="number">0</span>, <span class="string">&quot;202020202020&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="string">&quot;this is a gensisBlock&quot;</span>, <span class="number">123456</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>들어가는 인자는 <code>class Block</code>의 생성자의 순서대로 <code>index, hash, previoushash, data,timestamp</code>순이다.</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> blockchain:Block[] = [gensisBlock]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>blockchian 이라는 이름의 변수를 Block 클래스의 배열타입으로 선언해주면서, 아까 만들어두었던 gensisBlock을 첫번째로 넣어준다.</p>
+<p><img src="https://user-images.githubusercontent.com/33755241/103353357-fb5edc00-4aeb-11eb-8dac-24636176a071.png" alt="image"></p>
+<p>만든 블럭을 console.log로 찍어보면 이렇게 나온다!</p>
+<h3 id="3-Hash-값-계산"><a href="#3-Hash-값-계산" class="headerlink" title="3. Hash 값 계산!"></a>3. Hash 값 계산!</h3><p>블록체인의 블럭은 직전 블록의 해쉬값과, 현재 블록의 정보로 만들어진 해쉬값이 존재한다.</p>
+<p>나는 블록의 해쉬값을 계산하는 함수를 static으로 block 클래스 안에 만들어주었다.</p>
+<p>먼저 SHA256을 계산하기 위해</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add crypto-js</span><br></pre></td></tr></table></figure>
+
+<p>로 설치를 해준후에, </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import * as CryptoJS from &quot;crypto-js&quot;</span><br></pre></td></tr></table></figure>
+
+<p>파일의 제일 윗 부분에 crypto-js를 import 해준다.</p>
+<p>그리고 난뒤에 아래 함수처럼 hash값을 계산한다.</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> calculateBlockHash = (</span><br><span class="line">   index:<span class="built_in">number</span>,</span><br><span class="line">   previoushash:<span class="built_in">string</span>,</span><br><span class="line">   timestamp:<span class="built_in">number</span>,</span><br><span class="line">   data:<span class="built_in">string</span></span><br><span class="line">):<span class="function"><span class="params">string</span>=&gt;</span></span><br><span class="line">   CryptoJS.SHA256(index + previoushash + timestamp + data).toString();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="4-새로운-블록-생성하기"><a href="#4-새로운-블록-생성하기" class="headerlink" title="4. 새로운 블록 생성하기"></a>4. 새로운 블록 생성하기</h3><p>새로운 블록을 생성하기 위해서는 직전 블록의 정보가 필요하다.</p>
+<p>그래서 직전 블록을 얻어올 수 있는 함수를 먼저 하나 만들고, 타임스탬프를 찍어주는 함수도 만들것이다.</p>
+<p>아래와 같다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">const getLatesBlock &#x3D; () :Block &#x3D;&gt; blockchain[blockchain.length-1];</span><br><span class="line">&#x2F;&#x2F;진전 블록의 정보를 얻어온다. </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">const getNewTimeStamp &#x3D; ():number &#x3D;&gt; Math.round(new Date().getTime()&#x2F;1000);</span><br><span class="line">&#x2F;&#x2F;타임스탬프값을 계산한다.</span><br></pre></td></tr></table></figure>
+
+<p>그리고 블록을 생성하는 함수를 작성한다.</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> createNewBlock = (data:<span class="built_in">string</span>) : <span class="function"><span class="params">Block</span> =&gt;</span> &#123;</span><br><span class="line">   <span class="keyword">const</span> previousBlock : Block = getLatesBlock();</span><br><span class="line">   <span class="keyword">const</span> newIndex : <span class="built_in">number</span> = previousBlock.index + <span class="number">1</span>;</span><br><span class="line">   <span class="keyword">const</span> newTimestamp : <span class="built_in">number</span> = getNewTimeStamp();</span><br><span class="line">   <span class="keyword">const</span> newtHash : <span class="built_in">string</span> = Block.calculateBlockHash(</span><br><span class="line">      newIndex,</span><br><span class="line">      previousBlock.hash,</span><br><span class="line">      newTimestamp,</span><br><span class="line">      data</span><br><span class="line">      );</span><br><span class="line">   <span class="keyword">const</span> newBlock : Block = <span class="keyword">new</span> Block(</span><br><span class="line">      newIndex,</span><br><span class="line">      newtHash,</span><br><span class="line">      previousBlock.hash,</span><br><span class="line">      data,</span><br><span class="line">      newTimestamp</span><br><span class="line">      );</span><br><span class="line">   </span><br><span class="line">   <span class="keyword">return</span> newBlock;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>getLatesBlock()을 이용하여 직전블록을 가져오고, 그 정보를 토대로 인덱스값을 증가시킨다.</p>
+<p>getNewTimeStamp()를 이용하여 타임스탬프를 찍고 </p>
+<p>calculateBlockHash( newIndex, previousBlock.hash,newTimestamp,data)를 이용하여 hash값을 계산한다.</p>
+<h3 id="5-블록의-인증"><a href="#5-블록의-인증" class="headerlink" title="5. 블록의 인증"></a>5. 블록의 인증</h3><p>블록을 생성했다고해서 그냥 바로 체인에 넣을 수는 없다. 이 블록이 맞는 블록인지 확인을 해야한다.</p>
+<p>그것을 위해 isBlockVaild()라는 함수를 만들었다. </p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> isBlockValid = (candidateBlock : Block, <span class="attr">previousBlock</span> : Block):<span class="function"><span class="params">boolean</span> =&gt;</span> &#123;</span><br><span class="line">   <span class="function"><span class="title">if</span>(<span class="params">!Block.vaildBlockStructure(candidateBlock)</span>)</span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">   &#125; <span class="keyword">else</span> <span class="function"><span class="title">if</span>(<span class="params">previousBlock.index + <span class="number">1</span> !== candidateBlock.index</span>)</span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">   &#125; <span class="keyword">else</span> <span class="function"><span class="title">if</span>(<span class="params">previousBlock.hash !== candidateBlock.previoushash</span>)</span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">   &#125; <span class="keyword">else</span> <span class="function"><span class="title">if</span>(<span class="params">getHashForBlock(candidateBlock) !== candidateBlock.hash </span>)</span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">   &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>위의 함수는 블럭 클래스의 candidateBlock과 preivousBlock 두개를 인자로 받는다. 그리고 boolean값을 리턴한다.</p>
+<p>체크하는 부분은,</p>
+<ol>
+<li>해당 함수가 블럭의 구조를 가지고 있는가?</li>
+<li>직전 블럭의 인덱스보다 +1 된 값의 인덱스를 가지고 있는가?</li>
+<li>후보 블럭의 직전해쉬값은 직전블록의 해쉬값과 같은가?</li>
+<li>후보 블럭의 해쉬값은 후보 블럭의 데이터로 해쉬를 계산했을때 같은 값인가?</li>
+</ol>
+<p>이렇게 4가지를 체크한다.</p>
+<p>1번 부분을 체크하기 위해서</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> vaildBlockStructure = (aBlock:Block) : <span class="function"><span class="params">boolean</span> =&gt;</span></span><br><span class="line">    <span class="keyword">typeof</span> aBlock.index === <span class="string">&quot;number&quot;</span> &amp;&amp; </span><br><span class="line">    <span class="keyword">typeof</span> aBlock.hash ===<span class="string">&quot;string&quot;</span> &amp;&amp; </span><br><span class="line">    <span class="keyword">typeof</span> aBlock.previoushash === <span class="string">&quot;string&quot;</span> &amp;&amp; </span><br><span class="line">    <span class="keyword">typeof</span> aBlock.timestamp === <span class="string">&quot;number&quot;</span> &amp;&amp;</span><br><span class="line">    <span class="keyword">typeof</span> aBlock.data === <span class="string">&quot;string&quot;</span>;</span><br><span class="line">   <span class="title">constructor</span>(<span class="params"></span></span><br><span class="line"><span class="params">      index:<span class="built_in">number</span>,</span></span><br><span class="line"><span class="params">      hash:<span class="built_in">string</span>,</span></span><br><span class="line"><span class="params">      previoushash:<span class="built_in">string</span>,</span></span><br><span class="line"><span class="params">      data:<span class="built_in">string</span>,</span></span><br><span class="line"><span class="params">      timestamp:<span class="built_in">number</span> </span></span><br><span class="line"><span class="params">      </span>)&#123;</span><br><span class="line"></span><br><span class="line">         <span class="built_in">this</span>.index =index;</span><br><span class="line">         <span class="built_in">this</span>.hash=hash;</span><br><span class="line">         <span class="built_in">this</span>.previoushash=previoushash;</span><br><span class="line">         <span class="built_in">this</span>.data = data;</span><br><span class="line">         <span class="built_in">this</span>.timestamp=timestamp     </span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>해당 함수를 Block class안에 만들어주었다. </p>
+<p>3번 부분을 체크하기 위해서</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> getHashForBlock = (aBlock:Block) :<span class="function"><span class="params">string</span> =&gt;</span></span><br><span class="line"> Block.calculateBlockHash(</span><br><span class="line">    aBlock.index, </span><br><span class="line">    aBlock.previoushash, </span><br><span class="line">    aBlock.timestamp, </span><br><span class="line">    aBlock.data)</span><br></pre></td></tr></table></figure>
+
+<p>해당 함수를 만들어주었다.</p>
+<h3 id="6-Add-Block"><a href="#6-Add-Block" class="headerlink" title="6. Add Block!"></a>6. Add Block!</h3><p>블록 인증을 마치고나서는 체인에 블록을 추가해야한다.</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> addBlock = (candiateBlock : Block) : <span class="function"><span class="params">void</span>=&gt;</span> &#123;</span><br><span class="line">   <span class="function"><span class="title">if</span>(<span class="params">isBlockValid(candiateBlock, getLatesBlock())</span>)</span>&#123;</span><br><span class="line">      blockchain.push(candiateBlock);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>위의 함수로 블록을 추가하고 위의 함수는,</p>
+<p>createNewBlock(data:string):Block에 아래와 같이 추가한다.</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> createNewBlock = (data:<span class="built_in">string</span>) : <span class="function"><span class="params">Block</span> =&gt;</span> &#123;</span><br><span class="line">   <span class="keyword">const</span> previousBlock : Block = getLatesBlock();</span><br><span class="line">   <span class="keyword">const</span> newIndex : <span class="built_in">number</span> = previousBlock.index + <span class="number">1</span>;</span><br><span class="line">   <span class="keyword">const</span> newTimestamp : <span class="built_in">number</span> = getNewTimeStamp();</span><br><span class="line">   <span class="keyword">const</span> newtHash : <span class="built_in">string</span> = Block.calculateBlockHash(</span><br><span class="line">      newIndex,</span><br><span class="line">      previousBlock.hash,</span><br><span class="line">      newTimestamp,</span><br><span class="line">      data</span><br><span class="line">      );</span><br><span class="line">   <span class="keyword">const</span> newBlock : Block = <span class="keyword">new</span> Block(</span><br><span class="line">      newIndex,</span><br><span class="line">      newtHash,</span><br><span class="line">      previousBlock.hash,</span><br><span class="line">      data,</span><br><span class="line">      newTimestamp</span><br><span class="line">      );</span><br><span class="line">   </span><br><span class="line">   addBlock(newBlock);</span><br><span class="line">   <span class="keyword">return</span> newBlock;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="7-블록-만들고-console-log"><a href="#7-블록-만들고-console-log" class="headerlink" title="7. 블록 만들고 console.log!"></a>7. 블록 만들고 console.log!</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">createNewBlock(<span class="string">&quot;second block&quot;</span>);</span><br><span class="line">createNewBlock(<span class="string">&quot;third block&quot;</span>);</span><br><span class="line">createNewBlock(<span class="string">&quot;fourth block&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>그 다음 <code>console.log(bolckchain)</code> 으로 결과를 확인하면, </p>
+<p><img src="https://user-images.githubusercontent.com/33755241/103410544-1cd4cc00-4baf-11eb-93d7-f9dc7f5223f4.png" alt="image"></p>
+<p>다음과 같은 결과를 확인 할 수 있다!</p>
+
+        </div>
+        
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>youmin park</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://yuminee.github.io/2020/12/31/Blockchain/typescript2/">https://yuminee.github.io/2020/12/31/Blockchain/typescript2/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span><strong>재미없는거 못함</strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <div id="disqus_thread"></div>
+<script>
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+    /*
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://yumin-techblog.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/typescript/"># typescript</a>
+                    
+                        <a href="/tags/Blockchain/"># Blockchain</a>
+                    
+                        <a href="/tags/%EB%B8%94%EB%A1%9D%EC%B2%B4%EC%9D%B8/"># 블록체인</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2021/02/06/Docker/docker1/">Docker란?</a>
+            
+            
+            <a class="next" rel="next" href="/2020/12/30/Blockchain/typescript1/">Build Blockchain with TypeScript 1</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© youmin park | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
