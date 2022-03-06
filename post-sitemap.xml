@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="sitemap.xsl"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <url>
+        <loc>https://yuminee.github.io/</loc>
+        <changefreq>daily</changefreq>
+        <priority>1</priority>
+    </url>
+
+
+    <url>
+        <loc>https://yuminee.github.io/2022/03/06/AWS/tale_of_perpormance_ecs_boto3_iam/</loc>
+        <lastmod>2022-03-06T16:08:13.632Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2022/03/01/nginx/nginx-crush01/</loc>
+        <lastmod>2022-03-01T15:09:09.725Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2021/10/01/K8s/k8s_%20presentation/</loc>
+        <lastmod>2021-10-02T16:22:44.922Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2021/02/12/Docker/docker8/</loc>
+        <lastmod>2021-06-02T15:08:40.022Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2021/02/11/Docker/docker7/</loc>
+        <lastmod>2021-06-02T15:00:27.134Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2021/02/09/Docker/docker4/</loc>
+        <lastmod>2021-06-02T14:56:18.843Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2021/02/08/Docker/docker3/</loc>
+        <lastmod>2021-06-02T14:53:48.693Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2021/02/10/Docker/docker6/</loc>
+        <lastmod>2021-06-02T14:46:09.021Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2021/02/09/Docker/docker5/</loc>
+        <lastmod>2021-06-02T14:45:37.991Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/11/22/statistics/statistics_201122/</loc>
+        <lastmod>2021-06-02T14:17:57.512Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/11/25/statistics/statistics_201125/</loc>
+        <lastmod>2021-06-02T14:17:57.512Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/11/21/statistics/statistics_201121/</loc>
+        <lastmod>2021-06-02T14:17:57.511Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/11/20/statistics/statistics_201120/</loc>
+        <lastmod>2021-06-02T14:17:57.510Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/11/19/statistics/statistics_201119/</loc>
+        <lastmod>2021-06-02T14:17:57.510Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/11/26/machine%20learning/lightGBM1/</loc>
+        <lastmod>2021-06-02T14:17:57.509Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/11/21/machine%20learning/rnn1/</loc>
+        <lastmod>2021-06-02T14:17:57.509Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/11/23/statistics/statistics-201123/</loc>
+        <lastmod>2021-06-02T14:17:57.509Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/11/24/statistics/statistics-201124/</loc>
+        <lastmod>2021-06-02T14:17:57.509Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/11/18/statistics/statistics_201117/</loc>
+        <lastmod>2021-06-02T14:17:57.509Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/11/23/kaggle/tweet_disater/</loc>
+        <lastmod>2021-06-02T14:17:57.508Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/11/28/kaggle/tweet_disaster_EDA/</loc>
+        <lastmod>2021-06-02T14:17:57.508Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/11/29/Hyperledger%20fabric/raft_algorithm3/</loc>
+        <lastmod>2021-06-02T14:17:57.507Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/12/01/Hyperledger%20fabric/ufochaincode1/</loc>
+        <lastmod>2021-06-02T14:17:57.507Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/12/02/Hyperledger%20fabric/ufoserversdk1/</loc>
+        <lastmod>2021-06-02T14:17:57.507Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/12/03/Hyperledger%20fabric/ufoserversdk2/</loc>
+        <lastmod>2021-06-02T14:17:57.507Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/11/30/Hyperledger%20fabric/Chaincode_Nodejs/</loc>
+        <lastmod>2021-06-02T14:17:57.506Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/11/17/Hyperledger%20fabric/raft_algorithm/</loc>
+        <lastmod>2021-06-02T14:17:57.506Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/11/27/Hyperledger%20fabric/raft_algorithm2/</loc>
+        <lastmod>2021-06-02T14:17:57.506Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2021/02/07/Docker/docker2/</loc>
+        <lastmod>2021-06-02T14:17:57.505Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2021/02/06/Docker/docker1/</loc>
+        <lastmod>2021-06-02T14:17:57.504Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/12/30/Blockchain/typescript1/</loc>
+        <lastmod>2021-06-02T14:17:57.504Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/12/31/Blockchain/typescript2/</loc>
+        <lastmod>2021-06-02T14:17:57.504Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+</urlset>
+<!-- XML Sitemap generated by Hexo SEO Friendly Sitemap Generator -->
