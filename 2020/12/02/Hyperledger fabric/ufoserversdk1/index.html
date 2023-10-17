@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          UFO Project 5 - Hyperledger Fabric SDK + application (1) - yuminkuu
+        
+    </title>
+
+    <link rel="canonical" href="https://yuminee.github.io/2020/12/02/Hyperledger fabric/ufoserversdk1/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
+
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/atom.xml" title="Yumin's Techblog" type="application/atom+xml">
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('')
+            /*post*/
+        
+    }
+    
+    #signature{
+        background-image: url('//image/youmin2.jpg');
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#블록체인" title="블록체인">블록체인</a>
+                            
+                              <a class="tag" href="/tags/#raft" title="raft">raft</a>
+                            
+                              <a class="tag" href="/tags/#blockchain" title="blockchain">blockchain</a>
+                            
+                              <a class="tag" href="/tags/#hyperledger fabric" title="hyperledger fabric">hyperledger fabric</a>
+                            
+                              <a class="tag" href="/tags/#하이퍼레저 패브릭" title="하이퍼레저 패브릭">하이퍼레저 패브릭</a>
+                            
+                              <a class="tag" href="/tags/#fabric-client" title="fabric-client">fabric-client</a>
+                            
+                              <a class="tag" href="/tags/#fabric sdk" title="fabric sdk">fabric sdk</a>
+                            
+                        </div>
+                        <h1>UFO Project 5 - Hyperledger Fabric SDK + application (1)</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by yumin park on
+                            2020-12-02
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yumin&#39;s Techblog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/category/">All categories</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tag/">All tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>체인코드를 기반으로 모바일과 통신하기 위한 서버가 필요하다. </p>
+<h3 id="하이퍼레저-패브릭-SDK"><a href="#하이퍼레저-패브릭-SDK" class="headerlink" title="하이퍼레저 패브릭 SDK"></a>하이퍼레저 패브릭 SDK</h3><p> 하이퍼레저 패브릭 SDK를 통해 외부에서 하이퍼레저 패브릭 네트워크에 접속할 수 있다. </p>
+<p><img src="https://user-images.githubusercontent.com/33755241/101305979-248ea280-3887-11eb-9de1-f83bb7438454.png" alt="image"></p>
+<p>하이퍼레저 패브릭 SDK 는 크게 3가지 핵심모듈로 구성되는데.</p>
+<ul>
+<li><strong>Fabric-client</strong> : 하이퍼레저 패브릭 기반 블록체인 네트워크와 통신을 가능하게 하는 핵심 구성요소다. 피어, 오더러 관리 및 이벤트 처리 등 다양한 API를 제공한다. 새로운 채널 생성, 피어 노드의 채널 참여, 피어에 체인코드 설치 및 인스턴스화, 트랜잭션 제출, 트랜잭션 또는 블록의 원장 조회등.</li>
+<li><strong>Fabric-CA-Client</strong>: 사용자 관리에 사용된다. 새로운 사용자 등록, 하이퍼레저 패브릭 서버에서 서명한 등록 인증서 발급, 기존 사용자 인증서 폐기등이 있다.</li>
+<li><strong>Fabric-Network(API)</strong> : 플러그할 수 있는 구성 요소에 대한 API를 제공한다. SDK에서 사용하는 주요 인터페이스인 CryptoSuite, key, keyValueStore를 기본적으로 내장하고 있다.</li>
+</ul>
+<p>하이퍼레저 패브릭 SDK는 하이퍼레저 패브릭 네트워크와 gRPC를 통해 통신하는데, gRPC는 구글에서 개발한 HTTP 기반 RPC 프레임워크로, 더 적은 리소스를 통해 네트워크 통신의 효율성을 극대화해 성능을 강화한 통신 프로토콜이다.</p>
+<p>먼저 hyperledger fabric server도 node js 로 작성 할 것이기 때문에, package.json을 작성해준다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;name&quot;: &quot;server&quot;,</span><br><span class="line">  &quot;version&quot;: &quot;1.0.0&quot;,</span><br><span class="line">  &quot;description&quot;: &quot;&quot;,</span><br><span class="line">  &quot;main&quot;: &quot;index.js&quot;,</span><br><span class="line">  &quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;start&quot;: &quot;.&#x2F;node_modules&#x2F;nodemon&#x2F;bin&#x2F;nodemon.js src&#x2F;app.js&quot;,</span><br><span class="line">    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;dependencies&quot;: &#123;</span><br><span class="line">    &quot;body-parser&quot;: &quot;^1.18.3&quot;,</span><br><span class="line">    &quot;cors&quot;: &quot;^2.8.5&quot;,</span><br><span class="line">    &quot;express&quot;: &quot;^4.16.4&quot;,</span><br><span class="line">    &quot;fabric-ca-client&quot;: &quot;~1.4.0&quot;,</span><br><span class="line">    &quot;fabric-network&quot;: &quot;~1.4.0&quot;,</span><br><span class="line">    &quot;handlebars&quot;: &quot;^4.5.3&quot;,</span><br><span class="line">    &quot;js-yaml&quot;: &quot;^3.13.1&quot;,</span><br><span class="line">    &quot;morgan&quot;: &quot;^1.9.1&quot;,</span><br><span class="line">    &quot;nodemon&quot;: &quot;^1.18.9&quot;,</span><br><span class="line">    &quot;sed&quot;: &quot;0.0.1&quot;,</span><br><span class="line">    &quot;tar&quot;: &quot;&gt;&#x3D;2.2.2&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>그리고 난뒤 package.json이 있는 폴더에서 npm install을 하게되면 node_modules가 설치된다.</p>
+<p>먼저 관리자를 등록해줘야 한다. 필요한 정보를 위해서 connection.yaml 과 config.json을 작성한다.</p>
+<ul>
+<li>config.json</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;connection_file&quot;</span>: <span class="string">&quot;connection.yaml&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;appAdmin&quot;</span>: <span class="string">&quot;admin&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;appAdminSecret&quot;</span>: <span class="string">&quot;adminpw&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;orgMSPID&quot;</span>: <span class="string">&quot;SalesMSP&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;caName&quot;</span>: <span class="string">&quot;ca.sales.ufo.com&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;userName&quot;</span>: <span class="string">&quot;admin&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;gatewayDiscovery&quot;</span>: &#123; <span class="attr">&quot;enabled&quot;</span>: <span class="literal">false</span>, <span class="attr">&quot;asLocalhost&quot;</span>: <span class="literal">true</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>connetcion.yaml</p>
+<p>해당 파일에는 채널, 조직, 피어들의 정보가 담겨있다. 전체 코드는 깃에서 확인 할 수 있다.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">channels:</span></span><br><span class="line">  <span class="attr">ufochannel:</span></span><br><span class="line">    <span class="attr">orderers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">orderer.ufo.com</span></span><br><span class="line">      <span class="string">...</span></span><br><span class="line">      <span class="string">...</span></span><br><span class="line">     </span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<p>enrollAdmin.js라는 파일을 만든다.</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * SPDX-License-Identifier: Apache-2.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> FabricCAServices = <span class="built_in">require</span>(<span class="string">&#x27;fabric-ca-client&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; FileSystemWallet, X509WalletMixin &#125; = <span class="built_in">require</span>(<span class="string">&#x27;fabric-network&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> yaml = <span class="built_in">require</span>(<span class="string">&#x27;js-yaml&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// capture network variables from config.json</span></span><br><span class="line"><span class="keyword">const</span> configPath = path.join(process.cwd(), <span class="string">&#x27;config.json&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> configJSON = fs.readFileSync(configPath, <span class="string">&#x27;utf8&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> config = <span class="built_in">JSON</span>.parse(configJSON);</span><br><span class="line"><span class="keyword">var</span> connection_file = config.connection_file;</span><br><span class="line"><span class="keyword">var</span> appAdmin = config.appAdmin;</span><br><span class="line"><span class="keyword">var</span> appAdminSecret = config.appAdminSecret;</span><br><span class="line"><span class="keyword">var</span> userName = config.userName;</span><br><span class="line"><span class="keyword">var</span> orgMSPID = config.orgMSPID;</span><br><span class="line"><span class="keyword">var</span> caName = config.caName;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> filePath = path.join(process.cwd(), <span class="string">&#x27;/connection.yaml&#x27;</span>);</span><br><span class="line"><span class="keyword">let</span> fileContents = fs.readFileSync(filePath, <span class="string">&#x27;utf8&#x27;</span>);</span><br><span class="line"><span class="keyword">let</span> connectionFile = yaml.safeLoad(fileContents);</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">main</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// Create a new CA client for interacting with the CA.</span></span><br><span class="line">        <span class="keyword">const</span> caURL = connectionFile.certificateAuthorities[caName].url;</span><br><span class="line">        <span class="keyword">const</span> ca = <span class="keyword">new</span> FabricCAServices(caURL);</span><br><span class="line">        <span class="comment">// Create a new file system based wallet for managing identities.</span></span><br><span class="line">        <span class="keyword">const</span> walletPath = path.join(process.cwd(), <span class="string">&#x27;wallet&#x27;</span>);</span><br><span class="line">        <span class="keyword">const</span> wallet = <span class="keyword">new</span> FileSystemWallet(walletPath);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Check to see if we&#x27;ve already enrolled the admin user.</span></span><br><span class="line">        <span class="keyword">const</span> adminExists = <span class="keyword">await</span> wallet.exists(userName);</span><br><span class="line">        <span class="keyword">if</span> (adminExists) &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">&#x27;An identity for the admin user &quot;admin&quot; already exists in the wallet&#x27;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Enroll the admin user, and import the new identity into the wallet.</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">const</span> enrollment = <span class="keyword">await</span> ca.enroll(&#123; <span class="attr">enrollmentID</span>: appAdmin, <span class="attr">enrollmentSecret</span>: appAdminSecret &#125;);</span><br><span class="line">        <span class="keyword">const</span> identity = X509WalletMixin.createIdentity(orgMSPID, enrollment.certificate, enrollment.key.toBytes());</span><br><span class="line">        wallet.import(userName, identity);</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;msg: Successfully enrolled admin user &#x27;</span> + userName + <span class="string">&#x27; and imported it into the wallet&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">        <span class="built_in">console</span>.error(<span class="string">`Failed to enroll admin user: <span class="subst">$&#123;userName&#125;</span> <span class="subst">$&#123;error&#125;</span>`</span>);</span><br><span class="line">        process.exit(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">main();</span><br></pre></td></tr></table></figure>
+
+
+
+<p>처음 서버를 키고나서 generate 후에 만들어지는 key들을 위에서 만든 connection.yaml에 복사해서 가져와야 한다. 그것을 위해 sh 파일을 만들어 주었다.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">  </span><br><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;printing keystore for Sales&#x27;</span></span><br><span class="line"></span><br><span class="line">ORG_1_KEYSTORE=$(ls ../../ufo-network/crypto-config/peerOrganizations/sales.ufo.com/users/Admin\@sales.ufo.com/msp/keystore/)</span><br><span class="line">ORG_2_KEYSTORE=$(ls ../../ufo-network/crypto-config/peerOrganizations/customer.ufo.com/users/Admin\@customer.ufo.com/msp/keystore/)</span><br><span class="line"></span><br><span class="line">ORG_1_PATH_TO_KEYSTORE=<span class="string">&quot;Admin@sales.ufo.com/msp/keystore/&quot;</span></span><br><span class="line">ORG_2_PATH_TO_KEYSTORE=<span class="string">&quot;Admin@customer.ufo.com/msp/keystore/&quot;</span></span><br><span class="line"></span><br><span class="line">UPDATED_KEYSTORE_ORG_1=<span class="string">&quot;<span class="variable">$ORG_1_PATH_TO_KEYSTORE</span><span class="variable">$ORG_1_KEYSTORE</span>&quot;</span></span><br><span class="line">UPDATED_KEYSTORE_ORG_2=<span class="string">&quot;<span class="variable">$ORG_2_PATH_TO_KEYSTORE</span><span class="variable">$ORG_2_KEYSTORE</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$UPDATED_KEYSTORE_ORG_1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># sed -i &quot;s|keystore/.*|$&#123;UPDATED_KEYSTORE&#125;|g&quot; connection.yaml</span></span><br><span class="line"><span class="comment"># .* is regex-ese for &quot;any character followed by zero or more of any character(s)&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;updating connection.yaml Sales adminPrivateKey path with&#x27;</span> <span class="variable">$&#123;UPDATED_KEYSTORE_ORG_1&#125;</span></span><br><span class="line"></span><br><span class="line">sed -i -e <span class="string">&quot;s|Admin@sales.ufo.com/msp/keystore/.*|<span class="variable">$UPDATED_KEYSTORE_ORG_1</span>|g&quot;</span> connection.yaml</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;updating connection.yaml Customer adminPrivateKey path with&#x27;</span> <span class="variable">$&#123;UPDATED_KEYSTORE_ORG_2&#125;</span></span><br><span class="line"></span><br><span class="line">sed -i -e <span class="string">&quot;s|Admin@customer.ufo.com/msp/keystore/.*|<span class="variable">$UPDATED_KEYSTORE_ORG_2</span>|g&quot;</span> connection.yaml</span><br></pre></td></tr></table></figure>
+
+
+
+<p>그 후에 node enrollAdmin.js 를 하면, 지갑이 생성되었다는 log과 함께 wallet/admin이라는 폴더가 생성이 된다.</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/12/03/Hyperledger fabric/ufoserversdk2/" data-toggle="tooltip" data-placement="top" title="UFO Project 6 - Hyperledger Fabric SDK + application (2)">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/12/01/Hyperledger fabric/ufochaincode1/" data-toggle="tooltip" data-placement="top" title="UFO Project 4 - Hyperledger Fabric Chain Code implementation in Node js (1)">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#블록체인" title="블록체인">블록체인</a>
+                        
+                          <a class="tag" href="/tags/#raft" title="raft">raft</a>
+                        
+                          <a class="tag" href="/tags/#blockchain" title="blockchain">blockchain</a>
+                        
+                          <a class="tag" href="/tags/#hyperledger fabric" title="hyperledger fabric">hyperledger fabric</a>
+                        
+                          <a class="tag" href="/tags/#하이퍼레저 패브릭" title="하이퍼레저 패브릭">하이퍼레저 패브릭</a>
+                        
+                          <a class="tag" href="/tags/#fabric-client" title="fabric-client">fabric-client</a>
+                        
+                          <a class="tag" href="/tags/#fabric sdk" title="fabric sdk">fabric sdk</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "disqus_Wau6SNFBXS";
+    var disqus_identifier = "https://yuminee.github.io/2020/12/02/Hyperledger%20fabric/ufoserversdk1/";
+    var disqus_url = "https://yuminee.github.io/2020/12/02/Hyperledger%20fabric/ufoserversdk1/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yuminee">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; yumin park 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a target="_blank" rel="noopener" href="http://beantech.org">BeanTech</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://yuminee.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://yuminee.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

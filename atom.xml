@@ -36,11 +36,11 @@
     <category term="Algorithm" scheme="https://yuminee.github.io/categories/Algorithm/"/>
     
     
-    <category term="bisect" scheme="https://yuminee.github.io/tags/bisect/"/>
-    
     <category term="LeetCode" scheme="https://yuminee.github.io/tags/LeetCode/"/>
     
     <category term="Algorithm" scheme="https://yuminee.github.io/tags/Algorithm/"/>
+    
+    <category term="bisect" scheme="https://yuminee.github.io/tags/bisect/"/>
     
   </entry>
   
@@ -64,13 +64,13 @@
     <category term="Python" scheme="https://yuminee.github.io/categories/Python/"/>
     
     
+    <category term="bisect" scheme="https://yuminee.github.io/tags/bisect/"/>
+    
     <category term="python3" scheme="https://yuminee.github.io/tags/python3/"/>
     
     <category term="bisect_left" scheme="https://yuminee.github.io/tags/bisect-left/"/>
     
     <category term="bisect_right" scheme="https://yuminee.github.io/tags/bisect-right/"/>
-    
-    <category term="bisect" scheme="https://yuminee.github.io/tags/bisect/"/>
     
   </entry>
   
