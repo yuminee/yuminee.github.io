@@ -113,15 +113,7 @@
     </url>
 
     <url>
-        <loc>https://yuminee.github.io/2021/02/06/Docker/docker1/</loc>
-        <lastmod>2021-06-02T14:17:57.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://yuminee.github.io/2021/02/07/Docker/docker2/</loc>
+        <loc>https://yuminee.github.io/2020/11/30/Hyperledger%20fabric/Chaincode_Nodejs/</loc>
         <lastmod>2021-06-02T14:17:57.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -137,23 +129,7 @@
     </url>
 
     <url>
-        <loc>https://yuminee.github.io/2020/11/30/Hyperledger%20fabric/Chaincode_Nodejs/</loc>
-        <lastmod>2021-06-02T14:17:57.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>https://yuminee.github.io/2020/11/27/Hyperledger%20fabric/raft_algorithm2/</loc>
-        <lastmod>2021-06-02T14:17:57.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://yuminee.github.io/2020/12/02/Hyperledger%20fabric/ufoserversdk1/</loc>
         <lastmod>2021-06-02T14:17:57.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -169,7 +145,7 @@
     </url>
 
     <url>
-        <loc>https://yuminee.github.io/2020/12/03/Hyperledger%20fabric/ufoserversdk2/</loc>
+        <loc>https://yuminee.github.io/2020/12/01/Hyperledger%20fabric/ufochaincode1/</loc>
         <lastmod>2021-06-02T14:17:57.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -177,7 +153,15 @@
     </url>
 
     <url>
-        <loc>https://yuminee.github.io/2020/12/01/Hyperledger%20fabric/ufochaincode1/</loc>
+        <loc>https://yuminee.github.io/2020/12/02/Hyperledger%20fabric/ufoserversdk1/</loc>
+        <lastmod>2021-06-02T14:17:57.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/12/03/Hyperledger%20fabric/ufoserversdk2/</loc>
         <lastmod>2021-06-02T14:17:57.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -201,7 +185,7 @@
     </url>
 
     <url>
-        <loc>https://yuminee.github.io/2020/11/21/machine%20learning/rnn1/</loc>
+        <loc>https://yuminee.github.io/2020/11/26/machine%20learning/lightGBM1/</loc>
         <lastmod>2021-06-02T14:17:57.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -209,7 +193,7 @@
     </url>
 
     <url>
-        <loc>https://yuminee.github.io/2020/11/26/machine%20learning/lightGBM1/</loc>
+        <loc>https://yuminee.github.io/2020/11/21/machine%20learning/rnn1/</loc>
         <lastmod>2021-06-02T14:17:57.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -241,7 +225,7 @@
     </url>
 
     <url>
-        <loc>https://yuminee.github.io/2020/11/19/statistics/statistics_201119/</loc>
+        <loc>https://yuminee.github.io/2020/11/20/statistics/statistics_201120/</loc>
         <lastmod>2021-06-02T14:17:57.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -249,7 +233,7 @@
     </url>
 
     <url>
-        <loc>https://yuminee.github.io/2020/11/20/statistics/statistics_201120/</loc>
+        <loc>https://yuminee.github.io/2020/11/19/statistics/statistics_201119/</loc>
         <lastmod>2021-06-02T14:17:57.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -274,6 +258,22 @@
 
     <url>
         <loc>https://yuminee.github.io/2020/11/25/statistics/statistics_201125/</loc>
+        <lastmod>2021-06-02T14:17:57.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2021/02/06/Docker/docker1/</loc>
+        <lastmod>2021-06-02T14:17:57.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2021/02/07/Docker/docker2/</loc>
         <lastmod>2021-06-02T14:17:57.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>

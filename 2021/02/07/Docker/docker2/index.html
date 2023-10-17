@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="백엔드 개발자">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Docker Engine (도커 엔진)? - youmin&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="https://yuminee.github.io/2021/02/07/Docker/docker2/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
+
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/atom.xml" title="yuminkuu" type="application/atom+xml">
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('')
+            /*post*/
+        
+    }
+    
+    #signature{
+        background-image: url('/img/signature/BeanTechSign-white.png');
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#docker" title="docker">docker</a>
+                            
+                              <a class="tag" href="/tags/#도커" title="도커">도커</a>
+                            
+                              <a class="tag" href="/tags/#docker run" title="docker run">docker run</a>
+                            
+                              <a class="tag" href="/tags/#docker rename" title="docker rename">docker rename</a>
+                            
+                              <a class="tag" href="/tags/#도커 컨테이너 생성" title="도커 컨테이너 생성">도커 컨테이너 생성</a>
+                            
+                        </div>
+                        <h1>Docker Engine (도커 엔진)?</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by youmin park on
+                            2021-02-07
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">yuminkuu</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tag/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="Docker-Engine-도커-엔진"><a href="#Docker-Engine-도커-엔진" class="headerlink" title="Docker Engine (도커 엔진)?"></a>Docker Engine (도커 엔진)?</h1><h3 id="도커-이미지와-컨테이너"><a href="#도커-이미지와-컨테이너" class="headerlink" title="도커 이미지와 컨테이너"></a>도커 이미지와 컨테이너</h3><p>도커 엔진에서 사용하는 기본 단위는 있다 <strong>이미지</strong>와 <strong>컨테이너</strong>이며, 이 두가지가 도커 엔진의 핵심입니다.</p>
+<h3 id="도커-이미지"><a href="#도커-이미지" class="headerlink" title="도커 이미지"></a>도커 이미지</h3><p><strong>이미지는 컨테이너를 생성할 때 필요한 요소</strong>이며, 가상 머신을 생성할 때 사용하는 iso 파일과 비슷한 개념입니다. 이미지는 여러 개의 계층으로 된 바이너리 파일로 존재하고, 컨테이너를 생성하고 실행할 때 <strong>있는 읽기 전용</strong>으로 사용됩니다. 이미지는 도커 명령어로 내려받을 수 있으므로 별도로 설치할 필요는 없습니다.</p>
+<p>도커에서 사용하는 이미지의 이름은 기본적으로 [저장소 이름]/[이미지 이름]:[태그]의 형태로 구성되어 있습니다.</p>
+<p><img src="https://user-images.githubusercontent.com/33755241/107135224-326eab80-693c-11eb-8578-c06a5f6aba43.png" alt="이미지이름의구성"></p>
+<ul>
+<li><strong>저장소(Repository ) 이름</strong>은 이미지가 저장된 장소를 의미. 저장소 이름이 명시되지 않은 이미지는 도커에서 기본적으로 제공하는 이미지 저장소인 도커 허브(docker hub)의 공식(official) 이미지 입니다.</li>
+<li><strong>이미지 이름</strong>은 해당 이미지가 어떤 역활을 하는지 나타냅니다. 위 예시에는 우분투 컨테이너를 생성하기 위한 이미지라는 것을 알 수 있습니다. </li>
+<li><strong>태그</strong>는 이미지의 버전 관리, 혹은 리버전(Revision) 관리에 사용합니다. 일반적으로는 버전을 위와 같이 명시하지만, 적지 않는다면 이미지 태그는 latest로 인식합니다.</li>
+</ul>
+<h3 id="도커-컨테이너"><a href="#도커-컨테이너" class="headerlink" title="도커 컨테이너"></a>도커 컨테이너</h3><p>도커 이미지는 우분투, CentOS등 기본적인 리눅스 운영체제에서 부터 아파치 웹 서버, Mysql 데이터베이스 등등 여러가지 종류가 있습니다. 이러한 <strong>이미지로 컨테이너를 생성하면 해당 이미지의 목적에 맞는 파일이 들어 있는 파일 시스템과 격리된 시스템 자원 및 네트워크를 사용할 수 있는 독립된 공간이 생성</strong>되고 이것이 *<em>도커 컨테이너</em>입니다. </p>
+<p>컨테이너는 이미지를 읽기 전용으로 사용하되 이미지에서 변경된 사항만 컨테이너 계층에 저장하므로 컨테이너는 무엇을 하든지 원래의 이미지에는 영향을 받지 않습니다. </p>
+<h3 id="도커-컨테이너-다루기"><a href="#도커-컨테이너-다루기" class="headerlink" title="도커 컨테이너 다루기"></a>도커 컨테이너 다루기</h3><p>저는 지금 mac m1 을 사용하고 있어서 m1 버전으로 릴리즈된 docker를 최근에 설치하였습니다. </p>
+<p><a target="_blank" rel="noopener" href="https://docs.docker.com/docker-for-mac/apple-m1/">docker for m1 docs </a>에서 설치 방법을 확인 하실 수 있습니다!</p>
+<h4 id="컨테이너-생성"><a href="#컨테이너-생성" class="headerlink" title="컨테이너 생성"></a>컨테이너 생성</h4><p><img src="https://user-images.githubusercontent.com/33755241/107135920-1f5eda00-6942-11eb-8004-e5b87da0a4c2.png" alt="도커버전확인">{:.alignleft}</p>
+<p>위의 명령어로 도커의 버전을 확인 할 수 있고, 저렇게 버전이 나온다면 잘 설치가 된 것 입니다.</p>
+<img width="565" alt="스크린샷 2021-02-07 오후 3 01 20" src="https://user-images.githubusercontent.com/33755241/107138058-5ee2f180-6955-11eb-83ec-ad662a465313.png">
+
+<p>docker run 명령어를 입력하면 보여지는 화면입니다. </p>
+<p><code>docker run -i -t ubuntu:14.04</code></p>
+<p>라는 명령어를 통해 컨테이너를 생성 및 샐행과 동시에 컨테이너 내부로 들어오게 됩니다. 컨테이너에서 기본 사용자는 root 이고, 호스트 이름은 무작위의 16진수 해시값입니다. 무작위의 16진수 해쉬값은 컨테이너의 고유한 ID의 앞 일부분이며, 위 예시에서는 65d9daa47df6 입니다.</p>
+<p>docker run 명령어로 컨테이너를 생성할때 <strong>-i 명령어로 상호 입출력을, -t 명령어로 tty를 활설화해서 배시(bash) 셸을 사용하도록</strong> 컨테이너를 설정했습니다.</p>
+<p>docker run 명령어에서 이 두 옵션중 하나라도 사용하지 않으면 셸을 정상적으로 사용할 수 없습니다.</p>
+<img width="680" alt="스크린샷 2021-02-07 오후 3 07 51" src="https://user-images.githubusercontent.com/33755241/107138178-41625780-6956-11eb-9ca4-6ad49394de3f.png">
+
+<p>ls 명령어로 파일시스템을 확인해보면 아무것도 살치되지 않은 상태임을 확인할 수 있습니다.</p>
+<p>컨테이너 내부에서 빠져 나오는 방법은</p>
+<ul>
+<li>exit 를 입력하거나,</li>
+<li>Ctrl +D를 동시에 입력</li>
+</ul>
+<p>하는 것입니다.</p>
+<img width="680" alt="스크린샷 2021-02-07 오후 3 11 46" src="https://user-images.githubusercontent.com/33755241/107138260-cea5ac00-6956-11eb-95d5-ffb2033ff737.png">
+
+<p>다른 방법으로 컨테이너를 정지하지 않고 빠져나오는 것으로 <code>Ctrl +P,Q</code> 를 입력하는 것입니다. <code>exit</code> 명령어는 배시 셸을 종료함으로써 컨테이너를 정지시킴과 동시에 컨테이너에서 빠져나오지만, Ctrl+ P,Q를 사용하면 단순히 컨테이너의 셸에서만 빠져나오기 때문에 컨테이너 애플리케이션을 개발하는 목적으로 컨테이너를 사용할 때는 이 방법을 많이 씁니다.</p>
+<p>docker pull 명령어로 centos 이미지를 다운받아 보겠습니다.</p>
+<img width="680" alt="스크린샷 2021-02-07 오후 3 21 46" src="https://user-images.githubusercontent.com/33755241/107138515-33153b00-6958-11eb-9ff4-2558c2c2d04a.png">
+
+<p>이미지가 잘 받아졌는지 확인하기 위해서 <strong>docker images</strong> 명령어를 사용합니다. 이 명령어는 도커 엔진에 존재하는 이미지의 목록을 출력합니다.</p>
+<img width="680" alt="스크린샷 2021-02-07 오후 3 23 15" src="https://user-images.githubusercontent.com/33755241/107138563-68ba2400-6958-11eb-91c6-65f193954e80.png">
+
+<p>방금 내려받은 centos 이미지와 아까 전에 받은 ubuntu 이미지를 둘다 확인 할 수 있습니다.</p>
+<p><code>docker create -i -t --name mycentos centos:7</code></p>
+<img width="680" alt="스크린샷 2021-02-07 오후 3 24 39" src="https://user-images.githubusercontent.com/33755241/107138586-9b641c80-6958-11eb-8c2d-59329e5eab22.png">
+
+<p>위의 명령어는 다운받은 centos:7 이미지로 컨테이너를 생성하며, –name 옵션으로 컨테이너의 이름을 설정합니다. 저는 mycentos로 설정해 보았습니다.</p>
+<img width="439" alt="스크린샷 2021-02-07 오후 3 35 09" src="https://user-images.githubusercontent.com/33755241/107138820-124de500-695a-11eb-8930-b9bad235d11b.png">
+
+<p>docker create 명령어는 컨테이너를 생성만 해주는 명령어 입니다. 그래서 start -&gt; attach를 사용하여 컨테이너를 시작하고 내부로 들어갑니다.</p>
+<ul>
+<li>start : 컨테이너 시작.</li>
+<li>attach : 컨테이너 내부로 들어감.</li>
+</ul>
+<p>그럼 컨테이너를 생성하기 위해서, run , create, start 명령어를 사용했습니다. run 명령어는 pull,create,start 명령어를 일괄적으로 실행한 후 attach가 가능한 컨테이너라면 컨테이너 내부로 들어갑니다.</p>
+<ul>
+<li>run 명령어 : docker pull(이미지 없을 때) -&gt;  docker create -&gt; docker start -&gt; docker attach(-i -t 옵션을 사용했을 때)</li>
+<li>create 명령어 : docker pull(이미지 없을 때) -&gt;  docker create</li>
+</ul>
+<hr>
+<h3 id="컨테이너-이름-바꾸기"><a href="#컨테이너-이름-바꾸기" class="headerlink" title="컨테이너 이름 바꾸기"></a>컨테이너 이름 바꾸기</h3><p>컨테이너의 이름을 설정해주지 않으면 랜덤으로 이름이 설정되는데,</p>
+<img width="433" alt="스크린샷 2021-02-07 오후 3 27 00" src="https://user-images.githubusercontent.com/33755241/107138656-ee3dd400-6958-11eb-964e-119c17b69ccb.png">
+
+<p>도커 dastboard를 보면 이름을 정해준 centos:7 로만든 컨테이너는 mycentos라고 되어있지만, 아까 그냥 만들어준 ubuntu는 awesome_mclean이라는 이름으로 정해져 있습니다(<del>개발자 이름일까요..?</del>) </p>
+<p>위의 이름은 쉽게 바꾸어 줄 수 있습니다.</p>
+<img width="626" alt="스크린샷 2021-02-07 오후 3 29 59" src="https://user-images.githubusercontent.com/33755241/107138720-5a203c80-6959-11eb-9bf7-73fbb95bf05f.png">
+
+<p>docker ps -a 로 컨테이너의 id를 조회를 한 뒤, </p>
+<p><strong>docker rename [컨테이너id 앞4자리] [바꾸고싶은 이름]</strong></p>
+<p>로 바꾸어 주면 됩니다. 꼭 컨테이너 id 앞 4자리 일 필요는 없고, 다른 컨테이너들과 구분 할 수 있을 정도만 입력해주면 됩니다.</p>
+<img width="439" alt="스크린샷 2021-02-07 오후 3 32 12" src="https://user-images.githubusercontent.com/33755241/107138776-a8354000-6959-11eb-9806-87f839b62507.png">
+
+<p>위의 명령어로 우분투 컨테이너의 이름도 바꾸어 보았습니다.</p>
+<hr>
+<p>위키 북스의 시작하세요 도커/쿠버네티스를 읽고 작성하였습니다.</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/02/08/Docker/docker3/" data-toggle="tooltip" data-placement="top" title="컨테이너 목록 확인, 컨테이너 삭제">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/02/06/Docker/docker1/" data-toggle="tooltip" data-placement="top" title="Docker란?">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#docker" title="docker">docker</a>
+                        
+                          <a class="tag" href="/tags/#도커" title="도커">도커</a>
+                        
+                          <a class="tag" href="/tags/#docker run" title="docker run">docker run</a>
+                        
+                          <a class="tag" href="/tags/#docker rename" title="docker rename">docker rename</a>
+                        
+                          <a class="tag" href="/tags/#도커 컨테이너 생성" title="도커 컨테이너 생성">도커 컨테이너 생성</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "your-disqus-ID";
+    var disqus_identifier = "https://yuminee.github.io/2021/02/07/Docker/docker2/";
+    var disqus_url = "https://yuminee.github.io/2021/02/07/Docker/docker2/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yuminee">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; youmin park 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a target="_blank" rel="noopener" href="http://beantech.org">BeanTech</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://yuminee.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://yuminee.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

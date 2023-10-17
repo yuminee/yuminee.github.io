@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="백엔드 개발자">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          youmin&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="https://yuminee.github.io/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
+
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/atom.xml" title="yuminkuu" type="application/atom+xml">
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/header_img/home-bg-2-dark.png') 
+            /*config*/
+        
+    }
+    
+    #signature{
+        background-image: url('/img/signature/BeanTechSign-white.png');
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="site-heading">
+                        <h1>yuminkuu</h1>
+                        <!--<hr class="small">-->
+                        <span class="subheading">개발 일지</span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">yuminkuu</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tag/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Main Content -->
+<div class="container">
+    <div class="row">
+        
+<!-- NO SIDEBAR -->
+    <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 post-container">
+                <!-- Main Content -->
+
+
+<div class="post-preview">
+
+    <a href="/2022/12/25/Algorithm/leetcode_2389_longest_subsequence_with_limited_sum/">
+        <h2 class="post-title">
+            LeetCode 2389. Longest Subsequence With Limited Sum
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            문제You are given an integer array nums of length n, and an integer array queries of length m.
+Return an array answer of length m where answer[i] is the maximum size of a subsequence that you can tak......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by youmin park on
+            2022-12-25
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#LeetCode" title="LeetCode">LeetCode</a>
+            
+              <a href="/tags/#Algorithm" title="Algorithm">Algorithm</a>
+            
+              <a href="/tags/#bisect" title="bisect">bisect</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2022/12/24/Python/bisect/">
+        <h2 class="post-title">
+            Python bisect_left,bisect_right
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            python bisect_left, bisect_right의 기본 사용법12345from bisect import bisect_right, bisect_leftnums = [10, 12, 15, 16, 19]print(bisect_left(nums, 15) #return 2print(bisect_right(nums, 15)) #return 3
+
+
+bi......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by youmin park on
+            2022-12-24
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#bisect" title="bisect">bisect</a>
+            
+              <a href="/tags/#python3" title="python3">python3</a>
+            
+              <a href="/tags/#bisect_left" title="bisect_left">bisect_left</a>
+            
+              <a href="/tags/#bisect_right" title="bisect_right">bisect_right</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2022/03/06/AWS/tale_of_perpormance_ecs_boto3_iam/">
+        <h2 class="post-title">
+            A tale of performance — ECS, Boto3 & IAM
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            https://engineering.instawork.com/a-tale-of-performance-ecs-boto3-iam-dd22a2624398
+위의 글을 보고 정리한 내용입니다.
+문제
+몇몇 API들의 퍼포먼스가 좋지 않는것을 발견했는데, 해당 API들이 S3를 콜할때 5000ms이상 걸린다는 사실을 알게됨.
+
+원인
+IAM을 통해서 S3에 접근하는......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by youmin park on
+            2022-03-06
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#AWS" title="AWS">AWS</a>
+            
+              <a href="/tags/#ECS" title="ECS">ECS</a>
+            
+              <a href="/tags/#boto3" title="boto3">boto3</a>
+            
+              <a href="/tags/#IAM" title="IAM">IAM</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2022/03/01/nginx/nginx-crush01/">
+        <h2 class="post-title">
+            nginx crush (1)
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            1. Nginx Docker SettingNginx를 공부하기 위해 nginx docker image를 사용하였다.
+1docker container run --name webserver -d -p 80:80 nginx
+
+위의 명령어로 nginx 컨테이너를 실행하였고,
+
+
+localhost:80 으로 nginx가 잘 작동하고 있는것을 확인 하였다.
+더 ......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by youmin park on
+            2022-03-01
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#nignx" title="nignx">nignx</a>
+            
+              <a href="/tags/#Nginx" title="Nginx">Nginx</a>
+            
+              <a href="/tags/#엔진엑스" title="엔진엑스">엔진엑스</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/10/01/K8s/k8s_ presentation/">
+        <h2 class="post-title">
+            Kubernetes presentation
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            쿠버네티스 발표를 위한 발표자료이다.
+k8s.pdf
+...
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by youmin park on
+            2021-10-01
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+            
+              <a href="/tags/#K8s" title="K8s">K8s</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/02/12/Docker/docker8/">
+        <h2 class="post-title">
+            도커 볼륨으로 데이터 보존하기
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            도커 볼륨으로 데이터 보존하기도커 자체에서 제공하는 볼륨 기능을 활용해 데이터를 보존할 수 있다.
+1234# docker volume create --name myvolume# docker volume lsDRIVER    VOLUME NAME     local     myvolume
+
+위의 명령어로 도커 볼륨을 생성하고, 아래의 명령어로 myvolu......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by youmin park on
+            2021-02-12
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#docker" title="docker">docker</a>
+            
+              <a href="/tags/#도커" title="도커">도커</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/02/11/Docker/docker7/">
+        <h2 class="post-title">
+            도커 호스트 볼륨 다른 컨테이너에 덮어쓰기
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            도커 호스트 볼륨 다른 컨테이너에 덮어쓰기1docker run -i -t --name volume_dummy alicek106/volume_test
+
+위의 명령어로 volume_test 라는 컨테이너를 만들었다.
+12root@d44885d7827e:/# ls /home/testdir_2/test
+
+위의 컨테이너에는 test 라는 폴더가 들어있다.
+1d......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by youmin park on
+            2021-02-11
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#docker" title="docker">docker</a>
+            
+              <a href="/tags/#도커" title="도커">도커</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/02/10/Docker/docker6/">
+        <h2 class="post-title">
+            도커 호스트랑 볼륨 공유하기
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            도커 호스트랑 볼륨 공유하기전 포스터에서는 컨테이너로 워드프레스와 디비를 연결해서 만들어 보았다. 컨테이너로 데이터베이스 작업을 하였을때 가장 큰 단점은 mariadb 컨테이너를 삭제하면 컨테이너의 계층에 저장되어 있던 데이터베이스의 정보도 삭제 된다는 것이다.
+도커의 컨테이너는 생성과 삭제가 매우 쉬우므로 실수로 컨테이너를 삭제하면 데이터를 복구할 ......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by youmin park on
+            2021-02-10
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#docker" title="docker">docker</a>
+            
+              <a href="/tags/#도커" title="도커">도커</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/02/09/Docker/docker4/">
+        <h2 class="post-title">
+            외부에서 도커 컨테이너 접근하기
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            외부에서 도커 컨테이너 접근하기컨테이너는 가상 머신과 마찬가지로 가상 IP 주소를 할당받습니다.기본적으로 도커는 컨테이너에 172.17.0.x의 IP를 순차적으로 할당합니다.
+컨테이너를 생성하고, ifconfig 명령어로 컨테이너의 네트워크 인터페이스를확인하였습니다.
+
+도커의 NAT IP인 172.17.0.2를 할당받은 eth0 인터페이스와 로컬 호스......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by youmin park on
+            2021-02-09
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#docker" title="docker">docker</a>
+            
+              <a href="/tags/#도커" title="도커">도커</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/02/09/Docker/docker5/">
+        <h2 class="post-title">
+            Apple Sillicon/M1 Mysql error, Wordpress-mariadb 연결
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Apple Sillicon/M1 Mysql error, Wordpress-mariadb 연결도커를 학습하면서 mysql 컨테이너를 다운받아 워드 프레스에 연결하려는데, 다음과 같은 에러가 났다.
+12345# docker run -d \--name wordpressdb \-e MYSQL_ROOT_PASSWORD=password \-e MYSQL_DATA......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by youmin park on
+            2021-02-09
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#docker" title="docker">docker</a>
+            
+              <a href="/tags/#도커" title="도커">도커</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+    
+        <li class="next">
+            <a href="/archives/2/">Older Posts &rarr;</a>
+        </li>
+    
+</ul>
+
+
+            </div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#bisect" title="bisect" rel="2">bisect</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#typescript" title="typescript" rel="2">typescript</a>
+                            
+                        
+                            
+                            <a href="/tags/#Blockchain" title="Blockchain" rel="2">Blockchain</a>
+                            
+                        
+                            
+                            <a href="/tags/#블록체인" title="블록체인" rel="9">블록체인</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#hyperledger" title="hyperledger" rel="2">hyperledger</a>
+                            
+                        
+                            
+                            <a href="/tags/#하이퍼레저" title="하이퍼레저" rel="2">하이퍼레저</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#raft" title="raft" rel="6">raft</a>
+                            
+                        
+                            
+                            <a href="/tags/#blockchain" title="blockchain" rel="6">blockchain</a>
+                            
+                        
+                            
+                            <a href="/tags/#hyperledger fabric" title="hyperledger fabric" rel="5">hyperledger fabric</a>
+                            
+                        
+                            
+                            <a href="/tags/#하이퍼레저 패브릭" title="하이퍼레저 패브릭" rel="5">하이퍼레저 패브릭</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#fabric-client" title="fabric-client" rel="2">fabric-client</a>
+                            
+                        
+                            
+                            <a href="/tags/#fabric sdk" title="fabric sdk" rel="2">fabric sdk</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#데이터 사이언스" title="데이터 사이언스" rel="11">데이터 사이언스</a>
+                            
+                        
+                            
+                            <a href="/tags/#자연어 처리" title="자연어 처리" rel="3">자연어 처리</a>
+                            
+                        
+                            
+                            <a href="/tags/#kaggle" title="kaggle" rel="2">kaggle</a>
+                            
+                        
+                            
+                            <a href="/tags/#NLP" title="NLP" rel="2">NLP</a>
+                            
+                        
+                            
+                            <a href="/tags/#disater_tweets" title="disater_tweets" rel="2">disater_tweets</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#통계" title="통계" rel="8">통계</a>
+                            
+                        
+                            
+                            <a href="/tags/#statistics" title="statistics" rel="8">statistics</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#docker" title="docker" rel="8">docker</a>
+                            
+                        
+                            
+                            <a href="/tags/#도커" title="도커" rel="8">도커</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                    </div>
+                </section>
+                
+
+
+                <!-- Friends Blog -->
+                
+            </div>
+        
+    </div>
+</div>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yuminee">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; youmin park 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a target="_blank" rel="noopener" href="http://beantech.org">BeanTech</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://yuminee.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://yuminee.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
