@@ -97,6 +97,22 @@
     </url>
 
     <url>
+        <loc>https://yuminee.github.io/2020/12/30/Blockchain/typescript1/</loc>
+        <lastmod>2021-06-02T14:17:57.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/12/31/Blockchain/typescript2/</loc>
+        <lastmod>2021-06-02T14:17:57.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://yuminee.github.io/2021/02/06/Docker/docker1/</loc>
         <lastmod>2021-06-02T14:17:57.000Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -137,23 +153,7 @@
     </url>
 
     <url>
-        <loc>https://yuminee.github.io/2020/12/02/Hyperledger%20fabric/ufoserversdk1/</loc>
-        <lastmod>2021-06-02T14:17:57.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>https://yuminee.github.io/2020/11/29/Hyperledger%20fabric/raft_algorithm3/</loc>
-        <lastmod>2021-06-02T14:17:57.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://yuminee.github.io/2020/12/01/Hyperledger%20fabric/ufochaincode1/</loc>
         <lastmod>2021-06-02T14:17:57.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -169,7 +169,7 @@
     </url>
 
     <url>
-        <loc>https://yuminee.github.io/2020/12/30/Blockchain/typescript1/</loc>
+        <loc>https://yuminee.github.io/2020/12/02/Hyperledger%20fabric/ufoserversdk1/</loc>
         <lastmod>2021-06-02T14:17:57.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -177,7 +177,7 @@
     </url>
 
     <url>
-        <loc>https://yuminee.github.io/2020/12/31/Blockchain/typescript2/</loc>
+        <loc>https://yuminee.github.io/2020/12/01/Hyperledger%20fabric/ufochaincode1/</loc>
         <lastmod>2021-06-02T14:17:57.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -194,6 +194,14 @@
 
     <url>
         <loc>https://yuminee.github.io/2020/11/21/machine%20learning/rnn1/</loc>
+        <lastmod>2021-06-02T14:17:57.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://yuminee.github.io/2020/11/23/kaggle/tweet_disater/</loc>
         <lastmod>2021-06-02T14:17:57.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -225,7 +233,7 @@
     </url>
 
     <url>
-        <loc>https://yuminee.github.io/2020/11/23/kaggle/tweet_disater/</loc>
+        <loc>https://yuminee.github.io/2020/11/19/statistics/statistics_201119/</loc>
         <lastmod>2021-06-02T14:17:57.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -242,14 +250,6 @@
 
     <url>
         <loc>https://yuminee.github.io/2020/11/18/statistics/statistics_201117/</loc>
-        <lastmod>2021-06-02T14:17:57.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://yuminee.github.io/2020/11/19/statistics/statistics_201119/</loc>
         <lastmod>2021-06-02T14:17:57.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
