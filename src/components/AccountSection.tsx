@@ -3,138 +3,109 @@
 import { useState } from "react";
 import { WEDDING } from "@/data/wedding";
 
+type Account = {
+  role: string;
+  name: string;
+  bank: string;
+  account: string;
+};
+
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     } catch {
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
       document.execCommand("copy");
-      document.body.removeChild(ta);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      document.body.removeChild(textarea);
     }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
   };
 
   return (
     <button
       onClick={handleCopy}
-      className="text-xs px-3 py-1.5 rounded-full border border-red-wedding/30 text-red-wedding hover:bg-red-wedding hover:text-white transition-colors"
+      className="flex items-center gap-2 px-3 h-[35px] rounded-xl bg-copy-bg text-ink text-[14px] font-medium shrink-0"
     >
-      {copied ? "복사완료 ✓" : "복사"}
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <rect x="3" y="3" width="9" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
+        <path d="M5 3V2.5A1.5 1.5 0 0 1 6.5 1H10a1.5 1.5 0 0 1 1.5 1.5V3" stroke="currentColor" strokeWidth="1.4" />
+      </svg>
+      {copied ? "완료" : "복사"}
     </button>
   );
 }
 
-function AccountGroup({
-  title,
-  accounts,
-  isOpen,
-  onToggle,
-}: {
-  title: string;
-  accounts: typeof WEDDING.accounts.groom;
-  isOpen: boolean;
-  onToggle: () => void;
-}) {
+function AccountRow({ account }: { account: Account }) {
   return (
-    <div className="bg-white rounded-lg border border-cream-dark overflow-hidden">
-      <button
-        onClick={onToggle}
-        className="w-full px-5 py-4 flex items-center justify-between"
-      >
-        <span
-          className="text-lg text-red-wedding font-bold"
-          style={{ fontFamily: "var(--font-handwriting)" }}
-        >
-          {title}
-        </span>
-        <svg
-          className={`w-5 h-5 text-red-wedding transition-transform ${isOpen ? "rotate-180" : ""}`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-      <div className={`accordion-content ${isOpen ? "open" : ""}`}>
-        <div>
-          <div className="px-5 pb-4 space-y-3">
-            {accounts.map((acc) => (
-              <div
-                key={acc.role}
-                className="flex items-center justify-between py-2 border-b border-cream-dark last:border-b-0"
-              >
-                <div>
-                  <span className="text-xs text-brown-light block">
-                    {acc.role}
-                  </span>
-                  <span className="text-sm font-bold">{acc.name}</span>
-                  <span className="text-sm text-brown-light ml-2">
-                    {acc.bank} {acc.account}
-                  </span>
-                </div>
-                <CopyButton text={`${acc.bank} ${acc.account}`} />
-              </div>
-            ))}
-          </div>
-        </div>
+    <div className="flex items-center justify-between gap-4 w-full">
+      <div className="flex flex-col flex-1 min-w-0">
+        <p className="text-[18px] font-medium text-ink truncate">{account.name}</p>
+        <p className="text-[16px] text-ink-soft truncate">
+          {account.bank} {account.account}
+        </p>
+      </div>
+      <CopyButton text={`${account.bank} ${account.account}`} />
+    </div>
+  );
+}
+
+function AccountGroup({ title, accounts }: { title: string; accounts: Account[] }) {
+  return (
+    <div className="w-full px-6 py-6 flex flex-col gap-6">
+      <h3 className="font-serif text-[22px] text-ink leading-[135%]">{title}</h3>
+      <div className="flex flex-col gap-8">
+        {accounts.map((account) => (
+          <AccountRow key={account.role} account={account} />
+        ))}
       </div>
     </div>
   );
 }
 
 export default function AccountSection() {
-  const [groomOpen, setGroomOpen] = useState(false);
-  const [brideOpen, setBrideOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
-    <section className="px-6 py-10">
-      <div className="max-w-sm mx-auto">
-        {/* Heart doodle */}
-        <div className="flex justify-center mb-4">
-          <svg width="32" height="32" viewBox="0 0 32 32" className="text-red-wedding animate-heartbeat">
-            <path
-              d="M16 28s-1.5-1-3.5-2.7C7.5 21 3 16.5 3 11.5 3 7.4 6 4 10 4c2.5 0 4.5 1.5 6 3.5C17.5 5.5 19.5 4 22 4c4 0 7 3.4 7 7.5 0 5-4.5 9.5-9.5 13.8C17.5 27 16 28 16 28z"
-              fill="currentColor"
-              stroke="currentColor"
-              strokeWidth="0.5"
-            />
-          </svg>
+    <section className="w-full bg-cream">
+      <div className="flex flex-col items-center gap-12 pt-14 pb-10 px-6">
+        <p className="font-sans text-[16px] font-semibold text-ink">마음 전하실 곳</p>
+        <div className="flex flex-col items-center gap-8">
+          <p className="font-serif text-[28px] text-ink">잘 부탁드립니다.</p>
+          <button
+            onClick={() => setOpen(!open)}
+            className="flex items-center gap-2 px-7 h-14 rounded-2xl bg-black text-white"
+            aria-expanded={open}
+          >
+            <span className="font-serif text-[18px]">
+              {open ? "계좌번호 숨기기" : "계좌번호 보기"}
+            </span>
+            <svg
+              width="16"
+              height="8"
+              viewBox="0 0 16 8"
+              fill="none"
+              className={`transition-transform ${open ? "rotate-180" : ""}`}
+            >
+              <path d="M2 2l6 4 6-4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
         </div>
+      </div>
 
-        <h2
-          className="text-2xl text-red-wedding text-center mb-2"
-          style={{ fontFamily: "var(--font-handwriting)" }}
-        >
-          마음 전하실 곳
-        </h2>
-        <p className="text-sm text-brown-light text-center mb-8">
-          축하의 마음을 전해주세요
-        </p>
-
-        <div className="space-y-4">
-          <AccountGroup
-            title="🤵 신랑측"
-            accounts={WEDDING.accounts.groom}
-            isOpen={groomOpen}
-            onToggle={() => setGroomOpen(!groomOpen)}
-          />
-          <AccountGroup
-            title="👰 신부측"
-            accounts={WEDDING.accounts.bride}
-            isOpen={brideOpen}
-            onToggle={() => setBrideOpen(!brideOpen)}
-          />
+      <div className={`accordion-content ${open ? "open" : ""}`}>
+        <div>
+          <div className="border-t border-ink" />
+          <AccountGroup title="신랑 측에게" accounts={WEDDING.accounts.groom} />
+          <div className="border-t border-ink mx-6" />
+          <AccountGroup title="신부 측에게" accounts={WEDDING.accounts.bride} />
+          <div className="h-6" />
         </div>
       </div>
     </section>

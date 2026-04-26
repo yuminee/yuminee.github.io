@@ -1,26 +1,19 @@
 import type { Metadata } from "next";
-import { Gowun_Batang, Gaegu } from "next/font/google";
+import { Gowun_Batang } from "next/font/google";
 import "./globals.css";
 
 const gowunBatang = Gowun_Batang({
   weight: ["400", "700"],
   subsets: ["latin"],
-  variable: "--font-body",
-  display: "swap",
-});
-
-const gaegu = Gaegu({
-  weight: ["400", "700"],
-  subsets: ["latin"],
-  variable: "--font-handwriting",
+  variable: "--font-gowun",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "욱남 ♥ 유민 결혼합니다",
+  title: "조욱남 ♡ 박유민 결혼합니다",
   description: "2026년 6월 13일 토요일 오후 4시, 용산가족공원 야외예식장",
   openGraph: {
-    title: "욱남 ♥ 유민 결혼합니다",
+    title: "조욱남 ♡ 박유민 결혼합니다",
     description: "2026년 6월 13일 토요일 오후 4시, 용산가족공원 야외예식장",
     type: "website",
   },
@@ -32,14 +25,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" style={{ background: '#FFF1CA' }}>
+    <html lang="ko">
       <head>
-        <meta name="theme-color" content="#FFF1CA" />
+        <meta name="theme-color" content="#FFFCCF" />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+        />
+        <style>{`:root { --font-pretendard: "Pretendard Variable"; }`}</style>
       </head>
-      <body
-        className={`${gowunBatang.variable} ${gaegu.variable} antialiased`}
-        style={{ fontFamily: "var(--font-body), serif" }}
-      >
+      <body className={`${gowunBatang.variable} antialiased`}>
         {children}
       </body>
     </html>

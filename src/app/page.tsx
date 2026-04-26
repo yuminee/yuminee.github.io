@@ -1,389 +1,376 @@
 import fs from "fs";
 import path from "path";
 import { WEDDING } from "@/data/wedding";
-import CountdownTimer from "@/components/CountdownTimer";
+import HorizontalGallery from "@/components/HorizontalGallery";
+import BusReservationForm from "@/components/BusReservationForm";
 import AccountSection from "@/components/AccountSection";
-import GallerySection from "@/components/GallerySection";
-import ScrollReveal from "@/components/ScrollReveal";
 
 function getPhotos(folder: string): string[] {
-  const dir = path.join(process.cwd(), "public/images", folder);
+  const directory = path.join(process.cwd(), "public/images", folder);
   try {
     return fs
-      .readdirSync(dir)
-      .filter((f) => /\.(jpe?g|png|webp|gif)$/i.test(f))
+      .readdirSync(directory)
+      .filter((file) => /\.(jpe?g|png|webp|gif)$/i.test(file))
       .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   } catch {
     return [];
   }
 }
 
-/* ─── SVG Doodle helpers ─── */
-function HeartDoodle({ className = "" }: { className?: string }) {
+function PhotoPlaceholder({
+  className = "",
+  src,
+  label,
+}: {
+  className?: string;
+  src?: string;
+  label?: string;
+}) {
+  if (src) {
+    return <img src={src} alt={label ?? "photo"} className={`object-cover ${className}`} />;
+  }
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="none">
+    <div
+      className={`photo-placeholder flex items-center justify-center text-[12px] text-ink-soft/60 ${className}`}
+    >
+      {label ?? "PHOTO"}
+    </div>
+  );
+}
+
+function BouquetIllustration() {
+  return (
+    <svg
+      viewBox="0 0 220 180"
+      className="w-[220px] h-[180px]"
+      fill="none"
+      stroke="#212121"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M110 170 L98 130 L110 100 L122 130 Z" />
+      <path d="M110 170 L100 140 M110 170 L120 140 M110 170 L110 135" />
+      <circle cx="80" cy="80" r="18" />
+      <circle cx="80" cy="80" r="10" />
+      <circle cx="140" cy="80" r="18" />
+      <circle cx="140" cy="80" r="10" />
+      <circle cx="110" cy="55" r="20" />
+      <circle cx="110" cy="55" r="11" />
+      <circle cx="60" cy="105" r="14" />
+      <circle cx="60" cy="105" r="7" />
+      <circle cx="160" cy="105" r="14" />
+      <circle cx="160" cy="105" r="7" />
+      <path d="M50 50 q4 -4 8 0 q4 4 0 8 q-4 4 -8 0 q-4 -4 0 -8 z" />
+      <path d="M170 45 q4 -4 8 0 q4 4 0 8 q-4 4 -8 0 q-4 -4 0 -8 z" />
+      <path d="M40 130 l4 4 M44 126 l-4 4" />
+      <path d="M180 135 l4 4 M184 131 l-4 4" />
+    </svg>
+  );
+}
+
+function HeartDoodle() {
+  return (
+    <svg viewBox="0 0 40 40" className="w-10 h-10" fill="none" aria-hidden>
       <path
-        d="M12 21s-1.5-1-3.5-2.5C4.5 15 2 12 2 8.5 2 5.4 4.5 3 7.5 3c1.7 0 3.3 1 4.5 2.5C13.2 4 14.8 3 16.5 3 19.5 3 22 5.4 22 8.5c0 3.5-2.5 6.5-6.5 10C13.5 20 12 21 12 21z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        fill="currentColor"
-        fillOpacity="0.15"
+        d="M20 32 C 8 22 6 14 12 12 C 16 11 19 14 20 17 C 21 14 24 11 28 12 C 34 14 32 22 20 32 Z"
+        stroke="#212121"
+        strokeWidth="1.2"
+        strokeLinejoin="round"
       />
     </svg>
   );
 }
 
-
-/* ─── Calendar component ─── */
-function JuneCalendar() {
-  const daysInMonth = 30;
-  const headers = ["일", "월", "화", "수", "목", "금", "토"];
-
-  // 2026-06-01 is Monday → 1 blank in Sun-start calendar
-  const sunStartBlanks = 1;
-
-  const days: (number | null)[] = [
-    ...Array(sunStartBlanks).fill(null),
-    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
-  ];
-
-  // Pad to complete rows
-  while (days.length % 7 !== 0) days.push(null);
-
+function ButterflyIllustration() {
   return (
-    <div className="p-5 max-w-[340px] mx-auto">
-      <div
-        className="text-center text-lg text-red-wedding font-bold mb-3"
-        style={{ fontFamily: "var(--font-handwriting)" }}
-      >
-        2026년 6월
-      </div>
-      <table className="w-full text-center text-sm">
-        <thead>
-          <tr>
-            {headers.map((h, i) => (
-              <th
-                key={h}
-                className={`py-1 font-normal text-xs ${
-                  i === 0 ? "text-red-wedding" : i === 6 ? "text-blue-500" : "text-brown-light"
-                }`}
-              >
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {Array.from({ length: days.length / 7 }, (_, week) => (
-            <tr key={week}>
-              {days.slice(week * 7, week * 7 + 7).map((day, i) => {
-                const isWeddingDay = day === 13;
-                const dayIndex = week * 7 + i;
-                const isSunday = dayIndex % 7 === 0;
-                const isSaturday = dayIndex % 7 === 6;
-                return (
-                  <td key={i} className="py-1.5">
-                    {day && (
-                      <span
-                        className={`relative inline-flex flex-col items-center justify-center w-8 h-8 text-sm ${
-                          isWeddingDay
-                            ? "text-red-wedding font-bold"
-                            : isSunday
-                              ? "text-red-wedding"
-                              : isSaturday
-                                ? "text-blue-500"
-                                : "text-brown-text"
-                        }`}
-                      >
-                        {isWeddingDay && (
-                          <svg viewBox="0 0 24 24" className="absolute inset-0 m-auto w-8 h-8 text-red-wedding/20" fill="currentColor">
-                            <path d="M12 21s-1.5-1-3.5-2.5C4.5 15 2 12 2 8.5 2 5.4 4.5 3 7.5 3c1.7 0 3.3 1 4.5 2.5C13.2 4 14.8 3 16.5 3 19.5 3 22 5.4 22 8.5c0 3.5-2.5 6.5-6.5 10C13.5 20 12 21 12 21z" />
-                          </svg>
-                        )}
-                        <span className="relative z-10">{day}</span>
-                      </span>
-                    )}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <svg viewBox="0 0 80 60" className="w-[64px] h-[48px]" fill="none" aria-hidden>
+      <path
+        d="M40 30 C 20 10 10 18 14 32 C 18 44 30 40 40 30 Z M40 30 C 60 10 70 18 66 32 C 62 44 50 40 40 30 Z"
+        stroke="#212121"
+        strokeWidth="1.2"
+        strokeLinejoin="round"
+      />
+      <line x1="40" y1="20" x2="40" y2="42" stroke="#212121" strokeWidth="1.2" strokeLinecap="round" />
+      <path
+        d="M40 20 q -3 -6 -6 -6 M40 20 q 3 -6 6 -6"
+        stroke="#212121"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        fill="none"
+      />
+    </svg>
   );
 }
 
-/* ─── Main Page ─── */
+function DownArrow() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" aria-hidden>
+      <path
+        d="M12 4v16m0 0l-6-6m6 6l6-6"
+        stroke="#212121"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function NaverMapIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-6 h-6 rounded">
+      <rect width="24" height="24" rx="4" fill="#03C75A" />
+      <path d="M14 7h2.5v10H14l-4-5.8V17H7.5V7H10l4 5.8V7z" fill="white" />
+    </svg>
+  );
+}
+
+function KakaoMapIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-6 h-6 rounded">
+      <rect width="24" height="24" rx="4" fill="#FEE500" />
+      <path
+        d="M12 6c-3.6 0-6.5 2.3-6.5 5.1 0 1.8 1.2 3.4 3 4.3l-.7 2.7c-.1.2.1.4.3.3l3.2-2.1h.7c3.6 0 6.5-2.3 6.5-5.1S15.6 6 12 6z"
+        fill="#3C1E1E"
+      />
+    </svg>
+  );
+}
+
 export default function Home() {
+  const photos = getPhotos("couple");
+
   return (
     <main className="min-h-screen max-w-[480px] mx-auto bg-cream relative overflow-hidden">
-
-      {/* ════════════════════════════════════════════════
-          SECTION 1: Hero
-          ════════════════════════════════════════════════ */}
-      <section className="relative px-6 pt-10 pb-6 text-center">
-        {/* Main photo */}
-        <div className="mt-4 mb-0 flex justify-center">
-          <img
-            src="/images/1.png"
-            alt={`${WEDDING.groom.name} & ${WEDDING.bride.name}`}
-            className="w-[340px] h-auto"
-          />
+      {/* ──────────────────────────────────────────────
+          1. Hero: greeting + bouquet illustration
+          ────────────────────────────────────────────── */}
+      <section className="px-6 pt-16 pb-16 flex flex-col items-center text-center">
+        <p className="font-sans text-[14px] text-ink-soft mb-4">청첩장</p>
+        <h1 className="font-serif text-[26px] leading-[1.5] text-ink mb-3">
+          가장 사랑스러운
+          <br />
+          순간에는
+          <br />
+          특별한 무언가가
+          <br />
+          필요합니다.
+        </h1>
+        <p className="font-sans text-[14px] text-ink-soft leading-[1.6] mb-2">
+          이 순간의 목격자가 될
+          <br />
+          당신을 초대합니다
+        </p>
+        <p className="font-serif text-[14px] text-ink mt-2 mb-10">(Welcome!)</p>
+        <div className="mt-2">
+          <BouquetIllustration />
         </div>
       </section>
 
-      <div className="wavy-divider" />
+      {/* ──────────────────────────────────────────────
+          2. Couple main photo (full width)
+          ────────────────────────────────────────────── */}
+      <section className="w-full">
+        <PhotoPlaceholder
+          src="/images/1.png"
+          label="MAIN PHOTO"
+          className="w-full h-[270px]"
+        />
+      </section>
 
-      {/* ════════════════════════════════════════════════
-          SECTION 2: Greeting
-          ════════════════════════════════════════════════ */}
-      <ScrollReveal>
-        <section className="px-6 pt-4 pb-10 text-center">
-          <h2
-            className="text-2xl text-red-wedding mb-6"
-            style={{ fontFamily: "var(--font-handwriting)" }}
-          >
-            소중한 분들을 초대합니다
-          </h2>
-
-          {/* Parents info */}
-          <div className="text-sm text-brown-light mb-6 space-y-1">
-            <p>
-              <span className="text-brown-text font-bold">{WEDDING.groom.fatherName}</span>
-              {" · "}
-              <span className="text-brown-text font-bold">{WEDDING.groom.motherName}</span>
-              <span className="text-brown-light/60"> 의 {WEDDING.groom.relation} </span>
-              <span className="text-red-wedding font-bold">{WEDDING.groom.name}</span>
+      {/* ──────────────────────────────────────────────
+          3. Greeting message
+          ────────────────────────────────────────────── */}
+      <section className="px-6 pt-16 pb-12 flex flex-col items-center text-center">
+        <div className="mb-8">
+          <HeartDoodle />
+        </div>
+        <h2 className="font-serif text-[22px] text-ink leading-[1.5] mb-5">
+          {WEDDING.greeting.title}
+        </h2>
+        <div className="font-serif text-[22px] text-ink leading-[1.5] space-y-1">
+          {WEDDING.greeting.body.map((line, index) => (
+            <p key={index} className={line === "" ? "h-4" : ""}>
+              {line}
             </p>
-            <p>
-              <span className="text-brown-text font-bold">{WEDDING.bride.fatherName}</span>
-              {" · "}
-              <span className="text-brown-text font-bold">{WEDDING.bride.motherName}</span>
-              <span className="text-brown-light/60"> 의 {WEDDING.bride.relation} </span>
-              <span className="text-red-wedding font-bold">{WEDDING.bride.name}</span>
-            </p>
-          </div>
+          ))}
+        </div>
+        <p className="font-sans text-[16px] font-medium text-ink leading-[1.5] mt-12 max-w-[260px]">
+          {WEDDING.greeting.note}
+        </p>
+      </section>
 
-          {/* Greeting message */}
-          <p className="text-sm leading-7 text-brown-text whitespace-pre-line max-w-xs mx-auto">
-            {WEDDING.greeting}
+      {/* ──────────────────────────────────────────────
+          4. Photo trio (vertical column, like Figma)
+          ────────────────────────────────────────────── */}
+      <section className="px-4 py-6 flex flex-col items-center gap-3">
+        {photos.slice(0, 3).map((filename, index) => (
+          <PhotoPlaceholder
+            key={filename}
+            src={`/images/couple/${filename}`}
+            label={`PHOTO ${index + 1}`}
+            className="w-full max-w-[280px] h-[140px] rounded-md"
+          />
+        ))}
+        {photos.length === 0 &&
+          [0, 1, 2].map((index) => (
+            <PhotoPlaceholder
+              key={index}
+              label={`PHOTO ${index + 1}`}
+              className="w-full max-w-[280px] h-[140px] rounded-md"
+            />
+          ))}
+      </section>
+
+      {/* ──────────────────────────────────────────────
+          5. Family names + butterfly
+          ────────────────────────────────────────────── */}
+      <section className="px-4 py-12 flex flex-col items-center gap-8">
+        <div className="flex flex-col items-center gap-2 font-serif text-[22px] text-ink leading-[1.5]">
+          <p>
+            {WEDDING.groom.fatherName} · {WEDDING.groom.motherName}의 {WEDDING.groom.relation}{" "}
+            {WEDDING.groom.name}
           </p>
-        </section>
-      </ScrollReveal>
-
-      <div className="wavy-divider" />
-
-      {/* ════════════════════════════════════════════════
-          SECTION 3: Calendar + D-Day
-          ════════════════════════════════════════════════ */}
-      <ScrollReveal>
-        <section className="px-6 pt-4 pb-10 text-center">
-          <h2
-            className="text-4xl text-red-wedding mb-2"
-            style={{ fontFamily: "var(--font-handwriting)" }}
-          >
-            WEDDING DAY
-          </h2>
-          <p className="text-sm text-brown-text mb-1">
-            {WEDDING.date.year}년 {WEDDING.date.month}월 {WEDDING.date.day}일 {WEDDING.date.dayOfWeek} | {WEDDING.date.time}
+          <p>
+            {WEDDING.bride.fatherName} · {WEDDING.bride.motherName}의 {WEDDING.bride.relation}{" "}
+            {WEDDING.bride.name}
           </p>
-          <p className="text-xs text-brown-light mb-8">
-            Saturday, Jun 13, 2026 | PM 4:00
-          </p>
+        </div>
+        <ButterflyIllustration />
+      </section>
 
-          <JuneCalendar />
+      {/* ──────────────────────────────────────────────
+          6. Gallery (horizontal scroll)
+          ────────────────────────────────────────────── */}
+      <section className="py-12 flex flex-col items-center gap-8">
+        <div className="flex flex-col items-center gap-4">
+          <p className="font-sans text-[16px] font-semibold text-ink">이것 좀 보세요 갤러리</p>
+          <DownArrow />
+        </div>
+        <HorizontalGallery photos={photos} />
+      </section>
 
-          <div className="mt-6">
-            <p
-              className="text-lg text-green-doodle mb-4"
-              style={{ fontFamily: "var(--font-handwriting)" }}
-            >
-              결혼식까지 남은 시간
-            </p>
-            <CountdownTimer />
-          </div>
-        </section>
-      </ScrollReveal>
-
-      <div className="wavy-divider" />
-
-      {/* ════════════════════════════════════════════════
-          SECTION 4: Location
-          ════════════════════════════════════════════════ */}
-      <ScrollReveal>
-        <section className="px-6 pt-4 pb-10 text-center">
-          <h2
-            className="text-2xl text-red-wedding mb-2 flex items-center justify-center gap-2"
-            style={{ fontFamily: "var(--font-handwriting)" }}
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" className="text-red-wedding shrink-0">
-              <path
-                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              />
-              <circle cx="12" cy="9" r="2.5" fill="currentColor" fillOpacity="0.3" stroke="currentColor" strokeWidth="1" />
-            </svg>
-            오시는 길
-          </h2>
-
-          <div className="bg-white rounded-lg border border-cream-dark p-6 max-w-xs mx-auto mt-6">
-            <p className="text-base font-bold text-brown-text mb-1">
+      {/* ──────────────────────────────────────────────
+          7. Directions
+          ────────────────────────────────────────────── */}
+      <section className="pt-14 pb-14 flex flex-col items-center gap-12">
+        <div className="w-full flex flex-col items-center gap-12">
+          <p className="font-sans text-[16px] font-semibold text-ink">오시는 길</p>
+          <div className="flex flex-col items-center gap-2 px-6">
+            <h3 className="font-serif text-[28px] text-ink leading-[1.35] text-center">
               {WEDDING.venue.name}
-            </p>
-            <p className="text-sm text-brown-light mb-1">
-              {WEDDING.venue.address}
-            </p>
-            <p className="text-sm text-brown-light">
-              {WEDDING.date.year}년 {WEDDING.date.month}월 {WEDDING.date.day}일 {WEDDING.date.dayOfWeek} {WEDDING.date.time}
+            </h3>
+            <p className="font-sans text-[20px] font-medium text-ink leading-[1.45] text-center">
+              {WEDDING.venue.address} · {WEDDING.date.year}년 {WEDDING.date.month}월{" "}
+              {WEDDING.date.day}일({WEDDING.date.dayOfWeek}) {WEDDING.date.time}
             </p>
           </div>
-
-          {/* Map links */}
-          <div className="flex justify-center gap-3 mt-6">
-            <a
-              href={WEDDING.venue.kakaoMapUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-white rounded-lg border border-cream-dark px-5 py-2.5 text-sm text-brown-text hover:bg-red-bg transition-colors flex items-center gap-2"
-            >
-              <svg width="18" height="18" viewBox="0 0 18 18">
-                <circle cx="9" cy="9" r="8" fill="#FEE500" />
-                <path d="M9 4.5c-3 0-5.4 1.9-5.4 4.2 0 1.5 1 2.8 2.5 3.6l-.6 2.3c0 .1.1.2.2.1l2.7-1.8c.2 0 .4 0 .6.1 3 0 5.4-1.9 5.4-4.2S12 4.5 9 4.5z" fill="#3C1E1E" />
-              </svg>
-              카카오맵
-            </a>
+          <div className="flex gap-2 px-6 w-full max-w-[336px]">
             <a
               href={WEDDING.venue.naverMapUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white rounded-lg border border-cream-dark px-5 py-2.5 text-sm text-brown-text hover:bg-red-bg transition-colors flex items-center gap-2"
+              className="flex-1 h-14 bg-white border border-ink rounded-2xl flex items-center justify-center gap-2"
             >
-              <svg width="18" height="18" viewBox="0 0 18 18">
-                <rect width="18" height="18" rx="3" fill="#03C75A" />
-                <path d="M10.5 9.5L7.8 5.5H5.5v7h2.2V8.6l2.7 3.9h2.2v-7h-2.1z" fill="white" />
-              </svg>
-              네이버지도
+              <NaverMapIcon />
+              <span className="font-serif text-[16px] text-ink">네이버지도</span>
+            </a>
+            <a
+              href={WEDDING.venue.kakaoMapUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 h-14 bg-white border border-ink rounded-2xl flex items-center justify-center gap-2"
+            >
+              <KakaoMapIcon />
+              <span className="font-serif text-[16px] text-ink">카카오맵</span>
             </a>
           </div>
-
-          {/* Transportation info */}
-          <div className="mt-10 max-w-xs mx-auto text-left space-y-6">
-            {/* 지하철 */}
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <svg width="20" height="20" viewBox="0 0 24 24" className="text-green-doodle shrink-0">
-                  <rect x="4" y="2" width="16" height="16" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                  <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" strokeWidth="1.2" />
-                  <circle cx="9" cy="7" r="1.5" fill="currentColor" fillOpacity="0.3" stroke="currentColor" strokeWidth="0.8" />
-                  <circle cx="15" cy="7" r="1.5" fill="currentColor" fillOpacity="0.3" stroke="currentColor" strokeWidth="0.8" />
-                  <line x1="8" y1="18" x2="6" y2="22" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-                  <line x1="16" y1="18" x2="18" y2="22" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-                </svg>
-                <span className="text-sm font-bold text-brown-text">{WEDDING.venue.directions.subway.label}</span>
-              </div>
-              {WEDDING.venue.directions.subway.routes.map((route, i) => (
-                <div key={i} className="ml-7">
-                  <p className="text-sm font-bold text-red-wedding mb-1">{route.station}</p>
-                  {route.details.map((detail, j) => (
-                    <p key={j} className="text-xs text-brown-light leading-5">{detail}</p>
-                  ))}
-                </div>
-              ))}
-            </div>
-
-            {/* 버스 */}
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <svg width="20" height="20" viewBox="0 0 24 24" className="text-green-doodle shrink-0">
-                  <rect x="4" y="3" width="16" height="15" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                  <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" strokeWidth="1.2" />
-                  <rect x="6" y="5.5" width="12" height="5" rx="1" fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="0.8" />
-                  <circle cx="8" cy="21" r="1.5" fill="none" stroke="currentColor" strokeWidth="1.2" />
-                  <circle cx="16" cy="21" r="1.5" fill="none" stroke="currentColor" strokeWidth="1.2" />
-                </svg>
-                <span className="text-sm font-bold text-brown-text">{WEDDING.venue.directions.bus.label}</span>
-              </div>
-              {WEDDING.venue.directions.bus.routes.map((route, i) => (
-                <div key={i} className="ml-7">
-                  <p className="text-sm font-bold text-red-wedding mb-1">{route.station}</p>
-                  {route.details.map((detail, j) => (
-                    <p key={j} className="text-xs text-brown-light leading-5">{detail}</p>
-                  ))}
-                </div>
-              ))}
-            </div>
-
-            {/* 자차 */}
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <svg width="20" height="20" viewBox="0 0 24 24" className="text-green-doodle shrink-0">
-                  <path d="M5 14l1.5-5.5A2 2 0 018.4 7h7.2a2 2 0 011.9 1.5L19 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                  <rect x="3" y="14" width="18" height="5" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                  <circle cx="7.5" cy="14" r="0.5" fill="currentColor" />
-                  <circle cx="16.5" cy="14" r="0.5" fill="currentColor" />
-                  <circle cx="7" cy="22" r="1.5" fill="none" stroke="currentColor" strokeWidth="1.2" />
-                  <circle cx="17" cy="22" r="1.5" fill="none" stroke="currentColor" strokeWidth="1.2" />
-                </svg>
-                <span className="text-sm font-bold text-brown-text">{WEDDING.venue.directions.car.label}</span>
-              </div>
-              <div className="ml-7">
-                {WEDDING.venue.directions.car.details.map((detail, i) => (
-                  <p key={i} className={`text-xs leading-5 ${detail.startsWith("*") ? "text-brown-light/70 mt-1" : "text-brown-light"}`}>
-                    {detail}
-                  </p>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      </ScrollReveal>
-
-      <div className="wavy-divider" />
-
-      {/* ════════════════════════════════════════════════
-          SECTION 5: Gallery
-          ════════════════════════════════════════════════ */}
-      <ScrollReveal>
-        <GallerySection
-          couplePhotos={getPhotos("couple")}
-          friendsPhotos={getPhotos("friends")}
-        />
-      </ScrollReveal>
-
-      <div className="wavy-divider" />
-
-      {/* ════════════════════════════════════════════════
-          SECTION 6: Accounts
-          ════════════════════════════════════════════════ */}
-      <ScrollReveal>
-        <AccountSection />
-      </ScrollReveal>
-
-      <div className="wavy-divider" />
-
-      {/* ════════════════════════════════════════════════
-          SECTION 7: Footer
-          ════════════════════════════════════════════════ */}
-      <footer className="px-6 pt-8 pb-12 text-center">
-        <div className="flex justify-center gap-2 mb-4">
-          <HeartDoodle className="w-4 h-4 text-red-wedding/40" />
-          <HeartDoodle className="w-5 h-5 text-red-wedding/60 animate-heartbeat" />
-          <HeartDoodle className="w-4 h-4 text-red-wedding/40" />
         </div>
-        <p
-          className="text-xl text-red-wedding mb-2"
-          style={{ fontFamily: "var(--font-handwriting)" }}
-        >
-          {WEDDING.groom.name} ♥ {WEDDING.bride.name}
-        </p>
-        <p className="text-sm text-brown-light">
-          {WEDDING.date.year}.{WEDDING.date.month}.{WEDDING.date.day}
-        </p>
-      </footer>
+
+        <div className="flex flex-col gap-12 px-6 w-full max-w-[360px]">
+          <DirectionBlock
+            title={WEDDING.directions.subway.title}
+            items={WEDDING.directions.subway.items}
+          />
+          <DirectionBlock
+            title={WEDDING.directions.bus.title}
+            items={WEDDING.directions.bus.items}
+          />
+          <DirectionBlock
+            title={WEDDING.directions.car.title}
+            items={WEDDING.directions.car.items}
+            note={WEDDING.directions.car.note}
+          />
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="border-t border-ink mx-6" />
+
+      {/* ──────────────────────────────────────────────
+          8. Bus reservation form
+          ────────────────────────────────────────────── */}
+      <section className="pt-14 pb-14 flex flex-col items-center gap-9">
+        <p className="font-sans text-[16px] font-semibold text-ink">참석 및 버스 탑승</p>
+        <div className="flex flex-col items-center gap-2 px-4">
+          <h3 className="font-serif text-[28px] text-ink leading-[1.35] text-center">
+            {WEDDING.bus.title}
+          </h3>
+          <p className="font-sans text-[20px] font-medium text-ink leading-[1.35] text-center">
+            {WEDDING.bus.subtitle}
+          </p>
+        </div>
+        <BusReservationForm />
+        <div className="flex flex-col items-start gap-4 px-6 max-w-[340px]">
+          {WEDDING.bus.description.map((paragraph, index) => (
+            <p
+              key={index}
+              className="font-sans text-[18px] text-ink leading-[1.35] text-center w-full whitespace-pre-line"
+            >
+              {paragraph}
+            </p>
+          ))}
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="border-t border-ink mx-6" />
+
+      {/* ──────────────────────────────────────────────
+          9. Accounts
+          ────────────────────────────────────────────── */}
+      <AccountSection />
     </main>
+  );
+}
+
+function DirectionBlock({
+  title,
+  items,
+  note,
+}: {
+  title: string;
+  items: string[];
+  note?: string;
+}) {
+  return (
+    <div className="flex flex-col gap-4">
+      <h4 className="font-serif text-[22px] text-ink leading-[1.35]">{title}</h4>
+      <div className="flex flex-col gap-3">
+        {items.map((text, index) => (
+          <div
+            key={index}
+            className="bg-white/30 rounded-2xl px-5 py-5 font-sans text-[18px] text-ink leading-[1.35] whitespace-pre-line"
+          >
+            {text}
+          </div>
+        ))}
+      </div>
+      {note && (
+        <p className="font-sans text-[15px] text-ink-muted leading-[1.35] mt-2">{note}</p>
+      )}
+    </div>
   );
 }
