@@ -11,7 +11,7 @@
   --color-ink-muted: #535353;
   --color-placeholder: #A1A1A1;
   --color-divider: #212121;
-  --font-serif: var(--font-gowun), "Gowun Batang", serif;
+  --font-serif: var(--font-hahmlet), "Hahmlet", var(--font-gowun), serif;
   --font-sans: var(--font-pretendard), -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
 }
 

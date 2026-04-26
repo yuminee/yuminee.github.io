@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 
-const BASE_PATH = "/images/couple";
+const BASE_PATH = "/images/gallery";
 
 export default function HorizontalGallery({ photos }: { photos: string[] }) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);

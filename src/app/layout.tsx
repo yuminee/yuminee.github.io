@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
-import { Gowun_Batang } from "next/font/google";
+import { Hahmlet, Gowun_Batang } from "next/font/google";
 import "./globals.css";
+
+const hahmlet = Hahmlet({
+  weight: ["400", "500", "700", "800", "900"],
+  subsets: ["latin"],
+  variable: "--font-hahmlet",
+  display: "swap",
+});
 
 const gowunBatang = Gowun_Batang({
   weight: ["400", "700"],
@@ -34,7 +41,7 @@ export default function RootLayout({
         />
         <style>{`:root { --font-pretendard: "Pretendard Variable"; }`}</style>
       </head>
-      <body className={`${gowunBatang.variable} antialiased`}>
+      <body className={`${hahmlet.variable} ${gowunBatang.variable} antialiased`}>
         {children}
       </body>
     </html>

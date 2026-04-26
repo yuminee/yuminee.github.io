@@ -5,17 +5,16 @@ import { useState } from "react";
 /**
  * Google Form 매핑 설정.
  *
- * 1. Google Form 생성 후 "사전 입력 링크 받기"로 entry.* ID 확인
- * 2. 아래 formActionUrl/fields 채워넣으면 자동으로 실 제출 동작
- * 3. formActionUrl이 비어있으면 클라이언트 완료 상태만 표시 (개발용)
+ * Form ID: 1FAIpQLSfkPtKIzVFTftmE3XsuZjpCPTQgA8K1Rqk4b8PELizh1yeU5A
+ * 필드 추가/변경 시 사전 입력 링크 다시 받아서 entry.* ID 갱신
  */
 const GOOGLE_FORM_CONFIG = {
-  formActionUrl: "",
+  formActionUrl:
+    "https://docs.google.com/forms/d/e/1FAIpQLSfkPtKIzVFTftmE3XsuZjpCPTQgA8K1Rqk4b8PELizh1yeU5A/formResponse",
   fields: {
-    name: "",
-    phone: "",
-    riding: "",
-    count: "",
+    name: "entry.481647395",
+    phone: "entry.1894826321",
+    count: "entry.972028906",
   },
 } as const;
 
@@ -42,7 +41,6 @@ export default function BusReservationForm() {
       const formData = new FormData();
       formData.append(GOOGLE_FORM_CONFIG.fields.name, name);
       formData.append(GOOGLE_FORM_CONFIG.fields.phone, phone);
-      formData.append(GOOGLE_FORM_CONFIG.fields.riding, count > 0 ? "예" : "아니오");
       formData.append(GOOGLE_FORM_CONFIG.fields.count, String(count));
       try {
         await fetch(GOOGLE_FORM_CONFIG.formActionUrl, {
@@ -51,8 +49,8 @@ export default function BusReservationForm() {
           body: formData,
         });
       } catch {
-        // no-cors mode always returns opaque response, so we can't detect failure here.
-        // Fail silently and show submitted state — user can re-submit if needed.
+        // no-cors mode returns opaque response, so we can't detect failure.
+        // Fail silently and show submitted state.
       }
     }
 
@@ -61,8 +59,19 @@ export default function BusReservationForm() {
 
   if (formState.status === "submitted") {
     return (
-      <div className="w-full flex flex-col items-center gap-3 py-2">
-        <p className="text-[20px] font-medium text-ink">제출이 완료되었습니다 🙆</p>
+      <div className="w-[320px] max-w-full">
+        <div className="w-full h-[55px] rounded-xl bg-white flex items-center justify-center gap-2">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path
+              d="M5 10l3 3 7-7"
+              stroke="#212121"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <p className="text-[18px] font-medium text-ink">제출이 완료되었습니다 🙆</p>
+        </div>
       </div>
     );
   }
