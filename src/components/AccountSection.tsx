@@ -77,7 +77,7 @@ export default function AccountSection() {
       <div className="flex flex-col items-center gap-12 pt-14 pb-10 px-6">
         <p className="font-sans text-[16px] font-semibold text-ink">마음 전하실 곳</p>
         <div className="flex flex-col items-center gap-8">
-          <p className="font-display text-[28px] text-ink">잘 부탁드립니다.</p>
+          <p className="font-display text-[28px] text-ink">잘 살겠습니다.</p>
           <button
             onClick={() => setOpen(!open)}
             className="flex items-center gap-2 px-7 h-14 rounded-2xl bg-black text-white"
