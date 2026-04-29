@@ -68,7 +68,7 @@ export const WEDDING = {
       { role: "신랑 어머니", name: "정경미", bank: "농협", account: "453819-56-137893" },
     ],
     bride: [
-      { role: "신부", name: "박유민", bank: "우리은행", account: "1002-048-238685" },
+      { role: "신부", name: "박유민", bank: "국민은행", account: "137302-04-272239" },
       { role: "신부 아버지", name: "박기호", bank: "신한은행", account: "110444409944" },
       { role: "신부 어머니", name: "이미순", bank: "부산은행", account: "1122213023706" },
     ],
