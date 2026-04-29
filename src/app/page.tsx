@@ -202,7 +202,7 @@ export default function Home() {
           위 photo-strip → 이름까지 ~78px, cloud-heart → 갤러리까지 ~66px
           ────────────────────────────────────────────── */}
       <section className="pt-[30px] pb-[18px] flex flex-col gap-[44px]">
-        <div className="flex flex-col items-center gap-4 font-sans text-[22px] text-ink leading-[1.5]">
+        <div className="flex flex-col items-center gap-4 font-display text-[22px] text-ink leading-[1.5]">
           <p>
             {WEDDING.groom.fatherName} · {WEDDING.groom.motherName}의 {WEDDING.groom.relation}{" "}
             {WEDDING.groom.name}
@@ -240,7 +240,7 @@ export default function Home() {
         <div className="w-full flex flex-col items-center gap-14">
           <p className="font-sans text-[16px] font-semibold text-ink">오시는 길</p>
           <div className="flex flex-col items-center gap-2 px-6">
-            <h3 className="font-sans text-[28px] text-ink leading-[1.35] text-center">
+            <h3 className="font-display text-[28px] text-ink leading-[1.35] text-center">
               {WEDDING.venue.name}
             </h3>
             <p className="font-sans text-[20px] font-medium text-ink leading-[1.45] text-center">
