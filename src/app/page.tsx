@@ -117,18 +117,18 @@ export default function Home() {
         {/* 텍스트 오버레이 */}
         <div className="absolute inset-0 z-10 px-6 pt-12 pointer-events-none">
           <div className="pointer-events-auto flex flex-col items-start">
-            <p className="font-sans text-[18px] font-bold text-ink mb-2">청첩장</p>
-            <h1 className="font-sans text-[28px] font-bold leading-[1.35] text-ink mb-7">
+            <p className="font-display text-[18px] font-bold text-ink mb-2">청첩장</p>
+            <h1 className="font-display text-[28px] font-bold leading-[1.35] text-ink mb-7">
               가장 <UnderlineEmphasis>사랑스러운 순간에</UnderlineEmphasis>는
               <br />
               목격자가 필요합니다.
             </h1>
-            <p className="font-sans text-[18px] font-bold text-ink leading-[1.55] mb-7">
+            <p className="font-display text-[18px] font-bold text-ink leading-[1.55] mb-7">
               이 순간의 목격자가 될
               <br />
               당신을 초대합니다
             </p>
-            <p className="font-sans text-[18px] font-bold text-ink">(Welcome!)</p>
+            <p className="font-display text-[18px] font-bold text-ink">(Welcome!)</p>
           </div>
         </div>
       </section>
