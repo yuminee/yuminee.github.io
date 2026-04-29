@@ -117,18 +117,18 @@ export default function Home() {
         {/* 텍스트 오버레이 */}
         <div className="absolute inset-0 z-10 px-6 pt-12 pointer-events-none">
           <div className="pointer-events-auto flex flex-col items-start">
-            <p className="font-serif text-[18px] font-bold text-ink mb-2">청첩장</p>
-            <h1 className="font-serif text-[28px] font-bold leading-[1.35] text-ink mb-7">
+            <p className="font-sans text-[18px] font-bold text-ink mb-2">청첩장</p>
+            <h1 className="font-sans text-[28px] font-bold leading-[1.35] text-ink mb-7">
               가장 <UnderlineEmphasis>사랑스러운 순간에</UnderlineEmphasis>는
               <br />
               목격자가 필요합니다.
             </h1>
-            <p className="font-serif text-[18px] font-bold text-ink leading-[1.55] mb-7">
+            <p className="font-sans text-[18px] font-bold text-ink leading-[1.55] mb-7">
               이 순간의 목격자가 될
               <br />
               당신을 초대합니다
             </p>
-            <p className="font-serif text-[18px] font-bold text-ink">(Welcome!)</p>
+            <p className="font-sans text-[18px] font-bold text-ink">(Welcome!)</p>
           </div>
         </div>
       </section>
@@ -165,10 +165,10 @@ export default function Home() {
         {/* 텍스트 오버레이 */}
         <div className="absolute inset-0 z-10 flex justify-center pointer-events-none">
           <div className="pointer-events-auto w-[86.67%] mt-[13.7%] flex flex-col items-center text-center gap-8">
-            <h2 className="font-serif text-[22px] text-ink leading-[1.5]">
+            <h2 className="font-display text-[22px] text-ink leading-[1.5]">
               {WEDDING.greeting.title}
             </h2>
-            <div className="font-serif text-[22px] text-ink leading-[1.5] space-y-1">
+            <div className="font-display text-[22px] text-ink leading-[1.5] space-y-1">
               {WEDDING.greeting.body.map((line, index) => (
                 <p key={index} className={line === "" ? "h-4" : ""}>
                   {line}
@@ -202,7 +202,7 @@ export default function Home() {
           위 photo-strip → 이름까지 ~78px, cloud-heart → 갤러리까지 ~66px
           ────────────────────────────────────────────── */}
       <section className="pt-[30px] pb-[18px] flex flex-col gap-[44px]">
-        <div className="flex flex-col items-center gap-4 font-serif text-[22px] text-ink leading-[1.5]">
+        <div className="flex flex-col items-center gap-4 font-sans text-[22px] text-ink leading-[1.5]">
           <p>
             {WEDDING.groom.fatherName} · {WEDDING.groom.motherName}의 {WEDDING.groom.relation}{" "}
             {WEDDING.groom.name}
@@ -240,7 +240,7 @@ export default function Home() {
         <div className="w-full flex flex-col items-center gap-14">
           <p className="font-sans text-[16px] font-semibold text-ink">오시는 길</p>
           <div className="flex flex-col items-center gap-2 px-6">
-            <h3 className="font-serif text-[28px] text-ink leading-[1.35] text-center">
+            <h3 className="font-sans text-[28px] text-ink leading-[1.35] text-center">
               {WEDDING.venue.name}
             </h3>
             <p className="font-sans text-[20px] font-medium text-ink leading-[1.45] text-center">
@@ -257,7 +257,7 @@ export default function Home() {
               className="flex-1 h-14 bg-white border border-ink rounded-2xl flex items-center justify-center gap-2 px-5"
             >
               <NaverMapIcon />
-              <span className="font-serif text-[16px] text-ink">네이버지도</span>
+              <span className="font-sans text-[16px] text-ink">네이버지도</span>
             </a>
             <a
               href={WEDDING.venue.kakaoMapUrl}
@@ -266,7 +266,7 @@ export default function Home() {
               className="flex-1 h-14 bg-white border border-ink rounded-2xl flex items-center justify-center gap-2 px-5"
             >
               <KakaoMapIcon />
-              <span className="font-serif text-[16px] text-ink">카카오맵</span>
+              <span className="font-sans text-[16px] text-ink">카카오맵</span>
             </a>
           </div>
         </div>
@@ -297,7 +297,7 @@ export default function Home() {
       <section className="pt-14 pb-14 flex flex-col items-center gap-9">
         <p className="font-sans text-[16px] font-semibold text-ink">참석 및 버스 탑승</p>
         <div className="flex flex-col items-center gap-2 px-4">
-          <h3 className="font-serif text-[28px] text-ink leading-[1.35] text-center">
+          <h3 className="font-display text-[28px] text-ink leading-[1.35] text-center">
             {WEDDING.bus.title}
           </h3>
           <p className="font-sans text-[20px] font-medium text-ink leading-[1.35] text-center">
@@ -339,7 +339,7 @@ function DirectionBlock({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      <h4 className="font-serif text-[22px] text-ink leading-[1.35]">{title}</h4>
+      <h4 className="font-display text-[22px] text-ink leading-[1.35]">{title}</h4>
       <div className="flex flex-col gap-3">
         {items.map((text, index) => (
           <div

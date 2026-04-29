@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "ChosunCentennial";
+  src: url("/fonts/ChosunCentennial.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme inline {
   --color-cream: #FFFCCF;
   --color-cream-soft: #FFF8B8;
@@ -11,6 +19,7 @@
   --color-ink-muted: #535353;
   --color-placeholder: #A1A1A1;
   --color-divider: #212121;
+  --font-display: "ChosunCentennial", var(--font-hahmlet), "Hahmlet", serif;
   --font-serif: var(--font-hahmlet), "Hahmlet", var(--font-gowun), serif;
   --font-sans: var(--font-pretendard), -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
 }
@@ -37,6 +46,10 @@ body {
 
 .font-serif {
   font-family: var(--font-serif);
+}
+
+.font-display {
+  font-family: var(--font-display);
 }
 
 /* Hide horizontal scroll bars on gallery */

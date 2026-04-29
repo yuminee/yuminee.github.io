@@ -59,7 +59,7 @@ function AccountRow({ account }: { account: Account }) {
 function AccountGroup({ title, accounts }: { title: string; accounts: Account[] }) {
   return (
     <div className="w-full px-6 py-6 flex flex-col gap-6">
-      <h3 className="font-serif text-[22px] text-ink leading-[135%]">{title}</h3>
+      <h3 className="font-display text-[22px] text-ink leading-[135%]">{title}</h3>
       <div className="flex flex-col gap-8">
         {accounts.map((account) => (
           <AccountRow key={account.role} account={account} />
@@ -77,13 +77,13 @@ export default function AccountSection() {
       <div className="flex flex-col items-center gap-12 pt-14 pb-10 px-6">
         <p className="font-sans text-[16px] font-semibold text-ink">마음 전하실 곳</p>
         <div className="flex flex-col items-center gap-8">
-          <p className="font-serif text-[28px] text-ink">잘 부탁드립니다.</p>
+          <p className="font-display text-[28px] text-ink">잘 부탁드립니다.</p>
           <button
             onClick={() => setOpen(!open)}
             className="flex items-center gap-2 px-7 h-14 rounded-2xl bg-black text-white"
             aria-expanded={open}
           >
-            <span className="font-serif text-[18px]">
+            <span className="font-display text-[18px]">
               {open ? "계좌번호 숨기기" : "계좌번호 보기"}
             </span>
             <svg
