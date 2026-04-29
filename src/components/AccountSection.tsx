@@ -51,7 +51,7 @@ function AccountRow({ account }: { account: Account }) {
           {account.bank} {account.account}
         </p>
       </div>
-      <CopyButton text={`${account.bank} ${account.account}`} />
+      <CopyButton text={`${account.bank} ${account.account.replace(/-/g, "")}`} />
     </div>
   );
 }
